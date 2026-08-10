@@ -155,6 +155,13 @@ tbody tr:last-child{border-bottom:none}
 .colchk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--white);cursor:pointer;user-select:none}
 .colchk input{accent-color:var(--accent2);width:14px;height:14px;cursor:pointer}
 
+/* ── BANNER MAKER SWATCHES ── */
+.swatch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.swatch{height:64px;border-radius:12px;cursor:pointer;border:2px solid transparent;display:flex;align-items:flex-end;padding:8px;transition:all .2s}
+.swatch:hover{transform:translateY(-2px)}
+.swatch.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.15)}
+.swatch span{font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
+
 /* ── HOME DASHBOARD ── */
 .quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .qc{padding:16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
@@ -416,8 +423,10 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">실무 유틸리티</div>
-    <button class="nb" onclick="go('utm',this)"><span class="ic">🔗</span>UTM 링크 빌더<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
-    <button class="nb" onclick="go('caption',this)"><span class="ic">🏷️</span>카피 & 해시태그<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
+    <button class="nb" onclick="go('utm',this)"><span class="ic">🔗</span>UTM 링크 빌더</button>
+    <button class="nb" onclick="go('caption',this)"><span class="ic">🏷️</span>카피 & 해시태그</button>
+    <button class="nb" onclick="go('calendar',this)"><span class="ic">🗓️</span>콘텐츠 캘린더<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
+    <button class="nb" onclick="go('banner',this)"><span class="ic">🖼️</span>프로모션 배너<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
   </div>
   <div class="sb-memo">
     <div class="ml">✏ 메모장</div>
@@ -1469,6 +1478,154 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 </div>
 
+<!-- ▓▓▓▓▓ PAGE 10 : CONTENT CALENDAR ▓▓▓▓▓ -->
+<div class="page" id="page-calendar">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--accent)">✦ 08 — Content Calendar</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">CONTENT<br>CALENDAR</h2>
+      <p>업종·플랫폼·게시 빈도만 정하면 버튼 한 번으로 한 달치 콘텐츠 캘린더(날짜·플랫폼·유형·추천 주제)가 완성됩니다. AI 없이 100% 즉시 사용 가능합니다.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div>NO AI NEEDED</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct">01 &nbsp; 기본 정보</div>
+    <div class="r2">
+      <div class="fg"><label class="fl">브랜드명</label><input class="fi" id="calBrand" placeholder="예: 라네즈"></div>
+      <div class="fg"><label class="fl">업종</label>
+        <select class="fs" id="calIndustry">
+          <option value="beauty">💄 뷰티·화장품</option>
+          <option value="fashion">👗 패션·의류</option>
+          <option value="food">🍔 식품·F&amp;B</option>
+          <option value="ecommerce">🛒 이커머스</option>
+          <option value="app">📱 앱·게임</option>
+          <option value="finance">💳 금융·핀테크</option>
+          <option value="health">🏥 헬스·의료</option>
+          <option value="edu">📚 교육</option>
+          <option value="b2b">🏢 B2B·SaaS</option>
+          <option value="other">🔧 기타</option>
+        </select>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">시작일</label><input class="fi" type="date" id="calStart"></div>
+      <div class="fg"><label class="fl">기간</label>
+        <select class="fs" id="calWeeks">
+          <option value="1">1주</option>
+          <option value="2">2주</option>
+          <option value="4" selected>4주 (한 달)</option>
+        </select>
+      </div>
+    </div>
+    <div class="fg"><label class="fl">주당 게시 빈도</label>
+      <select class="fs" id="calFreq">
+        <option value="1">주 1회</option>
+        <option value="2">주 2회</option>
+        <option value="3" selected>주 3회</option>
+        <option value="5">주 5회</option>
+        <option value="7">매일</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct">02 &nbsp; 게시 플랫폼</div>
+    <div class="colchk-row" id="calPlatforms">
+      <label class="colchk"><input type="checkbox" value="인스타그램" checked>인스타그램</label>
+      <label class="colchk"><input type="checkbox" value="블로그" checked>블로그</label>
+      <label class="colchk"><input type="checkbox" value="유튜브">유튜브</label>
+      <label class="colchk"><input type="checkbox" value="뉴스레터">뉴스레터</label>
+      <label class="colchk"><input type="checkbox" value="틱톡">틱톡</label>
+    </div>
+  </div>
+
+  <div class="card a3">
+    <div class="ct">03 &nbsp; 생성</div>
+    <button class="btn bfl bp" onclick="generateCalendar()" id="calBtn"><span>🗓️</span> 콘텐츠 캘린더 자동 생성</button>
+  </div>
+
+  <div id="calResultArea" style="display:none">
+    <div class="stats a4" id="calStats"></div>
+    <div class="card a5">
+      <div class="ct" style="justify-content:space-between">
+        <span>🗓️ 생성된 캘린더</span>
+        <button class="btn bsm ba" onclick="dlCalendar()"><span>⬇️</span> 엑셀 다운로드</button>
+      </div>
+      <div class="tw" id="calTable"></div>
+    </div>
+  </div>
+
+  <div class="card a6">
+    <div class="ct" style="justify-content:space-between">
+      <span>📁 캘린더 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('calendar')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('calendar')">삭제</button>
+      </div>
+    </div>
+    <div id="calendarHist"></div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 11 : PROMO BANNER MAKER ▓▓▓▓▓ -->
+<div class="page" id="page-banner">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--accent3)">✦ 09 — Promo Banner Maker</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">PROMO<br>BANNER MAKER</h2>
+      <p>이미지 위에 헤드라인·가격·배지를 얹어 SNS 프로모션 배너를 그 자리에서 만듭니다. 디자인 툴도, AI도 필요 없이 100% 브라우저에서 즉시 완성됩니다.</p>
+    </div>
+    <div class="sbdg" style="background:rgba(255,95,160,.07);border-color:rgba(255,95,160,.2);color:var(--accent3)"><div class="sdot" style="background:var(--accent3)"></div>NO AI NEEDED</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct" style="color:var(--accent3)">01 &nbsp; 배경 이미지 (선택)</div>
+    <div class="uz" id="bnDZ" ondragover="bnDov(event)" ondragleave="bnDlv()" ondrop="bnDdr(event)">
+      <input type="file" accept="image/*" onchange="bnHandleFiles(this.files)">
+      <div class="uic">🖼️</div>
+      <h3>이미지를 끌어놓거나 클릭해서 업로드</h3>
+      <p>업로드하지 않으면 아래 색상 테마로 그라디언트 배경이 만들어집니다</p>
+    </div>
+    <div class="chips" id="bnChip"></div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct" style="color:var(--accent3)">02 &nbsp; 색상 테마 <span style="color:var(--muted);font-size:9px;margin-left:4px">(이미지 미업로드 시 배경으로 사용)</span></div>
+    <div class="swatch-grid" id="bnThemeSel">
+      <div class="swatch sel" data-theme="neon" style="background:linear-gradient(135deg,#00d68f,#0072ff)" onclick="selBnTheme('neon',this)"><span>네온</span></div>
+      <div class="swatch" data-theme="gold" style="background:linear-gradient(135deg,#ffb800,#ff5e00)" onclick="selBnTheme('gold',this)"><span>골드</span></div>
+      <div class="swatch" data-theme="pink" style="background:linear-gradient(135deg,#ff5fa0,#7c3aed)" onclick="selBnTheme('pink',this)"><span>핑크퍼플</span></div>
+      <div class="swatch" data-theme="dark" style="background:linear-gradient(135deg,#0c1020,#1a2540)" onclick="selBnTheme('dark',this)"><span>다크</span></div>
+    </div>
+  </div>
+
+  <div class="card a3">
+    <div class="ct" style="color:var(--accent3)">03 &nbsp; 텍스트</div>
+    <div class="fg"><label class="fl">배지 텍스트 (선택)</label><input class="fi" id="bnBadge" placeholder="예: NEW, 50% OFF, 한정수량"></div>
+    <div class="fg"><label class="fl">헤드라인</label><input class="fi" id="bnHeadline" placeholder="예: 여름 신상 최대 50% 할인"></div>
+    <div class="fg"><label class="fl">서브 텍스트 (선택)</label><input class="fi" id="bnSub" placeholder="예: 8/10 ~ 8/17, 온라인몰 한정"></div>
+    <div class="fg"><label class="fl">사이즈</label>
+      <select class="fs" id="bnSize">
+        <option value="square">정사각형 1080×1080 (인스타 피드)</option>
+        <option value="landscape">가로형 1200×628 (페이스북/링크드인)</option>
+        <option value="story">세로형 1080×1920 (스토리/릴스)</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card a4">
+    <div class="ct" style="color:var(--accent3)">04 &nbsp; 생성</div>
+    <button class="btn bfl" style="background:linear-gradient(135deg,var(--accent3),#7C3AED);color:#fff;box-shadow:0 4px 20px rgba(255,95,160,.25)" onclick="renderBanner()"><span>🖼️</span> 배너 생성</button>
+    <div id="bnPreviewWrap" style="display:none;margin-top:18px;text-align:center">
+      <canvas id="bnCanvas" style="max-width:100%;border-radius:12px;border:1px solid var(--border)"></canvas>
+      <div style="margin-top:14px">
+        <button class="btn ba" id="bnDlBtn" style="display:none" onclick="dlBanner()">⬇️ PNG 다운로드</button>
+      </div>
+    </div>
+  </div>
+</div>
+
 </main>
 </div>
 <div class="tc" id="tc"></div>
@@ -1959,11 +2116,44 @@ function renderHist(key){
   if(!el)return;
   const arr=getHist(key);
   if(!arr.length){el.innerHTML='<div style="padding:24px;text-align:center;color:var(--muted);font-size:11px;font-family:var(--fm)">저장된 기록이 없습니다</div>';return}
-  el.innerHTML=`<div class="tw"><table>
-    <thead><tr>${getHistCols(key).map(c=>`<th>${c}</th>`).join('')}<th>ACTION</th></tr></thead>
-    <tbody>${arr.map((item,i)=>`<tr>${getHistCols(key).map(c=>getHistVal(key,item,c)).map(v=>`<td>${v}</td>`).join('')}
+  el.innerHTML=`
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px">
+      <label style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);cursor:pointer">
+        <input type="checkbox" id="${key}HistAll" onchange="toggleAllHist('${key}',this.checked)">전체 선택
+      </label>
+      <button class="btn bsm" id="${key}HistDelBtn" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="deleteSelectedHist('${key}')" disabled>선택 삭제 (0)</button>
+    </div>
+    <div class="tw"><table>
+    <thead><tr><th style="width:30px"></th>${getHistCols(key).map(c=>`<th>${c}</th>`).join('')}<th>ACTION</th></tr></thead>
+    <tbody>${arr.map((item,i)=>`<tr>
+    <td><input type="checkbox" class="hist-chk" data-key="${key}" data-idx="${i}" onchange="updateHistDelBtn('${key}')"></td>
+    ${getHistCols(key).map(c=>getHistVal(key,item,c)).map(v=>`<td>${v}</td>`).join('')}
     <td><button class="btn bsm" style="background:rgba(78,143,255,.1);color:var(--accent2);border:1px solid rgba(78,143,255,.2);padding:4px 10px;font-size:10px" onclick="dlHistItem('${key}',${i})">⬇️</button></td></tr>`).join('')}</tbody>
   </table></div>`;
+}
+
+function updateHistDelBtn(key){
+  const checked = document.querySelectorAll(`.hist-chk[data-key="${key}"]:checked`).length;
+  const total   = document.querySelectorAll(`.hist-chk[data-key="${key}"]`).length;
+  const btn = document.getElementById(key+'HistDelBtn');
+  if(btn){ btn.disabled = checked===0; btn.textContent = `선택 삭제 (${checked})`; }
+  const allBox = document.getElementById(key+'HistAll');
+  if(allBox) allBox.checked = checked>0 && checked===total;
+}
+
+function toggleAllHist(key, checked){
+  document.querySelectorAll(`.hist-chk[data-key="${key}"]`).forEach(chk=>{ chk.checked = checked; });
+  updateHistDelBtn(key);
+}
+
+function deleteSelectedHist(key){
+  const idxs = new Set([...document.querySelectorAll(`.hist-chk[data-key="${key}"]:checked`)].map(el=>parseInt(el.dataset.idx)));
+  if(!idxs.size)return;
+  if(!confirm(`선택한 ${idxs.size}개 기록을 삭제할까요?`))return;
+  const arr = getHist(key).filter((_,i)=>!idxs.has(i));
+  setHist(key, arr);
+  renderHist(key);
+  toast(`${idxs.size}개 삭제 완료`,'i');
 }
 
 function getHistCols(key){
@@ -3542,7 +3732,9 @@ const HOME_TOOLS = [
   {key:'comments',ic:'💬',name:'댓글 수집기',desc:'유튜브·레딧 댓글 & 감성분석'},
   {key:'news',ic:'📰',name:'뉴스·트렌드',desc:'브랜드 뉴스 모니터링'},
   {key:'utm',ic:'🔗',name:'UTM 링크 빌더',desc:'캠페인 추적 링크 생성'},
-  {key:'caption',ic:'🏷️',name:'카피 & 해시태그',desc:'SNS 카피·해시태그 생성'}
+  {key:'caption',ic:'🏷️',name:'카피 & 해시태그',desc:'SNS 카피·해시태그 생성'},
+  {key:'calendar',ic:'🗓️',name:'콘텐츠 캘린더',desc:'한 달 게시 계획 자동 생성'},
+  {key:'banner',ic:'🖼️',name:'프로모션 배너',desc:'클릭 한 번으로 SNS 배너 제작'}
 ];
 
 function goHome(key){
@@ -3561,7 +3753,7 @@ function renderHomeDashboard(){
     <div class="stat"><div class="sl">저장된 보고서</div><div class="sv cb">${counts.report+counts.write}</div><div class="ss">리포트 자동화 + 보고서 작성</div></div>
     <div class="stat"><div class="sl">예산 플랜</div><div class="sv cgo">${counts.budget}</div><div class="ss">예산 최적화 히스토리</div></div>
     <div class="stat"><div class="sl">리서치 기록</div><div class="sv cg">${counts.comments+counts.news}</div><div class="ss">댓글 + 뉴스 수집</div></div>
-    <div class="stat"><div class="sl">UTM · 카피</div><div class="sv cpur">${counts.utm+counts.caption}</div><div class="ss">실무 유틸리티 사용 기록</div></div>
+    <div class="stat"><div class="sl">실무 유틸리티</div><div class="sv cpur">${counts.utm+counts.caption+counts.calendar}</div><div class="ss">UTM · 카피 · 캘린더 사용 기록</div></div>
   `;
 
   document.getElementById('homeQuick').innerHTML = HOME_TOOLS.map(t=>`
@@ -3581,6 +3773,289 @@ function renderHomeDashboard(){
     </div>`).join('') : `<div style="padding:24px;text-align:center;color:var(--muted);font-size:11px;font-family:var(--fm)">아직 활동 기록이 없습니다. 왼쪽 메뉴에서 도구를 사용해보세요!</div>`;
 }
 document.addEventListener('DOMContentLoaded', renderHomeDashboard);
+
+// ═══════════════════════════════════════════════
+//  CONTENT CALENDAR AUTO-GENERATOR (no AI needed)
+// ═══════════════════════════════════════════════
+const CAL = { rows: [] };
+const CALENDAR_INDUSTRY_LABELS = {
+  beauty:'뷰티·화장품', fashion:'패션·의류', food:'식품·F&B', ecommerce:'이커머스',
+  app:'앱·게임', finance:'금융·핀테크', health:'헬스·의료', edu:'교육', b2b:'B2B·SaaS', other:'우리 브랜드'
+};
+const CALENDAR_TYPES = [
+  {label:'📦 제품소개', templates:[
+    '${brand} 베스트셀러 제품 소개 & 핵심 특징 3가지',
+    '신제품 언박싱 & 첫인상 콘텐츠',
+    '${industry} 인기 제품 비교 콘텐츠'
+  ]},
+  {label:'⭐ 고객후기', templates:[
+    '실제 고객 후기 UGC 리포스트',
+    '비포/애프터 사용 후기 콘텐츠',
+    '별점 높은 리뷰 하이라이트 모음'
+  ]},
+  {label:'🎉 이벤트/프로모션', templates:[
+    '이번 주 한정 할인 이벤트 안내',
+    '댓글·공유 이벤트로 참여 유도',
+    '팔로워 전용 쿠폰 배포'
+  ]},
+  {label:'📈 트렌드', templates:[
+    '요즘 ${industry}에서 뜨는 트렌드 소개',
+    'SNS 챌린지·밈 참여 콘텐츠',
+    '시즌 이슈와 연결한 콘텐츠'
+  ]},
+  {label:'🎬 비하인드', templates:[
+    '제품·서비스 개발 비하인드 스토리',
+    '팀원 인터뷰 & 브랜드 철학 소개',
+    '작업 현장 비하인드 컷'
+  ]},
+  {label:'💡 FAQ/정보', templates:[
+    '자주 묻는 질문 Q&A',
+    '${industry} 초보자를 위한 꿀팁',
+    '알아두면 좋은 활용법 소개'
+  ]}
+];
+
+function generateCalendar(){
+  const startVal = document.getElementById('calStart').value;
+  if(!startVal){ toast('시작일을 선택해주세요','e'); return; }
+  const weeks = parseInt(document.getElementById('calWeeks').value);
+  const perWeek = parseInt(document.getElementById('calFreq').value);
+  const industryKey = document.getElementById('calIndustry').value;
+  const industryLabel = CALENDAR_INDUSTRY_LABELS[industryKey];
+  const brand = document.getElementById('calBrand').value.trim() || '우리 브랜드';
+  const platforms = [...document.querySelectorAll('#calPlatforms input:checked')].map(el=>el.value);
+  if(!platforms.length){ toast('게시 플랫폼을 최소 1개 선택해주세요','e'); return; }
+
+  const totalDays = weeks*7;
+  const interval = Math.max(1, Math.floor(7/perWeek));
+  const offsets = [];
+  for(let w=0; w<weeks; w++){
+    for(let p=0; p<perWeek; p++){
+      const off = w*7 + p*interval;
+      if(off < totalDays) offsets.push(off);
+    }
+  }
+  const start = new Date(startVal+'T00:00:00');
+  const weekdayNames = ['일','월','화','수','목','금','토'];
+  const rows = offsets.map((off,i)=>{
+    const d = new Date(start); d.setDate(d.getDate()+off);
+    const type = CALENDAR_TYPES[i % CALENDAR_TYPES.length];
+    const template = type.templates[Math.floor(i/CALENDAR_TYPES.length) % type.templates.length];
+    const topic = template.replaceAll('${brand}',brand).replaceAll('${industry}',industryLabel);
+    return {
+      date: d.toISOString().slice(0,10),
+      weekday: weekdayNames[d.getDay()],
+      platform: platforms[i % platforms.length],
+      type: type.label,
+      topic,
+      status: '예정'
+    };
+  });
+  CAL.rows = rows;
+  renderCalendarResult(rows);
+  addHist('calendar', { date: nowStr(), brand, industry: industryLabel, weeks, perWeek, platforms: platforms.join(', '), rows });
+  toast(`콘텐츠 캘린더 ${rows.length}건 생성 완료! 🗓️`,'s');
+}
+
+function renderCalendarResult(rows){
+  const area = document.getElementById('calResultArea');
+  area.style.display = 'block';
+  const byType = {};
+  rows.forEach(r=>{ byType[r.type] = (byType[r.type]||0)+1; });
+  const topType = Object.entries(byType).sort((a,b)=>b[1]-a[1])[0];
+  document.getElementById('calStats').innerHTML = `
+    <div class="stat"><div class="sl">총 게시물</div><div class="sv cb">${rows.length}</div><div class="ss">건</div></div>
+    <div class="stat"><div class="sl">기간</div><div class="sv cg">${rows[0].date} ~</div><div class="ss">${rows[rows.length-1].date}</div></div>
+    <div class="stat"><div class="sl">주요 콘텐츠 유형</div><div class="sv cpur" style="font-size:16px">${topType?topType[0]:'—'}</div><div class="ss">${topType?topType[1]+'건':''}</div></div>
+    <div class="stat"><div class="sl">플랫폼 수</div><div class="sv cgo">${new Set(rows.map(r=>r.platform)).size}</div><div class="ss">개</div></div>
+  `;
+  const cols = ['날짜','요일','플랫폼','콘텐츠 유형','추천 주제','상태'];
+  document.getElementById('calTable').innerHTML = `<table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr><td>${r.date}</td><td>${r.weekday}</td><td>${r.platform}</td><td>${r.type}</td><td style="white-space:normal;max-width:360px">${r.topic}</td><td>${r.status}</td></tr>`).join('')}</tbody></table>`;
+}
+
+function dlCalendar(){
+  if(!CAL.rows.length){toast('먼저 캘린더를 생성해주세요','e');return}
+  if(!xlsxReady())return;
+  const ws = XLSX.utils.json_to_sheet(CAL.rows.map(r=>({날짜:r.date,요일:r.weekday,플랫폼:r.platform,콘텐츠유형:r.type,추천주제:r.topic,상태:r.status})));
+  ws['!cols']=[{wch:12},{wch:6},{wch:12},{wch:16},{wch:50},{wch:8}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'콘텐츠캘린더');
+  XLSX.writeFile(wb,'콘텐츠캘린더_'+nowStr(true)+'.xlsx');
+  toast('엑셀 다운로드 완료!','s');
+}
+
+// extend history helpers for the content calendar (assignment, not `function` redeclaration —
+// see the note above the budget extension for why that matters)
+const _origGetHistCols4 = getHistCols;
+getHistCols = function(key){
+  if(key==='calendar') return ['DATE','BRAND','INDUSTRY','PLATFORMS','COUNT'];
+  return _origGetHistCols4(key);
+};
+const _origGetHistVal4 = getHistVal;
+getHistVal = function(key,item,col){
+  if(key==='calendar'){
+    const map={DATE:'date',BRAND:'brand',INDUSTRY:'industry',PLATFORMS:'platforms'};
+    if(col==='COUNT') return (item.rows||[]).length;
+    return item[map[col]]||'—';
+  }
+  return _origGetHistVal4(key,item,col);
+};
+const _origDlHistItem4 = dlHistItem;
+dlHistItem = function(key,idx){
+  if(key!=='calendar'){_origDlHistItem4(key,idx);return}
+  const item = getHist(key)[idx];
+  if(!item)return;
+  if(!xlsxReady())return;
+  const ws = XLSX.utils.json_to_sheet((item.rows||[]).map(r=>({날짜:r.date,요일:r.weekday,플랫폼:r.platform,콘텐츠유형:r.type,추천주제:r.topic,상태:r.status})));
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'콘텐츠캘린더');
+  XLSX.writeFile(wb,'콘텐츠캘린더_'+(item.brand||'캘린더')+'_'+nowStr(true)+'.xlsx');
+  toast('다운로드 완료!','s');
+};
+const _origDlAllHist4 = dlAllHist;
+dlAllHist = function(key){
+  if(key!=='calendar'){_origDlAllHist4(key);return}
+  const arr = getHist(key);
+  if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  if(!xlsxReady())return;
+  const wb = XLSX.utils.book_new();
+  arr.forEach((item,i)=>{
+    const ws = XLSX.utils.json_to_sheet((item.rows||[]).map(r=>({날짜:r.date,요일:r.weekday,플랫폼:r.platform,콘텐츠유형:r.type,추천주제:r.topic,상태:r.status})));
+    XLSX.utils.book_append_sheet(wb,ws,safeSheetName((i+1)+'_'+item.brand));
+  });
+  XLSX.writeFile(wb,'GOGUP_콘텐츠캘린더_히스토리_'+nowStr(true)+'.xlsx');
+  toast('전체 히스토리 다운로드!','s');
+};
+document.addEventListener('DOMContentLoaded', ()=>{ renderHist('calendar'); });
+
+// ═══════════════════════════════════════════════
+//  PROMO BANNER MAKER (no AI needed, pure canvas)
+// ═══════════════════════════════════════════════
+const BN = { image:null, theme:'neon' };
+const BANNER_THEMES = {
+  neon: ['#00d68f','#0072ff'],
+  gold: ['#ffb800','#ff5e00'],
+  pink: ['#ff5fa0','#7c3aed'],
+  dark: ['#0c1020','#1a2540']
+};
+const BANNER_SIZES = { square:[1080,1080], landscape:[1200,628], story:[1080,1920] };
+
+function bnHandleFiles(fl){
+  const file = fl && fl[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    const img = new Image();
+    img.onload = ()=>{
+      BN.image = img;
+      document.getElementById('bnChip').innerHTML = `<div class="chip">🖼️ ${file.name} <button onclick="bnRemoveImage()">✕</button></div>`;
+      toast('이미지 업로드 완료','s');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function bnRemoveImage(){ BN.image=null; document.getElementById('bnChip').innerHTML=''; }
+function bnDov(e){ e.preventDefault(); document.getElementById('bnDZ').classList.add('dov'); }
+function bnDlv(){ document.getElementById('bnDZ').classList.remove('dov'); }
+function bnDdr(e){ e.preventDefault(); document.getElementById('bnDZ').classList.remove('dov'); bnHandleFiles(e.dataTransfer.files); }
+
+function selBnTheme(theme, el){
+  document.querySelectorAll('#bnThemeSel .swatch').forEach(s=>s.classList.remove('sel'));
+  el.classList.add('sel');
+  BN.theme = theme;
+}
+
+function bnRoundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.arcTo(x+w,y,x+w,y+h,r);
+  ctx.arcTo(x+w,y+h,x,y+h,r);
+  ctx.arcTo(x,y+h,x,y,r);
+  ctx.arcTo(x,y,x+w,y,r);
+  ctx.closePath();
+}
+function bnWrapText(ctx,text,x,y,maxWidth,lineHeight){
+  const words = text.split(' ');
+  let line=''; const lines=[];
+  words.forEach(w=>{
+    const test = line ? line+' '+w : w;
+    if(ctx.measureText(test).width>maxWidth && line){ lines.push(line); line=w; }
+    else line=test;
+  });
+  if(line) lines.push(line);
+  lines.forEach((l,i)=>ctx.fillText(l, x, y+i*lineHeight));
+  return lines.length;
+}
+
+function renderBanner(){
+  const headline = document.getElementById('bnHeadline').value.trim();
+  if(!headline){ toast('헤드라인을 입력해주세요','e'); return; }
+  const sub = document.getElementById('bnSub').value.trim();
+  const badge = document.getElementById('bnBadge').value.trim();
+  const sizeKey = document.getElementById('bnSize').value;
+  const [W,H] = BANNER_SIZES[sizeKey];
+
+  const canvas = document.getElementById('bnCanvas');
+  canvas.width = W; canvas.height = H;
+  const ctx = canvas.getContext('2d');
+  const fontStack = "'Noto Sans KR',sans-serif";
+
+  if(BN.image){
+    const img = BN.image;
+    const scale = Math.max(W/img.width, H/img.height);
+    const sw = img.width*scale, sh = img.height*scale;
+    ctx.drawImage(img, (W-sw)/2, (H-sh)/2, sw, sh);
+    const grad = ctx.createLinearGradient(0,H*0.35,0,H);
+    grad.addColorStop(0,'rgba(7,9,15,0)');
+    grad.addColorStop(1,'rgba(7,9,15,.88)');
+    ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+  } else {
+    const theme = BANNER_THEMES[BN.theme];
+    const grad = ctx.createLinearGradient(0,0,W,H);
+    grad.addColorStop(0, theme[0]); grad.addColorStop(1, theme[1]);
+    ctx.fillStyle = grad; ctx.fillRect(0,0,W,H);
+  }
+
+  if(badge){
+    ctx.font = `700 ${Math.round(W*0.032)}px ${fontStack}`;
+    const padX = W*0.025;
+    const textW = ctx.measureText(badge).width;
+    const bh = W*0.06, bw = textW+padX*2;
+    const bx = W*0.05, by = H*0.05;
+    ctx.fillStyle = '#39FFB0';
+    bnRoundRect(ctx, bx, by, bw, bh, bh/2); ctx.fill();
+    ctx.fillStyle = '#07090F';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(badge, bx+padX, by+bh/2+1);
+  }
+
+  ctx.textBaseline = 'alphabetic';
+  ctx.fillStyle = '#fff';
+  const hSize = Math.round(W*0.072);
+  ctx.font = `900 ${hSize}px ${fontStack}`;
+  const hLineHeight = hSize*1.15;
+  const hLines = bnWrapText(ctx, headline, W*0.06, H*0.8, W*0.88, hLineHeight);
+
+  if(sub){
+    const sSize = Math.round(W*0.034);
+    ctx.font = `500 ${sSize}px ${fontStack}`;
+    ctx.fillStyle = 'rgba(255,255,255,.85)';
+    bnWrapText(ctx, sub, W*0.06, H*0.8 + hLines*hLineHeight + sSize*0.6, W*0.88, sSize*1.4);
+  }
+
+  document.getElementById('bnPreviewWrap').style.display = 'block';
+  document.getElementById('bnDlBtn').style.display = 'inline-flex';
+}
+
+function dlBanner(){
+  const canvas = document.getElementById('bnCanvas');
+  const link = document.createElement('a');
+  link.download = 'promo_banner_'+nowStr(true)+'.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  toast('배너 다운로드 완료! 🖼️','s');
+}
 </script>
 </body>
 </html>
