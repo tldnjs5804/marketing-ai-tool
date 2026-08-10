@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>GOGUP TOOL — 마케터 올인원</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
@@ -12,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 <style>
 :root{
   --bg:#07090F;--surface:#0C1020;--card:#101525;--border:#1A2540;
@@ -37,6 +39,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .sb-logo h1{font-family:var(--fd);font-size:29px;letter-spacing:2px;line-height:1.05;background:linear-gradient(135deg,var(--white),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
 .sb-logo .ver{font-size:9px;color:var(--muted);font-family:var(--fm);margin-top:4px}
 .nav-sec{padding:16px 13px 5px}
+.nav-sec+.nav-sec{border-top:1px solid var(--border);margin-top:4px}
 .nav-lbl{font-size:8px;letter-spacing:4px;color:var(--muted);text-transform:uppercase;font-family:var(--fm);padding:0 7px;margin-bottom:7px}
 .nb{display:flex;align-items:center;gap:10px;padding:11px 13px;border-radius:10px;border:1px solid transparent;background:transparent;color:var(--muted);font-family:var(--fb);font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;width:100%;text-align:left;margin-bottom:3px;position:relative;overflow:hidden}
 .nb::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--accent);border-radius:0 3px 3px 0;transform:scaleY(0);transition:transform .2s}
@@ -91,7 +94,7 @@ body::after{content:'';position:fixed;inset:0;background-image:url("data:image/s
 .chip button{background:none;border:none;color:var(--accent);cursor:pointer;font-size:11px;padding:0}
 
 /* ── AI SELECTOR ── */
-.ai-g{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ai-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
 .aio{padding:14px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;text-align:center;background:rgba(255,255,255,.02);position:relative}
 .aio:hover{border-color:rgba(78,143,255,.4)}
 .aio.sel{border-color:var(--accent2);background:rgba(78,143,255,.09)}
@@ -145,6 +148,21 @@ tbody tr:last-child{border-bottom:none}
 .aib-c{font-size:12px;line-height:1.85;color:var(--white);white-space:pre-wrap}
 .cur{display:inline-block;width:2px;height:13px;background:var(--accent);margin-left:2px;animation:bl 1s step-end infinite;vertical-align:middle}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ── HOME DASHBOARD ── */
+.quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.qc{padding:16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
+.qc:hover{border-color:var(--accent2);background:rgba(78,143,255,.05);transform:translateY(-2px)}
+.qc-ic{font-size:26px;margin-bottom:8px}
+.qc-nm{font-size:13px;font-weight:700;color:var(--white);margin-bottom:3px}
+.qc-ds{font-size:10px;color:var(--muted);line-height:1.5}
+.recent-row{display:grid;grid-template-columns:28px 130px 1fr auto;align-items:center;gap:12px;padding:11px 6px;border-bottom:1px solid rgba(26,37,64,.5);cursor:pointer;transition:background .15s}
+.recent-row:hover{background:rgba(78,143,255,.04)}
+.recent-row:last-child{border-bottom:none}
+.recent-ic{font-size:15px}
+.recent-tool{font-size:10px;font-family:var(--fm);color:var(--accent2);letter-spacing:.5px}
+.recent-title{font-size:12px;color:var(--white);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.recent-date{font-size:10px;color:var(--muted);font-family:var(--fm);white-space:nowrap}
 
 /* ── TREND LINKS ── */
 .tlinks{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-top:13px}
@@ -373,16 +391,27 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="sb-logo">
     <div class="tag">✦ MARKETING OS</div>
     <h1>GOGUP<br>TOOL</h1>
-    <div class="ver">v4.0 — All-in-One Edition</div>
+    <div class="ver">v5.0 — All-in-One Edition</div>
   </div>
   <div class="nav-sec">
-    <div class="nav-lbl">도구</div>
-    <button class="nb on" onclick="go('report',this)"><span class="ic">📊</span>리포트 자동화</button>
-    <button class="nb" onclick="go('write',this)"><span class="ic">✍️</span>보고서 작성<span class="bdg">NEW</span></button>
+    <button class="nb on" onclick="go('home',this)"><span class="ic">🏠</span>홈</button>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">AI 리포트 · 분석</div>
+    <button class="nb" onclick="go('report',this)"><span class="ic">📊</span>리포트 자동화</button>
+    <button class="nb" onclick="go('write',this)"><span class="ic">✍️</span>보고서 작성</button>
     <button class="nb" onclick="go('budget',this)"><span class="ic">💰</span>예산 최적화<span class="bdg" style="background:rgba(255,209,102,.15);border-color:rgba(255,209,102,.3);color:var(--gold)">PRO</span></button>
     <button class="nb" onclick="go('viz',this)"><span class="ic">✨</span>데이터 시각화<span class="bdg" style="background:rgba(255,95,160,.15);border-color:rgba(255,95,160,.3);color:var(--accent3)">HOT</span></button>
-    <button class="nb" onclick="go('comments',this)"><span class="ic">💬</span>댓글 수집기<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
-    <button class="nb" onclick="go('news',this)"><span class="ic">📰</span>뉴스·트렌드<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">리서치 · 수집</div>
+    <button class="nb" onclick="go('comments',this)"><span class="ic">💬</span>댓글 수집기</button>
+    <button class="nb" onclick="go('news',this)"><span class="ic">📰</span>뉴스·트렌드</button>
+  </div>
+  <div class="nav-sec">
+    <div class="nav-lbl">실무 유틸리티</div>
+    <button class="nb" onclick="go('utm',this)"><span class="ic">🔗</span>UTM 링크 빌더<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
+    <button class="nb" onclick="go('caption',this)"><span class="ic">🏷️</span>카피 & 해시태그<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
   </div>
   <div class="sb-memo">
     <div class="ml">✏ 메모장</div>
@@ -393,8 +422,32 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 <!-- ══ MAIN ══ -->
 <main class="main">
 
+<!-- ▓▓▓▓▓ PAGE 0 : HOME ▓▓▓▓▓ -->
+<div class="page active" id="page-home">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey">✦ 00 — Dashboard</div>
+      <h2>WELCOME<br>BACK</h2>
+      <p>왼쪽 메뉴에서 도구를 선택하거나, 아래 바로가기로 바로 이동하세요.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div><span id="homeDate"></span></div>
+  </div>
+
+  <div class="stats" id="homeStats"></div>
+
+  <div class="card">
+    <div class="ct">바로가기</div>
+    <div class="quick-grid" id="homeQuick"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">최근 활동</div>
+    <div id="homeRecent"></div>
+  </div>
+</div>
+
 <!-- ▓▓▓▓▓ PAGE 1 : REPORT ▓▓▓▓▓ -->
-<div class="page active" id="page-report">
+<div class="page" id="page-report">
   <div class="ph">
     <div class="ph-t">
       <div class="ey">✦ 01 — Report Automation</div>
@@ -600,6 +653,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="aio sel" onclick="selAI('claude','waiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','waiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
       <div class="aio" onclick="selAI('gemini','waiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','waiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">템플릿만 직접 작성</div></div>
     </div>
     <div id="wApiSec" style="display:none;margin-top:13px">
       <div class="fg"><label class="fl" id="wApiLbl">API Key</label><input class="fi" type="password" id="wApiKey" placeholder="sk-..."></div>
@@ -769,6 +823,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="aio sel" onclick="selAI('claude','baiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','baiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
       <div class="aio" onclick="selAI('gemini','baiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','baiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">규칙 기반 계산만</div></div>
     </div>
     <div id="bApiSec" style="display:none;margin-top:13px">
       <div class="fg"><label class="fl" id="bApiLbl">API Key</label><input class="fi" type="password" id="bApiKey" placeholder="sk-..."></div>
@@ -980,6 +1035,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="aio sel" onclick="selAI('claude','vaiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','vaiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
       <div class="aio" onclick="selAI('gemini','vaiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','vaiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">데이터 그대로 차트화</div></div>
     </div>
     <div id="vApiSec" style="display:none;margin-top:13px">
       <div class="fg"><label class="fl" id="vApiLbl">API Key</label><input class="fi" type="password" id="vApiKey" placeholder="sk-..."></div>
@@ -1106,6 +1162,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="aio sel" onclick="selAI('claude','cmaiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','cmaiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
       <div class="aio" onclick="selAI('gemini','cmaiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','cmaiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">키워드 빈도만 집계</div></div>
     </div>
     <div id="cmApiSec" style="display:none;margin-top:13px">
       <div class="fg"><label class="fl" id="cmApiLbl">API Key</label><input class="fi" type="password" id="cmApiKey" placeholder="sk-..."></div>
@@ -1213,6 +1270,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="aio sel" onclick="selAI('claude','nwaiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','nwaiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
       <div class="aio" onclick="selAI('gemini','nwaiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','nwaiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">기사 목록만 확인</div></div>
     </div>
     <div id="nwApiSec" style="display:none;margin-top:13px">
       <div class="fg"><label class="fl" id="nwApiLbl">API Key</label><input class="fi" type="password" id="nwApiKey" placeholder="sk-..."></div>
@@ -1255,6 +1313,144 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 </div>
 
+<!-- ▓▓▓▓▓ PAGE 8 : UTM BUILDER ▓▓▓▓▓ -->
+<div class="page" id="page-utm">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--accent2)">✦ 06 — UTM Builder</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">UTM LINK<br>BUILDER</h2>
+      <p>캠페인 추적용 UTM 링크를 규칙대로 생성하고 QR코드까지 바로 만듭니다. AI 없이 100% 즉시 사용 가능한 도구입니다.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div>NO AI NEEDED</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct">01 &nbsp; 기본 URL</div>
+    <div class="fg"><label class="fl">웹사이트 / 랜딩페이지 URL</label><input class="fi" id="utmUrl" placeholder="https://example.com/landing" oninput="renderUtmUrl()"></div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct">02 &nbsp; UTM 파라미터</div>
+    <div class="fg">
+      <label class="fl">캠페인 소스 (utm_source)</label>
+      <input class="fi" id="utmSource" placeholder="예: naver, google, instagram" oninput="renderUtmUrl()">
+      <div class="chips" style="margin-top:8px">
+        <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','naver')">naver</div>
+        <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','google')">google</div>
+        <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','instagram')">instagram</div>
+        <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','facebook')">facebook</div>
+        <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','kakao')">kakao</div>
+        <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','newsletter')">newsletter</div>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">매체 (utm_medium)</label><input class="fi" id="utmMedium" placeholder="예: cpc, banner, social, email" oninput="renderUtmUrl()"></div>
+      <div class="fg"><label class="fl">캠페인명 (utm_campaign)</label><input class="fi" id="utmCampaign" placeholder="예: 2026_summer_sale" oninput="renderUtmUrl()"></div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">검색어 (utm_term) <span style="color:var(--muted)">선택</span></label><input class="fi" id="utmTerm" oninput="renderUtmUrl()"></div>
+      <div class="fg"><label class="fl">콘텐츠 구분 (utm_content) <span style="color:var(--muted)">선택</span></label><input class="fi" id="utmContent" oninput="renderUtmUrl()"></div>
+    </div>
+  </div>
+
+  <div class="card a3">
+    <div class="ct">03 &nbsp; 생성된 링크</div>
+    <div class="fg"><textarea class="fta" id="utmResult" readonly style="min-height:70px;font-family:var(--fm);font-size:12px"></textarea></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn bp" onclick="copyUtm()">📋 링크 복사</button>
+      <button class="btn ba" onclick="saveUtmHist()">💾 히스토리에 저장</button>
+      <button class="btn bpur" onclick="genUtmQR()">📱 QR코드 생성</button>
+    </div>
+    <div id="utmQRBox" style="display:none;margin-top:16px;padding:16px;background:#fff;border-radius:12px;width:fit-content"></div>
+  </div>
+
+  <div class="card a4">
+    <div class="ct" style="justify-content:space-between">
+      <span>📁 링크 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('utm')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('utm')">삭제</button>
+      </div>
+    </div>
+    <div id="utmHist"></div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 9 : CAPTION & HASHTAG ▓▓▓▓▓ -->
+<div class="page" id="page-caption">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--purple)">✦ 07 — Caption Generator</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">CAPTION &<br>HASHTAG</h2>
+      <p>제품·키워드만 입력하면 SNS 게시물용 카피와 해시태그를 바로 만들어줍니다. AI를 쓰지 않아도 템플릿 기반으로 즉시 결과를 받을 수 있어요.</p>
+    </div>
+    <div class="sbdg" style="background:rgba(167,139,250,.07);border-color:rgba(167,139,250,.2);color:var(--purple)"><div class="sdot" style="background:var(--purple)"></div>SNS TOOL</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct" style="color:var(--purple)">01 &nbsp; 제품 / 키워드 입력</div>
+    <div class="fg"><label class="fl">제품 / 브랜드명</label><input class="fi" id="cpProduct" placeholder="예: 수분크림, 카페 브랜드명"></div>
+    <div class="fg"><label class="fl">핵심 키워드 (쉼표 구분)</label><input class="fi" id="cpKeywords" placeholder="예: 촉촉함, 여름한정, 신제품"></div>
+    <div class="r2">
+      <div class="fg"><label class="fl">톤앤매너</label>
+        <select class="fs" id="cpTone">
+          <option value="fun">😄 재미있고 유쾌하게</option>
+          <option value="emotional">💛 감성적이고 따뜻하게</option>
+          <option value="pro">🎯 전문적이고 신뢰감 있게</option>
+          <option value="trendy">🔥 트렌디하고 힙하게</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">플랫폼</label>
+        <select class="fs" id="cpPlatform">
+          <option value="instagram">📸 인스타그램</option>
+          <option value="tiktok">🎵 틱톡</option>
+          <option value="blog">📝 블로그</option>
+          <option value="threads">🧵 스레드</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct" style="color:var(--purple)">02 &nbsp; AI 엔진 & 생성</div>
+    <div class="ai-g" id="cpaiSel">
+      <div class="aio sel" onclick="selAI('claude','cpaiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','cpaiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','cpaiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','cpaiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">템플릿으로 즉시 생성</div></div>
+    </div>
+    <div id="cpApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="cpApiLbl">API Key</label><input class="fi" type="password" id="cpApiKey" placeholder="sk-..."></div>
+    </div>
+    <hr class="dv">
+    <button class="btn bfl" style="background:linear-gradient(135deg,var(--purple),#7C3AED);color:#fff;box-shadow:0 4px 20px rgba(167,139,250,.25)" onclick="runCaption()" id="cpBtn">
+      <span>✨</span> 카피 & 해시태그 생성
+    </button>
+    <div class="pg" id="cpp"><div class="pgf" id="cppf" style="background:linear-gradient(90deg,var(--purple),#7C3AED)"></div></div>
+  </div>
+
+  <div class="card a3" id="cpResultArea" style="display:none">
+    <div class="ct" style="color:var(--purple);justify-content:space-between">
+      <span>✨ 생성 결과 <span id="cpModelLbl" style="color:var(--muted);font-weight:400;margin-left:4px"></span></span>
+      <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="copyAllHashtags()">📋 해시태그 전체 복사</button>
+    </div>
+    <div id="cpCaptions"></div>
+    <div class="fl" style="margin-top:6px">추천 해시태그</div>
+    <div id="cpHashtags" style="margin-top:8px;line-height:2.3"></div>
+  </div>
+
+  <div class="card a4">
+    <div class="ct" style="color:var(--purple);justify-content:space-between">
+      <span>📁 생성 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('caption')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('caption')">삭제</button>
+      </div>
+    </div>
+    <div id="captionHist"></div>
+  </div>
+</div>
+
 </main>
 </div>
 <div class="tc" id="tc"></div>
@@ -1294,6 +1490,15 @@ function toast(msg, type='i', dur=4000) {
 function xlsxReady(){
   if(typeof XLSX==='undefined'){
     toast('엑셀 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해주세요','e');
+    return false;
+  }
+  return true;
+}
+// Chart.js also loads from a CDN; without this guard a blocked/slow network throws an
+// unhandled "Chart is not defined" instead of a readable message
+function chartReady(){
+  if(typeof Chart==='undefined'){
+    toast('차트 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해주세요','e');
     return false;
   }
   return true;
@@ -1403,12 +1608,26 @@ function selAI(model, gridId, el){
   const prefix=gridId.replace(/aiSel$/,'');
   const sec=document.getElementById(prefix+'ApiSec');
   if(!sec)return;
-  if(model==='claude'){sec.style.display='none'}
+  if(model==='claude'||model==='none'){sec.style.display='none'}
   else{
     sec.style.display='block';
     document.getElementById(prefix+'ApiLbl').textContent=model==='openai'?'OpenAI API Key':'Google Gemini API Key';
     document.getElementById(prefix+'ApiKey').placeholder=model==='openai'?'sk-...':'AIza...';
   }
+}
+
+// ─── AI 미사용 폴백 공용: 텍스트에서 단순 키워드 빈도 추출 ───
+function topKeywords(texts, topN=8){
+  const stop = new Set(['그리고','그런데','그래서','하지만','너무','정말','진짜','이거','저거','그거','에서','으로','에게','한테','까지','부터','만큼','처럼','거의','근데','이제','우리','제가','저는','있는','없는','같은','이번','그냥','이런','저런','합니다','했어요','있어요','없어요','같아요']);
+  const freq = {};
+  texts.forEach(t=>{
+    (String(t||'').match(/[가-힣a-zA-Z0-9]{2,}/g)||[]).forEach(w=>{
+      w=w.toLowerCase();
+      if(stop.has(w))return;
+      freq[w]=(freq[w]||0)+1;
+    });
+  });
+  return Object.entries(freq).sort((a,b)=>b[1]-a[1]).slice(0,topN).map(([w])=>w);
 }
 
 
@@ -1478,6 +1697,34 @@ ${brand?'브랜드/제품: '+brand+'\n':''}${period?'분석 기간: '+period+'\n
 보고서 본문만 작성하고 다른 설명은 붙이지 마세요.`;
 }
 
+// ─── AI 미사용 폴백: 보고서 작성 템플릿 ───
+function buildManualReportText({title,brand,period,author,bg,comp,data,sections}){
+  const secMap = {
+    market:'## 📊 시장 현황 분석', trend:'## 📈 트렌드 분석',
+    competitor:`## ⚔️ 경쟁사 분석${comp?' ('+comp+')':''}`,
+    comment:'## 💬 댓글 / 리뷰 분석', sns:'## 📱 SNS 반응 분석',
+    consumer:'## 🧠 소비자 심리 분석', promo:'## 🎯 프로모션 효과 분석',
+    content:'## 🎨 콘텐츠 성과 분석', action:'## 🚀 액션 아이템 도출'
+  };
+  const lines = [`# ${title}`];
+  if(period) lines.push(`**기간:** ${period}`);
+  if(author) lines.push(`**작성:** ${author}`);
+  lines.push('');
+  if(bg){ lines.push('## 📌 보고서 개요'); lines.push(bg); lines.push(''); }
+  sections.forEach(k=>{
+    lines.push(secMap[k]||('## '+k));
+    lines.push('_(AI 미사용 — 아래 데이터를 참고해 직접 작성해주세요)_');
+    lines.push('');
+  });
+  if(brand) lines.push('- 브랜드/제품: '+brand);
+  if(comp)  lines.push('- 경쟁사: '+comp);
+  if(data){ lines.push(''); lines.push('## 📋 입력 데이터'); lines.push(data); }
+  lines.push('');
+  lines.push('## ✅ 종합 결론');
+  lines.push('_(AI 분석 없이 자동 생성된 템플릿입니다. 위 데이터를 바탕으로 핵심 인사이트와 다음 스텝을 직접 정리해주세요. 더 상세한 초안이 필요하면 AI 엔진을 선택해 다시 실행해보세요.)_');
+  return lines.join('\n');
+}
+
 // ─── WRITE REPORT ───
 async function genReport_write(){
   const title=document.getElementById('rTitle').value.trim()||'마케팅 분석 보고서';
@@ -1501,19 +1748,26 @@ async function genReport_write(){
 
   try{
     const templateText = await extractReportTemplateText();
-    let prompt, usedTemplate = !!templateText.trim();
-    if(usedTemplate){
-      prompt = buildTemplateWritePrompt(templateText,{title,brand,period,author,bg,comp,data,sections:[...S.selectedAnl]});
-    } else {
-      if(S.selectedAnl.size===0) throw new Error('분석 항목을 최소 1개 이상 선택하거나, 예시 보고서를 올려주세요');
-      prompt = buildWritePrompt({title,brand,period,author,bg,comp,data,tone,len,sections:[...S.selectedAnl]});
-    }
-    pf.style.width='50%';
-
+    let text;
     box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
-    document.getElementById('rptModelLbl').textContent='via '+model.toUpperCase();
 
-    const text=await callAI(model,apiKey,prompt);
+    if(model==='none'){
+      if(S.selectedAnl.size===0 && !templateText.trim()) throw new Error('분석 항목을 최소 1개 이상 선택하거나, 예시 보고서를 올려주세요');
+      pf.style.width='60%';
+      document.getElementById('rptModelLbl').textContent='AI 미사용 · 템플릿';
+      text = buildManualReportText({title,brand,period,author,bg,comp,data,sections:[...S.selectedAnl]});
+    } else {
+      let prompt, usedTemplate = !!templateText.trim();
+      if(usedTemplate){
+        prompt = buildTemplateWritePrompt(templateText,{title,brand,period,author,bg,comp,data,sections:[...S.selectedAnl]});
+      } else {
+        if(S.selectedAnl.size===0) throw new Error('분석 항목을 최소 1개 이상 선택하거나, 예시 보고서를 올려주세요');
+        prompt = buildWritePrompt({title,brand,period,author,bg,comp,data,tone,len,sections:[...S.selectedAnl]});
+      }
+      pf.style.width='50%';
+      document.getElementById('rptModelLbl').textContent='via '+model.toUpperCase();
+      text=await callAI(model,apiKey,prompt);
+    }
     await typewrite(cont,text);
     S.lastWriteText=text;
     pf.style.width='100%';
@@ -1915,6 +2169,57 @@ ${chInfo || '(데이터 없음 — 업종·목표 기반 추정)'}
 }`;
 }
 
+// ── AI 미사용 폴백: 규칙 기반 예산 배분 ──
+function computeBudgetFallback(){
+  const total  = parseInt(document.getElementById('bTotalBudget').value)||0;
+  const targetROASInput = parseFloat(document.getElementById('bTargetROAS').value)||0;
+  const goalEl = document.querySelector('.goal-card.on');
+  const goal   = goalEl ? goalEl.querySelector('.gc-nm').textContent : '브랜드 인지도';
+  const constraints = document.getElementById('bConstraints').value.trim();
+
+  const weights = bChannels.map(c=>{
+    const roas = parseFloat(c.roas)||0;
+    return roas>0 ? roas : 100;
+  });
+  const sumW = weights.reduce((a,b)=>a+b,0) || bChannels.length;
+
+  const allocation = bChannels.map((c,i)=>{
+    const pct = Math.round(weights[i]/sumW*1000)/10;
+    const amount = Math.round(total*pct/100);
+    return {
+      channel: c.name, icon: c.ic, amount, pct,
+      reason: c.roas ? `과거 ROAS ${c.roas}% 기준 비례 배분 (AI 미사용)` : '히스토리 데이터 없음 — 균등 배분 (AI 미사용)'
+    };
+  });
+  const pctSum = allocation.reduce((a,b)=>a+b.pct,0);
+  if(allocation.length) allocation[allocation.length-1].pct = Math.round((allocation[allocation.length-1].pct + (100-pctSum))*10)/10;
+
+  const nums = key => bChannels.map(c=>parseFloat(c[key])).filter(n=>n>0);
+  const avg  = (arr,d) => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : d;
+  const avgCpc = avg(nums('cpc'), 800);
+  const avgCvr = avg(nums('cvr'), 2);
+  const avgRoas = Math.round(avg(nums('roas'), targetROASInput||200));
+  const estClicks = Math.round(total/avgCpc);
+  const estConv = Math.round(estClicks*avgCvr/100);
+
+  const strategy_comment = `📐 AI 없이 입력하신 채널별 과거 ROAS를 기준으로 한 규칙 기반(비례 배분) 계산 결과입니다.\n\n`+
+    `🎯 캠페인 목표: ${goal}\n`+
+    `📊 ROAS 데이터가 있는 채널은 그 비율대로, 없는 채널은 균등하게 배분했습니다.\n`+
+    (constraints ? `⚠️ 입력하신 제약 조건("${constraints}")은 자동 반영되지 않았으니 배분 후 직접 조정해주세요.\n` : '')+
+    `💡 채널별 운영 팁, 우선순위 등 정밀한 전략 해설이 필요하면 AI 엔진(Claude/GPT/Gemini)을 선택해 다시 실행해보세요.`;
+
+  return {
+    allocation,
+    roi_prediction: {
+      expected_roas: avgRoas+'%',
+      estimated_reach: Math.round(estClicks*1.2/1).toLocaleString()+'명 (추정)',
+      estimated_clicks: estClicks.toLocaleString(),
+      estimated_conversions: estConv.toLocaleString()
+    },
+    strategy_comment
+  };
+}
+
 // ── RUN BUDGET OPTIMIZATION ──
 async function runBudget(){
   const total = parseInt(document.getElementById('bTotalBudget').value)||0;
@@ -1928,14 +2233,18 @@ async function runBudget(){
 
   const model   = S.ai['baiSel']||'claude';
   const apiKey  = document.getElementById('bApiKey').value.trim();
-  const prompt  = buildBudgetPrompt();
   pf.style.width='55%';
 
   try{
-    const raw = await callAI(model, apiKey, prompt);
-    // parse JSON
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const data  = JSON.parse(clean);
+    let data;
+    if(model==='none'){
+      data = computeBudgetFallback();
+    } else {
+      const prompt = buildBudgetPrompt();
+      const raw = await callAI(model, apiKey, prompt);
+      const clean = raw.replace(/```json|```/g,'').trim();
+      data  = JSON.parse(clean);
+    }
     pf.style.width='100%';
 
     lastBudgetResult = {
@@ -1951,7 +2260,7 @@ async function runBudget(){
     renderBudgetResult(data, total);
     addHist('budget', lastBudgetResult);
     toast('예산 최적화 완료! 💰','s');
-    document.getElementById('bModelLbl').textContent = 'via '+model.toUpperCase();
+    document.getElementById('bModelLbl').textContent = model==='none' ? 'AI 미사용 · 규칙 기반' : 'via '+model.toUpperCase();
 
   }catch(e){
     toast('오류: '+e.message,'e');
@@ -2066,34 +2375,38 @@ function dlBudgetExcel(){
 }
 
 // extend getHistCols & getHistVal for budget
+// NOTE: these must be assignments (getHistCols = function(){...}), not `function getHistCols(){}`
+// declarations — a same-named function declaration gets hoisted and overwrites the original
+// binding before this code even runs, so `_origGetHistCols` would end up pointing at itself
+// (infinite recursion on every non-budget key).
 const _origGetHistCols = getHistCols;
-function getHistCols(key){
+getHistCols = function(key){
   if(key==='budget') return ['DATE','INDUSTRY','GOAL','PERIOD','TOTAL','MODEL'];
   return _origGetHistCols(key);
-}
+};
 const _origGetHistVal = getHistVal;
-function getHistVal(key,item,col){
+getHistVal = function(key,item,col){
   if(key==='budget'){
     const map={DATE:'date',INDUSTRY:'industry',GOAL:'goal',PERIOD:'period',MODEL:'model'};
     if(col==='TOTAL') return (item.total||0).toLocaleString()+'원';
     return item[map[col]]||'—';
   }
   return _origGetHistVal(key,item,col);
-}
+};
 
 // extend dlHistItem for budget
 const _origDlHistItem = dlHistItem;
-function dlHistItem(key,idx){
+dlHistItem = function(key,idx){
   if(key!=='budget'){_origDlHistItem(key,idx);return}
   const item = getHist(key)[idx];
   if(!item)return;
   lastBudgetResult = item;
   dlBudgetExcel();
-}
+};
 
 // extend dlAllHist for budget
 const _origDlAllHist = dlAllHist;
-function dlAllHist(key){
+dlAllHist = function(key){
   if(key!=='budget'){_origDlAllHist(key);return}
   const arr = getHist(key);
   if(!arr.length){toast('저장된 기록이 없습니다','e');return}
@@ -2107,7 +2420,7 @@ function dlAllHist(key){
   });
   XLSX.writeFile(wb,'GOGUP_budget_history_'+nowStr(true)+'.xlsx');
   toast('전체 히스토리 다운로드!','s');
-}
+};
 
 // Register budget AI selector
 S.ai['baiSel'] = 'claude';
@@ -2319,10 +2632,46 @@ async function extractDocxText(file){
   });
 }
 
+// ── AI 미사용 폴백: 업로드된 표 데이터를 그대로 차트화 ──
+function buildChartsFallback(){
+  if(!VZ.rawRows.length) throw new Error('AI 미사용 모드는 엑셀/CSV 표 데이터가 있어야 차트를 만들 수 있어요. PDF·Word·이미지만으로는 지원되지 않습니다');
+  const xCol = document.getElementById('vzXCol').value || VZ.rawHeaders[0];
+  const yOpts = document.getElementById('vzYCol');
+  let yCols = [...yOpts.selectedOptions].map(o=>o.value);
+  if(!yCols.length) yCols = VZ.rawHeaders.filter(h=>h!==xCol && VZ.rawRows.slice(0,5).some(r=>!isNaN(parseFloat(r[h])))).slice(0,3);
+  if(!yCols.length) throw new Error('숫자 컬럼(Y축)이 감지되지 않았습니다. 데이터를 확인해주세요');
+
+  const chartType = [...VZ.selectedChartTypes][0] || 'bar';
+  const safeType = ['bubble','scatter'].includes(chartType) ? 'bar' : chartType;
+  const rows = VZ.rawRows.slice(0,30);
+  const labels = rows.map(r=>String(r[xCol]??''));
+
+  const charts = yCols.slice(0,4).map(y=>({
+    type: safeType,
+    title: document.getElementById('vzChartTitle').value.trim() || y,
+    labels,
+    datasets: [{ label:y, data: rows.map(r=>Number(r[y])||0), unit:'' }],
+    reason: '입력 데이터를 그대로 매핑함 (AI 미사용)'
+  }));
+
+  const insightParts = yCols.slice(0,4).map(y=>{
+    const nums = rows.map(r=>Number(r[y])).filter(n=>!isNaN(n));
+    if(!nums.length) return '';
+    const avg = nums.reduce((a,b)=>a+b,0)/nums.length;
+    return `· ${y} — 평균 ${avg.toLocaleString(undefined,{maximumFractionDigits:1})} / 최대 ${Math.max(...nums).toLocaleString()} / 최소 ${Math.min(...nums).toLocaleString()}`;
+  }).filter(Boolean);
+
+  return {
+    charts,
+    insight: `📐 AI 미사용 — 업로드하신 데이터(${xCol} 기준, 상위 ${labels.length}행)의 기초 통계입니다.\n\n`+insightParts.join('\n')+`\n\n💡 트렌드 해석·이상치 진단 등 심층 인사이트가 필요하면 AI 엔진을 선택해 다시 실행해보세요.`
+  };
+}
+
 // ── MAIN RUN ──
 async function runViz(){
   if(!VZ.files.length){ toast('파일을 먼저 업로드해주세요!','e'); return; }
   if(!VZ.selectedChartTypes.size){ toast('차트 종류를 선택해주세요!','e'); return; }
+  if(!chartReady())return;
 
   const btn = document.getElementById('vizBtn');
   btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;AI 분석 중...';
@@ -2334,14 +2683,19 @@ async function runViz(){
 
   try{
     pf.style.width='35%';
-    const dataCtx = await extractDataContext();
-    pf.style.width='55%';
-    const prompt  = buildVizPrompt(dataCtx);
-    const raw     = await callAI(model, apiKey, prompt);
-    pf.style.width='80%';
-
-    const clean = raw.replace(/```json|```/g,'').trim();
-    const result = JSON.parse(clean);
+    let result;
+    if(model==='none'){
+      pf.style.width='60%';
+      result = buildChartsFallback();
+    } else {
+      const dataCtx = await extractDataContext();
+      pf.style.width='55%';
+      const prompt  = buildVizPrompt(dataCtx);
+      const raw     = await callAI(model, apiKey, prompt);
+      pf.style.width='80%';
+      const clean = raw.replace(/```json|```/g,'').trim();
+      result = JSON.parse(clean);
+    }
     VZ.lastChartData = result;
     VZ.lastInsight   = result.insight || '';
 
@@ -2628,6 +2982,26 @@ ${sample}
 }`;
 }
 
+// ── AI 미사용 폴백: 키워드 매칭 기반 감성 집계 ──
+function computeCommentsFallback(comments){
+  const posWords = ['좋아요','최고','굿','추천','사랑','만족','대박','기대','재밌','재미있','완벽','감사','짱','예쁘다','예뻐요','멋지다','멋져요','good','great','love','awesome'];
+  const negWords = ['별로','최악','실망','싫어요','비추','아쉽다','아쉬워요','불만','환불','문제','짜증','노잼','싫다','거짓말','사기','bad','worst','hate','disappoint'];
+  let pos=0,neg=0,neu=0;
+  comments.forEach(c=>{
+    const t=(c.text||'').toLowerCase();
+    const p=posWords.some(w=>t.includes(w));
+    const n=negWords.some(w=>t.includes(w));
+    if(p&&!n) pos++;
+    else if(n&&!p) neg++;
+    else neu++;
+  });
+  const keywords = topKeywords(comments.map(c=>c.text), 6);
+  const summary = `📐 AI 미사용 — 간단한 키워드 매칭 기준의 자동 집계입니다 (전체 ${comments.length}개 기준).\n`+
+    `긍정 신호 댓글 ${pos}개 · 부정 신호 댓글 ${neg}개 · 판단 애매 ${neu}개로 추정했습니다.\n`+
+    `이 수치는 단순 단어 포함 여부로 계산된 것이라 반어법·복합 감정 같은 문맥은 반영되지 않습니다. 정확한 감성 분석이 필요하면 AI 엔진을 선택해 다시 실행해보세요.`;
+  return { positive:pos, negative:neg, neutral:neu, keywords, summary };
+}
+
 async function runComments(){
   if(CM.source === 'youtube'){
     if(!document.getElementById('cmYtUrl').value.trim()){toast('영상 URL 또는 ID를 입력해주세요','e');return}
@@ -2668,9 +3042,15 @@ async function runComments(){
 
     const model  = S.ai['cmaiSel']||'claude';
     const apiKey2 = document.getElementById('cmApiKey').value.trim();
-    const raw = await callAI(model, apiKey2, buildCommentPrompt(comments, meta));
-    pf.style.width='85%';
-    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    let result;
+    if(model==='none'){
+      pf.style.width='85%';
+      result = computeCommentsFallback(comments);
+    } else {
+      const raw = await callAI(model, apiKey2, buildCommentPrompt(comments, meta));
+      pf.style.width='85%';
+      result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    }
     CM.lastAnalysis = result;
 
     renderCommentResults(comments, result, model);
@@ -2691,7 +3071,7 @@ function renderCommentResults(comments, result, model){
   document.getElementById('cmPos').textContent = result.positive ?? '—';
   document.getElementById('cmNeg').textContent = result.negative ?? '—';
   document.getElementById('cmNeu').textContent = result.neutral ?? '—';
-  document.getElementById('cmModelLbl').textContent = model.toUpperCase();
+  document.getElementById('cmModelLbl').textContent = model==='none' ? 'AI 미사용' : model.toUpperCase();
   const kw = (result.keywords||[]).map(k=>`#${k}`).join('  ');
   const body = document.getElementById('cmAnalysisContent');
   body.innerHTML = '<span class="cur"></span>';
@@ -2771,6 +3151,21 @@ ${extra?'추가 분석 요청: '+extra:''}
 }`;
 }
 
+// ── AI 미사용 폴백: 기사 목록 기반 단순 집계 ──
+function computeNewsFallback(articles, brand, comp){
+  const keywords = topKeywords(articles.map(a=>a.title), 6);
+  const sources = {};
+  articles.forEach(a=>{ const s=a.source||'기타'; sources[s]=(sources[s]||0)+1; });
+  const topSources = Object.entries(sources).sort((a,b)=>b[1]-a[1]).slice(0,3).map(([s,n])=>`${s}(${n}건)`).join(', ');
+  const compCount = comp ? articles.filter(a=>(a.title+a.desc).includes(comp)).length : 0;
+
+  const trend = `📐 AI 미사용 — 수집된 "${brand}" 관련 뉴스 ${articles.length}건의 단순 집계입니다. 주요 보도처: ${topSources||'—'}`;
+  const competitor = comp ? `"${comp}" 언급 기사 ${compCount}건 발견 (제목·요약 텍스트 매칭 기준)` : '';
+  const insight = `💡 자동 집계 결과이므로 보도 논조·맥락 분석은 포함되지 않습니다. 아래 기사 목록을 직접 확인하시거나, 심층 브리핑이 필요하면 AI 엔진을 선택해 다시 실행해보세요.`;
+
+  return { trend, competitor, keywords, insight };
+}
+
 async function runNews(){
   const brand = document.getElementById('nwBrand').value.trim();
   if(!brand){toast('담당 브랜드를 입력해주세요','e');return}
@@ -2791,9 +3186,15 @@ async function runNews(){
 
     const model  = S.ai['nwaiSel']||'claude';
     const apiKey = document.getElementById('nwApiKey').value.trim();
-    const raw = await callAI(model, apiKey, buildNewsPrompt(articles, brand, comp, extra));
-    pf.style.width='85%';
-    const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    let result;
+    if(model==='none'){
+      pf.style.width='85%';
+      result = computeNewsFallback(articles, brand, comp);
+    } else {
+      const raw = await callAI(model, apiKey, buildNewsPrompt(articles, brand, comp, extra));
+      pf.style.width='85%';
+      result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    }
     NW.lastAnalysis = result;
 
     renderNewsResults(articles, result, model);
@@ -2810,7 +3211,7 @@ async function runNews(){
 
 function renderNewsResults(articles, result, model){
   document.getElementById('nwStatsArea').style.display='block';
-  document.getElementById('nwModelLbl').textContent = model.toUpperCase();
+  document.getElementById('nwModelLbl').textContent = model==='none' ? 'AI 미사용' : model.toUpperCase();
   const kw = (result.keywords||[]).map(k=>`#${k}`).join('  ');
   const body = document.getElementById('nwAnalysisContent');
   body.innerHTML = '<span class="cur"></span>';
@@ -2839,6 +3240,274 @@ function dlNews(){
 
 S.ai['nwaiSel'] = 'claude';
 document.addEventListener('DOMContentLoaded', ()=>{ renderHist('news'); });
+
+// ═══════════════════════════════════════════════
+//  UTM LINK BUILDER (no AI needed)
+// ═══════════════════════════════════════════════
+function renderUtmUrl(){
+  const base = document.getElementById('utmUrl').value.trim();
+  const out  = document.getElementById('utmResult');
+  if(!base){ out.value=''; return; }
+  let url;
+  try{ url = new URL(base); }catch{ out.value='⚠️ 올바른 URL을 입력해주세요 (https:// 포함)'; return; }
+  const src = document.getElementById('utmSource').value.trim();
+  const med = document.getElementById('utmMedium').value.trim();
+  const cmp = document.getElementById('utmCampaign').value.trim();
+  const term = document.getElementById('utmTerm').value.trim();
+  const cnt = document.getElementById('utmContent').value.trim();
+  if(src) url.searchParams.set('utm_source', src); else url.searchParams.delete('utm_source');
+  if(med) url.searchParams.set('utm_medium', med); else url.searchParams.delete('utm_medium');
+  if(cmp) url.searchParams.set('utm_campaign', cmp); else url.searchParams.delete('utm_campaign');
+  if(term) url.searchParams.set('utm_term', term); else url.searchParams.delete('utm_term');
+  if(cnt) url.searchParams.set('utm_content', cnt); else url.searchParams.delete('utm_content');
+  out.value = url.toString();
+}
+function setUtmField(id,val){ document.getElementById(id).value=val; renderUtmUrl(); }
+function copyUtm(){
+  const v = document.getElementById('utmResult').value;
+  if(!v || v.startsWith('⚠️')){ toast('올바른 링크를 먼저 만들어주세요','e'); return; }
+  navigator.clipboard.writeText(v).then(()=>toast('링크가 복사되었습니다 ✓','s'));
+}
+function saveUtmHist(){
+  const v = document.getElementById('utmResult').value;
+  if(!v || v.startsWith('⚠️')){ toast('올바른 링크를 먼저 만들어주세요','e'); return; }
+  addHist('utm', {
+    date: nowStr(),
+    url: v,
+    source: document.getElementById('utmSource').value.trim(),
+    medium: document.getElementById('utmMedium').value.trim(),
+    campaign: document.getElementById('utmCampaign').value.trim()
+  });
+  toast('히스토리에 저장했습니다 💾','s');
+}
+// QRCode.js loads from a CDN; guard it the same way as xlsx/Chart
+function qrReady(){
+  if(typeof QRCode==='undefined'){
+    toast('QR 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해주세요','e');
+    return false;
+  }
+  return true;
+}
+function genUtmQR(){
+  const v = document.getElementById('utmResult').value;
+  if(!v || v.startsWith('⚠️')){ toast('올바른 링크를 먼저 만들어주세요','e'); return; }
+  if(!qrReady())return;
+  const box = document.getElementById('utmQRBox');
+  box.innerHTML=''; box.style.display='block';
+  new QRCode(box, { text:v, width:160, height:160 });
+}
+
+// extend history helpers for utm links (assignment, not `function` redeclaration —
+// see the note above the budget extension for why that matters)
+const _origGetHistCols3 = getHistCols;
+getHistCols = function(key){
+  if(key==='utm') return ['DATE','URL','SOURCE','MEDIUM','CAMPAIGN'];
+  if(key==='caption') return ['DATE','PRODUCT','PLATFORM','MODEL'];
+  return _origGetHistCols3(key);
+};
+const _origGetHistVal3 = getHistVal;
+getHistVal = function(key,item,col){
+  if(key==='utm'){
+    const map={DATE:'date',URL:'url',SOURCE:'source',MEDIUM:'medium',CAMPAIGN:'campaign'};
+    return item[map[col]]||'—';
+  }
+  if(key==='caption'){
+    const map={DATE:'date',PRODUCT:'product',PLATFORM:'platform',MODEL:'model'};
+    return item[map[col]]||'—';
+  }
+  return _origGetHistVal3(key,item,col);
+};
+const _origDlHistItem3 = dlHistItem;
+dlHistItem = function(key,idx){
+  if(key!=='utm' && key!=='caption'){_origDlHistItem3(key,idx);return}
+  const item = getHist(key)[idx];
+  if(!item)return;
+  if(!xlsxReady())return;
+  const wb = XLSX.utils.book_new();
+  if(key==='utm'){
+    const ws = XLSX.utils.json_to_sheet([{날짜:item.date,URL:item.url,소스:item.source,매체:item.medium,캠페인:item.campaign}]);
+    XLSX.utils.book_append_sheet(wb,ws,'UTM링크');
+    XLSX.writeFile(wb,'UTM_'+(item.campaign||'링크')+'_'+nowStr(true)+'.xlsx');
+  } else {
+    const ws = XLSX.utils.json_to_sheet([
+      {항목:'제품',값:item.product},{항목:'키워드',값:item.keywords},{항목:'플랫폼',값:item.platform},
+      ...(item.captions||[]).map((c,i)=>({항목:'카피'+(i+1),값:c})),
+      {항목:'해시태그',값:(item.hashtags||[]).join(', ')}
+    ]);
+    XLSX.utils.book_append_sheet(wb,ws,'카피');
+    XLSX.writeFile(wb,'카피_'+(item.product||'생성')+'_'+nowStr(true)+'.xlsx');
+  }
+  toast('다운로드 완료!','s');
+};
+const _origDlAllHist3 = dlAllHist;
+dlAllHist = function(key){
+  if(key!=='utm' && key!=='caption'){_origDlAllHist3(key);return}
+  const arr = getHist(key);
+  if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  if(!xlsxReady())return;
+  const wb = XLSX.utils.book_new();
+  if(key==='utm'){
+    const ws = XLSX.utils.json_to_sheet(arr.map(i=>({날짜:i.date,URL:i.url,소스:i.source,매체:i.medium,캠페인:i.campaign})));
+    XLSX.utils.book_append_sheet(wb,ws,'UTM링크');
+    XLSX.writeFile(wb,'UTM_링크_히스토리_'+nowStr(true)+'.xlsx');
+  } else {
+    const ws = XLSX.utils.json_to_sheet(arr.map(i=>({날짜:i.date,제품:i.product,키워드:i.keywords,플랫폼:i.platform,모델:i.model,카피:(i.captions||[]).join(' / '),해시태그:(i.hashtags||[]).join(' ')})));
+    ws['!cols']=[{wch:18},{wch:18},{wch:24},{wch:12},{wch:10},{wch:60},{wch:60}];
+    XLSX.utils.book_append_sheet(wb,ws,'카피 히스토리');
+    XLSX.writeFile(wb,'카피_해시태그_히스토리_'+nowStr(true)+'.xlsx');
+  }
+  toast('전체 히스토리 다운로드!','s');
+};
+document.addEventListener('DOMContentLoaded', ()=>{ renderHist('utm'); });
+
+// ═══════════════════════════════════════════════
+//  CAPTION & HASHTAG GENERATOR
+// ═══════════════════════════════════════════════
+S.ai['cpaiSel'] = 'claude';
+
+function buildCaptionPrompt({product,keywords,tone,platform}){
+  const toneMap={fun:'재미있고 유쾌한',emotional:'감성적이고 따뜻한',pro:'전문적이고 신뢰감 있는',trendy:'트렌디하고 힙한'};
+  const platformMap={instagram:'인스타그램',tiktok:'틱톡',blog:'블로그',threads:'스레드'};
+  return `당신은 SNS 마케팅 카피라이터입니다. 아래 정보로 ${platformMap[platform]||platform} 게시물용 카피 3개와 해시태그 15개를 만들어주세요.
+
+제품/브랜드: ${product||'(미지정)'}
+핵심 키워드: ${keywords||'(미지정)'}
+톤앤매너: ${toneMap[tone]||tone}
+
+아래 JSON 형식으로만 응답해주세요. 다른 텍스트 없이 JSON만:
+{
+  "captions": ["카피1 (이모지 포함, 2~3문장)","카피2","카피3"],
+  "hashtags": ["태그1","태그2", "... 총 15개"]
+}`;
+}
+
+// AI 미사용 폴백: 입력값을 조합한 템플릿 카피 + 키워드 기반 해시태그
+function buildCaptionFallback({product,keywords,platform}){
+  const kws = keywords.split(',').map(k=>k.trim()).filter(Boolean);
+  const p = product || '이 제품';
+  const captions = [
+    `${p} 지금 만나보세요 ✨ ${kws[0]?kws[0]+' 찾던 분들 주목!':''}`.trim(),
+    `${kws.slice(0,2).join(' · ')||'오늘의 추천'} — ${p}와 함께하는 특별한 순간 🎉`,
+    `${p}, 왜 다들 찾는지 직접 확인해보세요 👀 (AI 미사용 — 아래 문구를 참고해 직접 다듬어보세요)`
+  ];
+  const base = ['신상','추천','인생템','오늘의추천','데일리','머스트해브'];
+  const platformTags = {
+    instagram:['인스타그램','선팔','인스타데일리'],
+    tiktok:['틱톡','틱톡추천','챌린지'],
+    blog:['블로그','리뷰','정보공유'],
+    threads:['스레드','스레드데일리']
+  }[platform]||[];
+  const hashtags = [...new Set([
+    ...(product?[product.replace(/\s+/g,'')]:[]),
+    ...kws.map(k=>k.replace(/\s+/g,'')),
+    ...base, ...platformTags
+  ])].filter(Boolean).slice(0,15);
+  return { captions, hashtags };
+}
+
+async function runCaption(){
+  const product = document.getElementById('cpProduct').value.trim();
+  const keywords = document.getElementById('cpKeywords').value.trim();
+  const tone = document.getElementById('cpTone').value;
+  const platform = document.getElementById('cpPlatform').value;
+  if(!product && !keywords){ toast('제품명 또는 키워드를 입력해주세요','e'); return; }
+
+  const model = S.ai['cpaiSel']||'claude';
+  const apiKey = document.getElementById('cpApiKey').value.trim();
+  const btn = document.getElementById('cpBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;생성 중...';
+  const pg=document.getElementById('cpp'); const pf=document.getElementById('cppf');
+  pg.classList.add('on'); pf.style.width='30%';
+
+  try{
+    let result;
+    if(model==='none'){
+      pf.style.width='70%';
+      result = buildCaptionFallback({product,keywords,platform});
+    } else {
+      const raw = await callAI(model, apiKey, buildCaptionPrompt({product,keywords,tone,platform}));
+      pf.style.width='80%';
+      result = JSON.parse(raw.replace(/```json|```/g,'').trim());
+    }
+    pf.style.width='100%';
+    renderCaptionResult(result, model);
+    addHist('caption', {date: nowStr(), product, keywords, platform, model, captions:result.captions, hashtags:result.hashtags});
+    toast('카피 생성 완료! ✨','s');
+  }catch(e){ toast('오류: '+e.message,'e'); console.error(e); }
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+  btn.disabled=false; btn.innerHTML='<span>✨</span> 카피 & 해시태그 생성';
+}
+
+function renderCaptionResult(result, model){
+  document.getElementById('cpResultArea').style.display='block';
+  document.getElementById('cpModelLbl').textContent = model==='none' ? 'AI 미사용 · 템플릿' : 'via '+model.toUpperCase();
+  document.getElementById('cpCaptions').innerHTML = (result.captions||[]).map(c=>`
+    <div style="padding:14px;margin-bottom:10px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px">
+      <div style="font-size:12px;line-height:1.7;white-space:pre-wrap">${c}</div>
+      <button class="btn bsm" style="margin-top:8px;background:rgba(255,255,255,.06);color:var(--white)" onclick='copyText(${JSON.stringify(c)})'>📋 복사</button>
+    </div>`).join('');
+  document.getElementById('cpHashtags').innerHTML = (result.hashtags||[]).map(h=>`<span class="chip">#${h}</span>`).join(' ');
+}
+
+function copyText(t){ navigator.clipboard.writeText(t).then(()=>toast('복사되었습니다 ✓','s')); }
+function copyAllHashtags(){
+  const tags = [...document.querySelectorAll('#cpHashtags .chip')].map(e=>e.textContent).join(' ');
+  if(!tags){ toast('먼저 생성해주세요','e'); return; }
+  navigator.clipboard.writeText(tags).then(()=>toast('해시태그 전체 복사 ✓','s'));
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{ renderHist('caption'); });
+
+// ═══════════════════════════════════════════════
+//  HOME DASHBOARD
+// ═══════════════════════════════════════════════
+const HOME_TOOLS = [
+  {key:'report',ic:'📊',name:'리포트 자동화',desc:'매체별 데이터 병합·정제'},
+  {key:'write',ic:'✍️',name:'보고서 작성',desc:'AI 마케팅 보고서 자동 작성'},
+  {key:'budget',ic:'💰',name:'예산 최적화',desc:'채널별 예산 배분 전략'},
+  {key:'viz',ic:'✨',name:'데이터 시각화',desc:'업로드 데이터 자동 차트화'},
+  {key:'comments',ic:'💬',name:'댓글 수집기',desc:'유튜브·레딧 댓글 & 감성분석'},
+  {key:'news',ic:'📰',name:'뉴스·트렌드',desc:'브랜드 뉴스 모니터링'},
+  {key:'utm',ic:'🔗',name:'UTM 링크 빌더',desc:'캠페인 추적 링크 생성'},
+  {key:'caption',ic:'🏷️',name:'카피 & 해시태그',desc:'SNS 카피·해시태그 생성'}
+];
+
+function goHome(key){
+  const btn = document.querySelector(`.nb[onclick*="go('${key}'"]`);
+  if(btn) go(key, btn);
+}
+
+function renderHomeDashboard(){
+  const d = new Date();
+  document.getElementById('homeDate').textContent = d.toLocaleDateString('ko-KR',{month:'long',day:'numeric',weekday:'long'});
+
+  const counts = {};
+  HOME_TOOLS.forEach(t=>{ counts[t.key] = getHist(t.key).length; });
+
+  document.getElementById('homeStats').innerHTML = `
+    <div class="stat"><div class="sl">저장된 보고서</div><div class="sv cb">${counts.report+counts.write}</div><div class="ss">리포트 자동화 + 보고서 작성</div></div>
+    <div class="stat"><div class="sl">예산 플랜</div><div class="sv cgo">${counts.budget}</div><div class="ss">예산 최적화 히스토리</div></div>
+    <div class="stat"><div class="sl">리서치 기록</div><div class="sv cg">${counts.comments+counts.news}</div><div class="ss">댓글 + 뉴스 수집</div></div>
+    <div class="stat"><div class="sl">UTM · 카피</div><div class="sv cpur">${counts.utm+counts.caption}</div><div class="ss">실무 유틸리티 사용 기록</div></div>
+  `;
+
+  document.getElementById('homeQuick').innerHTML = HOME_TOOLS.map(t=>`
+    <div class="qc" onclick="goHome('${t.key}')">
+      <div class="qc-ic">${t.ic}</div>
+      <div class="qc-nm">${t.name}</div>
+      <div class="qc-ds">${t.desc}</div>
+    </div>`).join('');
+
+  const recent = HOME_TOOLS.filter(t=>counts[t.key]>0).map(t=>({tool:t, item:getHist(t.key)[0]}));
+  document.getElementById('homeRecent').innerHTML = recent.length ? recent.map(r=>`
+    <div class="recent-row" onclick="goHome('${r.tool.key}')">
+      <span class="recent-ic">${r.tool.ic}</span>
+      <span class="recent-tool">${r.tool.name}</span>
+      <span class="recent-title">${r.item.title||r.item.fileName||r.item.product||r.item.brand||r.item.keyword||r.item.campaign||'—'}</span>
+      <span class="recent-date">${r.item.date||''}</span>
+    </div>`).join('') : `<div style="padding:24px;text-align:center;color:var(--muted);font-size:11px;font-family:var(--fm)">아직 활동 기록이 없습니다. 왼쪽 메뉴에서 도구를 사용해보세요!</div>`;
+}
+document.addEventListener('DOMContentLoaded', renderHomeDashboard);
 </script>
 </body>
 </html>
