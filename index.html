@@ -384,6 +384,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <button class="nb" onclick="go('viz',this)"><span class="ic">✨</span>데이터 시각화<span class="bdg" style="background:rgba(255,95,160,.15);border-color:rgba(255,95,160,.3);color:var(--accent3)">HOT</span></button>
     <button class="nb" onclick="go('comments',this)"><span class="ic">💬</span>댓글 수집기<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
     <button class="nb" onclick="go('news',this)"><span class="ic">📰</span>뉴스 크롤러<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
+    <button class="nb" onclick="go('custom',this)"><span class="ic">🪄</span>맞춤 보고서 AI<span class="bdg" style="background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.3);color:var(--purple)">NEW</span></button>
   </div>
   <div class="sb-memo">
     <div class="ml">✏ 메모장</div>
@@ -1297,6 +1298,77 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 </div>
 
+<!-- ▓▓▓▓▓ PAGE 8 : CUSTOM REPORT AI ▓▓▓▓▓ -->
+<div class="page" id="page-custom">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--purple)">✦ 08 — Custom Report AI</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">TEMPLATE<br>MIMIC</h2>
+      <p>기존에 쓰던 보고서를 예시로 주면 AI가 그 구조·형식을 파악하고, 새 정보와 산출물을 그 틀에 맞춰 채워 넣습니다.</p>
+    </div>
+    <div class="sbdg" style="background:rgba(167,139,250,.07);border-color:rgba(167,139,250,.2);color:var(--purple)"><div class="sdot" style="background:var(--purple)"></div>TEMPLATE READY</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct" style="color:var(--purple)">01 &nbsp; 템플릿으로 쓸 예시 보고서</div>
+    <div class="uz" id="crDZ" ondragover="crDov(event)" ondragleave="crDlv()" ondrop="crDdr(event)">
+      <input type="file" id="crFI" multiple accept=".txt,.docx,.pdf" onchange="crHandleFiles(this.files)">
+      <div class="uic">📂</div>
+      <h3>예시 보고서 파일을 드래그하거나 클릭해서 선택</h3>
+      <p>.txt · .docx · .pdf — 다중 선택 가능</p>
+    </div>
+    <div class="chips" id="crChips"></div>
+    <div class="fg" style="margin-top:14px"><label class="fl">또는 템플릿 텍스트 직접 붙여넣기</label><textarea class="fta" id="crTemplateText" style="min-height:140px" placeholder="기존에 쓰던 보고서 본문을 그대로 붙여넣어도 됩니다"></textarea></div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct" style="color:var(--purple)">02 &nbsp; 새 보고서에 채울 정보 · 산출물</div>
+    <textarea class="fta" id="crInputData" style="min-height:160px" placeholder="예: 5월 캠페인 결과 - 노출 120만, 클릭 3.2만, 전환 850건, 주요 채널은 인스타그램·유튜브..."></textarea>
+  </div>
+
+  <div class="card a3">
+    <div class="ct" style="color:var(--purple)">03 &nbsp; AI 엔진</div>
+    <div class="ai-g" id="craiSel">
+      <div class="aio sel" onclick="selAI('claude','craiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','craiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','craiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+    </div>
+    <div id="crApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="crApiLbl">API Key</label><input class="fi" type="password" id="crApiKey" placeholder="sk-..."></div>
+    </div>
+  </div>
+
+  <div class="card a4">
+    <div class="ct" style="color:var(--purple)">04 &nbsp; 맞춤 보고서 생성</div>
+    <button class="btn bpur bfl" onclick="runCustomReport()" id="crBtn"><span>🪄</span> 맞춤 보고서 생성</button>
+    <div class="pg" id="crp"><div class="pgf" id="crpf" style="background:linear-gradient(90deg,var(--purple),#7C3AED)"></div></div>
+
+    <div class="rpt-out" id="crOut">
+      <div class="rpt-out-h">
+        <div class="rpt-out-title" style="color:var(--purple)"><span>📄</span> 생성된 보고서 <span id="crModelLbl" style="color:var(--muted)"></span></div>
+        <div class="rpt-actions">
+          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="crCopy()">📋 복사</button>
+          <button class="btn bsm bg" onclick="crDlExcel()">⬇️ 엑셀 저장</button>
+          <button class="btn bsm bpur" onclick="crDlTxt()">⬇️ TXT 저장</button>
+        </div>
+      </div>
+      <div class="rpt-content" id="crContent"></div>
+      <div class="copied" id="crCopiedMsg">복사됨 ✓</div>
+    </div>
+  </div>
+
+  <div class="card a5">
+    <div class="ct" style="color:var(--purple);justify-content:space-between">
+      <span>📁 맞춤 보고서 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('customreport')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('customreport')">삭제</button>
+      </div>
+    </div>
+    <div id="customreportHist"></div>
+  </div>
+</div>
+
 </main>
 </div>
 <div class="tc" id="tc"></div>
@@ -1638,13 +1710,15 @@ ${sectionInstructions}
 // ─── AI CALL ───
 async function callAI(model, apiKey, prompt){
   if(model==='claude'){
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    // routed through our own backend, which holds ANTHROPIC_API_KEY server-side —
+    // the browser has no safe place to put that key for a direct api.anthropic.com call
+    const res=await fetch('/api/ai/claude',{
       method:'POST',headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:2000,messages:[{role:'user',content:prompt}]})
+      body:JSON.stringify({prompt,max_tokens:2000})
     });
-    if(!res.ok)throw new Error('Claude API 오류 '+res.status);
     const d=await res.json();
-    return d.content.map(b=>b.text||'').join('');
+    if(!res.ok)throw new Error(d.detail||('Claude API 오류 '+res.status));
+    return d.text;
   }
   if(model==='openai'){
     if(!apiKey)throw new Error('OpenAI API 키를 입력해주세요');
@@ -1756,6 +1830,7 @@ function getHistCols(key){
   if(key==='write')return['DATE','TITLE','BRAND','SECTIONS','MODEL'];
   if(key==='comments')return['DATE','PLATFORM','TOTAL','MODEL'];
   if(key==='news')return['DATE','KEYWORD','COUNT','MODEL'];
+  if(key==='customreport')return['DATE','PREVIEW','MODEL'];
 }
 function getHistVal(key,item,col){
   const map={
@@ -1763,7 +1838,8 @@ function getHistVal(key,item,col){
     monitor:{DATE:'date',BRAND:'brand',COMPETITOR:'competitor',MODEL:'model'},
     write:{DATE:'date',TITLE:'title',BRAND:'brand',SECTIONS:'sections',MODEL:'model'},
     comments:{DATE:'date',PLATFORM:'platform',TOTAL:'total',MODEL:'model'},
-    news:{DATE:'date',KEYWORD:'keyword',COUNT:'count',MODEL:'model'}
+    news:{DATE:'date',KEYWORD:'keyword',COUNT:'count',MODEL:'model'},
+    customreport:{DATE:'date',PREVIEW:'preview',MODEL:'model'}
   };
   return item[map[key][col]]||'—';
 }
@@ -1816,7 +1892,8 @@ function dlAllHist(key){
     const rows=arr.map(item=>({
       날짜:item.date,
       ...(key==='monitor'?{브랜드:item.brand,경쟁사:item.competitor,모델:item.model,내용:(item.content||'').slice(0,500)}:{}),
-      ...(key==='write'?{제목:item.title,브랜드:item.brand,분석항목:item.sections,모델:item.model,내용:(item.content||'').slice(0,500)}:{})
+      ...(key==='write'?{제목:item.title,브랜드:item.brand,분석항목:item.sections,모델:item.model,내용:(item.content||'').slice(0,500)}:{}),
+      ...(key==='customreport'?{미리보기:item.preview,모델:item.model,내용:(item.content||'').slice(0,500)}:{})
     }));
     const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:20},{wch:20},{wch:30},{wch:15},{wch:80}];
     XLSX.utils.book_append_sheet(wb,ws,'전체기록');
@@ -2876,6 +2953,118 @@ function dlNews(){
 
 S.ai['nwaiSel'] = 'claude';
 document.addEventListener('DOMContentLoaded', ()=>{ renderHist('news'); });
+
+// ═══════════════════════════════════════════════
+//  CUSTOM REPORT AI (learns a template, fills it with new data)
+// ═══════════════════════════════════════════════
+const CR = { files:[], lastOutput:'' };
+
+function crHandleFiles(fl){
+  Array.from(fl).forEach(f=>{ if(!CR.files.find(x=>x.name===f.name)) CR.files.push(f); });
+  renderCrChips();
+}
+function renderCrChips(){
+  document.getElementById('crChips').innerHTML = CR.files.map((f,i)=>
+    `<div class="chip">📄 ${f.name} <button onclick="crRemoveFile(${i})">✕</button></div>`
+  ).join('');
+}
+function crRemoveFile(i){ CR.files.splice(i,1); renderCrChips(); }
+function crDov(e){ e.preventDefault(); document.getElementById('crDZ').classList.add('dov'); }
+function crDlv(){ document.getElementById('crDZ').classList.remove('dov'); }
+function crDdr(e){ e.preventDefault(); document.getElementById('crDZ').classList.remove('dov'); crHandleFiles(e.dataTransfer.files); }
+
+// reuses extractPDFText/extractDocxText already defined for the Viz page
+async function extractTemplateText(){
+  const parts = [];
+  const pasted = document.getElementById('crTemplateText').value.trim();
+  if(pasted) parts.push(pasted);
+  for(const f of CR.files){
+    const ext = f.name.split('.').pop().toLowerCase();
+    if(ext==='pdf') parts.push(await extractPDFText(f));
+    else if(ext==='docx') parts.push(await extractDocxText(f));
+    else parts.push(await f.text());
+  }
+  return parts.join('\n\n---\n\n');
+}
+
+function buildCustomReportPrompt(templateText, inputData){
+  return `당신은 보고서 포맷을 정확히 재현하는 전문 어시스턴트입니다. 아래는 참고할 기존 보고서 예시입니다. 이 예시의 구조·섹션 구성·어조·서식을 정확히 파악하세요.
+
+[예시 보고서]
+${templateText.slice(0,6000)}
+
+이제 아래 새로운 정보와 산출물을 바탕으로, 위 예시와 동일한 구조·형식의 새로운 보고서를 작성해주세요. 예시의 실제 데이터가 아니라 형식만 참고하고, 실제 내용은 아래 새 정보를 사용하세요.
+
+[새 정보 및 산출물]
+${inputData}
+
+보고서 본문만 작성하고 다른 설명은 붙이지 마세요.`;
+}
+
+async function runCustomReport(){
+  const inputData = document.getElementById('crInputData').value.trim();
+  if(!inputData){toast('새 보고서에 채울 정보를 입력해주세요','e');return}
+
+  const btn = document.getElementById('crBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;생성 중...';
+  const pg = document.getElementById('crp'); const pf = document.getElementById('crpf');
+  pg.classList.add('on'); pf.style.width='20%';
+
+  try{
+    const templateText = await extractTemplateText();
+    if(!templateText.trim()) throw new Error('템플릿(예시 보고서)을 업로드하거나 붙여넣어주세요');
+    pf.style.width='45%';
+
+    const model  = S.ai['craiSel']||'claude';
+    const apiKey = document.getElementById('crApiKey').value.trim();
+    const raw = await callAI(model, apiKey, buildCustomReportPrompt(templateText, inputData));
+    pf.style.width='85%';
+    CR.lastOutput = raw;
+
+    const out = document.getElementById('crOut');
+    out.classList.add('on');
+    const content = document.getElementById('crContent');
+    content.innerHTML = '<span class="cur"></span>';
+    await typewrite(content, raw);
+    document.getElementById('crModelLbl').textContent = model.toUpperCase();
+
+    addHist('customreport', { date: nowStr(), model, preview: inputData.slice(0,60), content: raw });
+    pf.style.width='100%';
+    toast('맞춤 보고서 생성 완료! 🪄','s');
+  }catch(e){
+    toast('오류: '+e.message,'e'); console.error(e);
+  }finally{
+    setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+    btn.disabled=false; btn.innerHTML='<span>🪄</span> 맞춤 보고서 생성';
+  }
+}
+
+function crCopy(){
+  navigator.clipboard.writeText(document.getElementById('crContent').textContent).then(()=>{
+    const m = document.getElementById('crCopiedMsg');
+    m.classList.add('show'); setTimeout(()=>m.classList.remove('show'),2000);
+  });
+}
+function crDlTxt(){
+  if(!CR.lastOutput){toast('먼저 생성해주세요','e');return}
+  const a=document.createElement('a');
+  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(CR.lastOutput);
+  a.download='맞춤보고서_'+nowStr(true)+'.txt'; a.click();
+  toast('TXT 다운로드!','s');
+}
+function crDlExcel(){
+  if(!CR.lastOutput){toast('먼저 생성해주세요','e');return}
+  const wb=XLSX.utils.book_new();
+  const lines=CR.lastOutput.split('\n').map(l=>({내용:l}));
+  const ws=XLSX.utils.json_to_sheet([{내용:'작성일시: '+nowStr()},{내용:''},...lines]);
+  ws['!cols']=[{wch:120}];
+  XLSX.utils.book_append_sheet(wb,ws,'보고서');
+  XLSX.writeFile(wb,'맞춤보고서_'+nowStr(true)+'.xlsx');
+  toast('엑셀 저장 완료!','s');
+}
+
+S.ai['craiSel'] = 'claude';
+document.addEventListener('DOMContentLoaded', ()=>{ renderHist('customreport'); });
 </script>
 </body>
 </html>

@@ -3,7 +3,9 @@ from pathlib import Path
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
 
+from backend import ai as ai_module
 from backend import comments as comments_module
 from backend import news as news_module
 
@@ -57,6 +59,22 @@ def api_reddit_comments(
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
     return {"count": len(items), "items": items}
+
+
+class ClaudeRequest(BaseModel):
+    prompt: str
+    max_tokens: int = 2000
+
+
+@app.post("/api/ai/claude")
+def api_ai_claude(body: ClaudeRequest):
+    try:
+        text = ai_module.call_claude(body.prompt, max_tokens=body.max_tokens)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+    except Exception as e:
+        raise HTTPException(status_code=502, detail=str(e))
+    return {"text": text}
 
 
 # API 라우트 등록 뒤에 마운트해야 /api/* 가 정적 파일 서빙보다 먼저 매칭된다
