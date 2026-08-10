@@ -11,6 +11,34 @@ def extract_youtube_id(url_or_id):
     return None
 
 
+def fetch_youtube_video_info(video_id):
+    """영상 제목·조회수 등 메타데이터를 가져온다. 댓글에는 없는 정보라 별도로 조회한다."""
+    import requests
+
+    api_key = os.environ.get("YOUTUBE_API_KEY")
+    if not api_key:
+        raise ValueError("서버에 YouTube API 키(YOUTUBE_API_KEY)가 설정되어 있지 않습니다")
+
+    res = requests.get(
+        "https://www.googleapis.com/youtube/v3/videos",
+        params={"part": "snippet,statistics", "id": video_id, "key": api_key},
+        timeout=10,
+    )
+    if not res.ok:
+        detail = res.json().get("error", {}).get("message", res.text)
+        raise RuntimeError(f"YouTube API 오류: {detail}")
+    items = res.json().get("items", [])
+    if not items:
+        return {"title": "", "link": f"https://www.youtube.com/watch?v={video_id}", "views": None}
+    snippet = items[0].get("snippet", {})
+    stats = items[0].get("statistics", {})
+    return {
+        "title": snippet.get("title", ""),
+        "link": f"https://www.youtube.com/watch?v={video_id}",
+        "views": int(stats["viewCount"]) if "viewCount" in stats else None,
+    }
+
+
 def fetch_youtube_comments(video_id, max_results=50, order="relevance"):
     """유튜브 댓글을 Data API v3로 수집한다. 서버 환경변수 YOUTUBE_API_KEY가 필요하다."""
     import requests
@@ -52,7 +80,12 @@ def fetch_youtube_comments(video_id, max_results=50, order="relevance"):
 
 
 def fetch_reddit_comments(post_url_or_id, max_results=50):
-    """레딧 게시글의 댓글을 PRAW로 수집한다. 서버 환경변수 REDDIT_CLIENT_ID/SECRET이 필요하다."""
+    """레딧 게시글의 댓글을 PRAW로 수집한다. 서버 환경변수 REDDIT_CLIENT_ID/SECRET이 필요하다.
+
+    댓글 목록과 함께 게시글 메타데이터(제목·링크)도 함께 반환한다 — 댓글 자체에는 없는 정보라서다.
+    """
+    import datetime
+
     import praw
 
     client_id = os.environ.get("REDDIT_CLIENT_ID")
@@ -70,10 +103,18 @@ def fetch_reddit_comments(post_url_or_id, max_results=50):
 
     out = []
     for c in submission.comments.list()[:max_results]:
+        date = ""
+        if getattr(c, "created_utc", None):
+            date = datetime.datetime.utcfromtimestamp(c.created_utc).strftime("%Y-%m-%d")
         out.append({
             "author": str(c.author) if c.author else "[deleted]",
             "text": c.body,
             "likes": c.score,
-            "date": "",
+            "date": date,
         })
-    return out
+    meta = {
+        "title": submission.title,
+        "link": f"https://www.reddit.com{submission.permalink}",
+        "views": None,
+    }
+    return out, meta

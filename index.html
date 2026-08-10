@@ -149,6 +149,12 @@ tbody tr:last-child{border-bottom:none}
 .cur{display:inline-block;width:2px;height:13px;background:var(--accent);margin-left:2px;animation:bl 1s step-end infinite;vertical-align:middle}
 @keyframes bl{0%,100%{opacity:1}50%{opacity:0}}
 
+/* ── COLUMN PICKER (comment export) ── */
+.colchk-row{display:flex;flex-wrap:wrap;align-items:center;gap:14px;margin-bottom:14px;padding:12px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px}
+.colchk-lbl{font-size:9px;letter-spacing:2px;color:var(--muted);font-family:var(--fm);text-transform:uppercase}
+.colchk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--white);cursor:pointer;user-select:none}
+.colchk input{accent-color:var(--accent2);width:14px;height:14px;cursor:pointer}
+
 /* ── HOME DASHBOARD ── */
 .quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .qc{padding:16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
@@ -1196,6 +1202,17 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
         <span>💬 수집된 댓글 (최대 50개 표시)</span>
         <button class="btn bsm ba" onclick="dlComments()"><span>⬇️</span> 엑셀 다운로드</button>
       </div>
+      <div id="cmMetaLine" style="display:none;align-items:center;gap:4px;font-size:11px;color:var(--white);margin-bottom:12px;padding:10px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px"></div>
+      <div class="colchk-row" id="cmColPicker">
+        <span class="colchk-lbl">엑셀에 포함할 정보</span>
+        <label class="colchk"><input type="checkbox" value="title" checked>제목</label>
+        <label class="colchk"><input type="checkbox" value="link" checked>링크</label>
+        <label class="colchk"><input type="checkbox" value="date" checked>날짜</label>
+        <label class="colchk"><input type="checkbox" value="text" checked>댓글</label>
+        <label class="colchk"><input type="checkbox" value="likes" checked>좋아요</label>
+        <label class="colchk"><input type="checkbox" value="views" checked>조회수</label>
+        <label class="colchk"><input type="checkbox" value="author" checked>작성자</label>
+      </div>
       <div class="tw" id="cmTable"></div>
     </div>
   </div>
@@ -1230,7 +1247,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="fg"><label class="fl">경쟁사 (쉼표 구분, 선택)</label><input class="fi" id="nwComp" placeholder="예: 이니스프리, 마몽드"></div>
     </div>
     <div class="r2">
-      <div class="fg"><label class="fl">추가 분석 요청 (선택)</label><input class="fi" id="nwExtra" placeholder="예: 신제품 반응 위주로"></div>
+      <div class="fg"><label class="fl">필수 포함 키워드 (쉼표 구분, 선택)</label><input class="fi" id="nwRequiredKw" placeholder="예: 신제품, 할인 (모두 포함된 기사만)"></div>
       <div class="fg"><label class="fl">최대 수집 개수</label>
         <select class="fs" id="nwMax">
           <option value="10">10개</option>
@@ -1240,6 +1257,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
         </select>
       </div>
     </div>
+    <div class="fg"><label class="fl">추가 분석 요청 (선택)</label><input class="fi" id="nwExtra" placeholder="예: 신제품 반응 위주로"></div>
   </div>
 
   <div class="card a2">
@@ -1976,7 +1994,8 @@ function dlHistItem(key,idx){
     const ws=XLSX.utils.json_to_sheet(item.data);
     XLSX.utils.book_append_sheet(wb,ws,'데이터');
   } else if(key==='comments'){
-    const ws=XLSX.utils.json_to_sheet((item.comments||[]).map(c=>({작성자:c.author,댓글:c.text,좋아요:c.likes,날짜:c.date})));
+    const m = item.meta||{};
+    const ws=XLSX.utils.json_to_sheet((item.comments||[]).map(c=>({제목:m.title||'—',링크:m.link||'—',날짜:c.date||'—',댓글:c.text,좋아요:c.likes??'—',조회수:m.views??'—',작성자:c.author||'—'})));
     XLSX.utils.book_append_sheet(wb,ws,'댓글');
   } else if(key==='news'){
     const ws=XLSX.utils.json_to_sheet((item.articles||[]).map(a=>({제목:a.title,날짜:a.date,언론사:a.source,링크:a.link})));
@@ -2002,7 +2021,8 @@ function dlAllHist(key){
     });
   } else if(key==='comments'){
     arr.forEach((item,i)=>{
-      const ws=XLSX.utils.json_to_sheet((item.comments||[]).map(c=>({작성자:c.author,댓글:c.text,좋아요:c.likes,날짜:c.date})));
+      const m = item.meta||{};
+      const ws=XLSX.utils.json_to_sheet((item.comments||[]).map(c=>({제목:m.title||'—',링크:m.link||'—',날짜:c.date||'—',댓글:c.text,좋아요:c.likes??'—',조회수:m.views??'—',작성자:c.author||'—'})));
       XLSX.utils.book_append_sheet(wb,ws,safeSheetName((i+1)+'_'+item.platform));
     });
   } else if(key==='news'){
@@ -2939,7 +2959,8 @@ document.addEventListener('DOMContentLoaded', ()=>{
 // ═══════════════════════════════════════════════
 //  COMMENT COLLECTOR
 // ═══════════════════════════════════════════════
-const CM = { source:'youtube', comments:[], lastAnalysis:null };
+const CM = { source:'youtube', comments:[], meta:{title:'',link:'',views:null}, lastAnalysis:null };
+const CM_COL_LABELS = {title:'제목',link:'링크',date:'날짜',text:'댓글',likes:'좋아요',views:'조회수',author:'작성자'};
 
 function selCmSrc(src, el){
   document.querySelectorAll('#cmSrcSel .aio').forEach(o=>o.classList.remove('sel'));
@@ -2956,14 +2977,14 @@ async function fetchYoutubeComments(video, max, order){
   const res = await fetch(`/api/comments/youtube?video=${encodeURIComponent(video)}&max=${max}&order=${order}`);
   const data = await res.json();
   if(!res.ok) throw new Error(data.detail || ('YouTube 댓글 수집 오류 '+res.status));
-  return data.items || [];
+  return { items: data.items || [], meta: data.meta || {title:'',link:'',views:null} };
 }
 
 async function fetchRedditComments(post, max){
   const res = await fetch(`/api/comments/reddit?post=${encodeURIComponent(post)}&max=${max}`);
   const data = await res.json();
   if(!res.ok) throw new Error(data.detail || ('레딧 댓글 수집 오류 '+res.status));
-  return data.items || [];
+  return { items: data.items || [], meta: data.meta || {title:'',link:'',views:null} };
 }
 
 function buildCommentPrompt(comments, meta){
@@ -3022,12 +3043,14 @@ async function runComments(){
       const video = document.getElementById('cmYtUrl').value.trim();
       const max   = parseInt(document.getElementById('cmYtMax').value);
       const order = document.getElementById('cmYtOrder').value;
-      comments = await fetchYoutubeComments(video, max, order);
+      const res = await fetchYoutubeComments(video, max, order);
+      comments = res.items; CM.meta = res.meta;
       meta = 'YouTube 영상'; source = video;
     } else if(CM.source === 'reddit'){
       const post = document.getElementById('cmRedditUrl').value.trim();
       const max  = parseInt(document.getElementById('cmRedditMax').value);
-      comments = await fetchRedditComments(post, max);
+      const res = await fetchRedditComments(post, max);
+      comments = res.items; CM.meta = res.meta;
       meta = '레딧 게시글'; source = post;
     } else {
       const text     = document.getElementById('cmPasteText').value.trim();
@@ -3035,6 +3058,7 @@ async function runComments(){
       comments = text.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({author:'',text:t,likes:'',date:''}));
       meta = {naver:'네이버',instagram:'인스타그램',tiktok:'틱톡',etc:'기타 플랫폼'}[platform] || '기타 플랫폼';
       source = document.getElementById('cmPasteUrl').value.trim()||'—';
+      CM.meta = {title:'', link: source!=='—'?source:'', views:null};
     }
     if(!comments.length) throw new Error('수집된 댓글이 없습니다');
     CM.comments = comments;
@@ -3054,7 +3078,7 @@ async function runComments(){
     CM.lastAnalysis = result;
 
     renderCommentResults(comments, result, model);
-    addHist('comments', { date: nowStr(), platform: meta, source, total: comments.length, model, comments, analysis: result });
+    addHist('comments', { date: nowStr(), platform: meta, source, total: comments.length, model, comments, analysis: result, meta: CM.meta });
     pf.style.width='100%';
     toast('댓글 수집 & 분석 완료! 💬','s');
   }catch(e){
@@ -3076,15 +3100,47 @@ function renderCommentResults(comments, result, model){
   const body = document.getElementById('cmAnalysisContent');
   body.innerHTML = '<span class="cur"></span>';
   typewrite(body, (result.summary||'')+(kw?'\n\n🔑 '+kw:''));
+
+  const metaLine = document.getElementById('cmMetaLine');
+  if(CM.meta && CM.meta.title){
+    metaLine.style.display='flex';
+    metaLine.innerHTML = `<span>📌 ${CM.meta.title}</span>`+
+      (CM.meta.views!=null?`<span style="margin-left:12px;color:var(--muted)">👁️ ${CM.meta.views.toLocaleString()}회</span>`:'')+
+      (CM.meta.link?`<span style="margin-left:12px"><a href="${CM.meta.link}" target="_blank" rel="noopener" style="color:var(--accent2)">열기 ↗</a></span>`:'');
+  } else {
+    metaLine.style.display='none';
+  }
+
   const cols = ['작성자','댓글','좋아요','날짜'];
   document.getElementById('cmTable').innerHTML = `<table><thead><tr>${cols.map(c=>`<th>${c}</th>`).join('')}</tr></thead><tbody>${comments.slice(0,50).map(c=>`<tr><td>${c.author||'—'}</td><td style="white-space:normal;max-width:420px">${(c.text||'').slice(0,200)}</td><td>${c.likes??'—'}</td><td>${c.date||'—'}</td></tr>`).join('')}</tbody></table>`;
+}
+
+function getSelectedCommentCols(){
+  return [...document.querySelectorAll('#cmColPicker input[type=checkbox]:checked')].map(el=>el.value);
+}
+
+function buildCommentExportRow(c, cols){
+  const row = {};
+  cols.forEach(key=>{
+    const label = CM_COL_LABELS[key];
+    if(key==='title') row[label] = CM.meta.title || '—';
+    else if(key==='link') row[label] = CM.meta.link || '—';
+    else if(key==='views') row[label] = CM.meta.views!=null ? CM.meta.views : '—';
+    else if(key==='text') row[label] = c.text;
+    else if(key==='likes') row[label] = c.likes ?? '—';
+    else if(key==='date') row[label] = c.date || '—';
+    else if(key==='author') row[label] = c.author || '—';
+  });
+  return row;
 }
 
 function dlComments(){
   if(!CM.comments.length){toast('먼저 수집해주세요','e');return}
   if(!xlsxReady())return;
+  const cols = getSelectedCommentCols();
+  if(!cols.length){ toast('엑셀에 포함할 정보를 최소 1개 선택해주세요','e'); return; }
   const wb = XLSX.utils.book_new();
-  const ws = XLSX.utils.json_to_sheet(CM.comments.map(c=>({작성자:c.author,댓글:c.text,좋아요:c.likes,날짜:c.date})));
+  const ws = XLSX.utils.json_to_sheet(CM.comments.map(c=>buildCommentExportRow(c, cols)));
   XLSX.utils.book_append_sheet(wb,ws,'댓글');
   if(CM.lastAnalysis){
     const ws2 = XLSX.utils.json_to_sheet([
@@ -3171,6 +3227,7 @@ async function runNews(){
   if(!brand){toast('담당 브랜드를 입력해주세요','e');return}
   const comp  = document.getElementById('nwComp').value.trim();
   const extra = document.getElementById('nwExtra').value.trim();
+  const requiredList = document.getElementById('nwRequiredKw').value.trim().split(',').map(k=>k.trim()).filter(Boolean);
 
   const btn = document.getElementById('nwBtn');
   btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;뉴스 수집 중...';
@@ -3179,8 +3236,24 @@ async function runNews(){
 
   try{
     const max = parseInt(document.getElementById('nwMax').value);
-    const articles = await fetchNewsRSS(brand, max);
-    if(!articles.length) throw new Error('수집된 뉴스가 없습니다');
+    // combine into the search query so the provider itself narrows results, then
+    // strictly re-check locally since RSS/keyword search isn't guaranteed to AND every term
+    const searchQuery = requiredList.length ? [brand, ...requiredList].join(' ') : brand;
+    let articles = await fetchNewsRSS(searchQuery, max);
+    const collectedCount = articles.length;
+    if(requiredList.length){
+      articles = articles.filter(a=>{
+        const hay = (a.title+' '+(a.desc||'')).toLowerCase();
+        return requiredList.every(k=>hay.includes(k.toLowerCase()));
+      });
+      if(!articles.length){
+        throw new Error(collectedCount
+          ? `"${requiredList.join(', ')}" 키워드가 모두 포함된 기사를 찾지 못했습니다 (검색된 ${collectedCount}건 중 0건 일치)`
+          : '수집된 뉴스가 없습니다');
+      }
+    } else if(!articles.length){
+      throw new Error('수집된 뉴스가 없습니다');
+    }
     NW.articles = articles;
     pf.style.width='55%';
 
@@ -3198,7 +3271,7 @@ async function runNews(){
     NW.lastAnalysis = result;
 
     renderNewsResults(articles, result, model);
-    addHist('news', { date: nowStr(), keyword: brand, competitor: comp, count: articles.length, model, articles, analysis: result });
+    addHist('news', { date: nowStr(), keyword: brand, competitor: comp, requiredKeywords: requiredList.join(', '), count: articles.length, model, articles, analysis: result });
     pf.style.width='100%';
     toast('뉴스 수집 & 브리핑 완료! 📰','s');
   }catch(e){

@@ -40,11 +40,12 @@ def api_youtube_comments(
         raise HTTPException(status_code=400, detail="영상 URL 또는 ID를 확인해주세요")
     try:
         items = comments_module.fetch_youtube_comments(video_id, max_results=max, order=order)
+        meta = comments_module.fetch_youtube_video_info(video_id)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
-    return {"video_id": video_id, "count": len(items), "items": items}
+    return {"video_id": video_id, "count": len(items), "items": items, "meta": meta}
 
 
 @app.get("/api/comments/reddit")
@@ -53,12 +54,12 @@ def api_reddit_comments(
     max: int = Query(50, ge=1, le=200),
 ):
     try:
-        items = comments_module.fetch_reddit_comments(post, max_results=max)
+        items, meta = comments_module.fetch_reddit_comments(post, max_results=max)
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=502, detail=str(e))
-    return {"count": len(items), "items": items}
+    return {"count": len(items), "items": items, "meta": meta}
 
 
 class ClaudeRequest(BaseModel):
