@@ -1088,8 +1088,9 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 
   <div class="card a1">
     <div class="ct">01 &nbsp; 플랫폼 선택</div>
-    <div class="ai-g" id="cmSrcSel" style="grid-template-columns:1fr 1fr">
+    <div class="ai-g" id="cmSrcSel">
       <div class="aio sel" onclick="selCmSrc('youtube',this)"><div class="abg">자동 수집</div><div class="aic">▶️</div><div class="anm">유튜브</div><div class="asb">YouTube Data API</div></div>
+      <div class="aio" onclick="selCmSrc('reddit',this)"><div class="abg">자동 수집</div><div class="aic">👽</div><div class="anm">레딧</div><div class="asb">Reddit API</div></div>
       <div class="aio" onclick="selCmSrc('paste',this)"><div class="aic">📋</div><div class="anm">기타 플랫폼</div><div class="asb">붙여넣기 + AI 정리</div></div>
     </div>
   </div>
@@ -1097,14 +1098,10 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="card a2" id="cmYtPanel">
     <div class="ct">02 &nbsp; 유튜브 영상 정보</div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">
-      <a href="https://console.cloud.google.com/apis/library/youtube.googleapis.com" target="_blank" rel="noopener" style="color:var(--accent2)">Google Cloud Console</a>에서
-      <strong style="color:var(--white)">YouTube Data API v3</strong> 키를 무료로 발급받아 입력하세요. 키는 브라우저에만 저장되며 이 기기 밖으로 전송되지 않습니다.
+      서버에 등록된 YouTube Data API 키로 댓글을 자동 수집합니다. 영상 URL만 입력하면 됩니다.
     </p>
     <div class="r2">
-      <div class="fg"><label class="fl">YouTube API Key</label><input class="fi" type="password" id="cmYtKey" placeholder="AIza..."></div>
       <div class="fg"><label class="fl">영상 URL 또는 ID</label><input class="fi" type="text" id="cmYtUrl" placeholder="https://www.youtube.com/watch?v=..."></div>
-    </div>
-    <div class="r2">
       <div class="fg"><label class="fl">최대 수집 개수</label>
         <select class="fs" id="cmYtMax">
           <option value="20">20개</option>
@@ -1113,10 +1110,28 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
           <option value="200">200개</option>
         </select>
       </div>
-      <div class="fg"><label class="fl">정렬</label>
-        <select class="fs" id="cmYtOrder">
-          <option value="relevance">관련도순</option>
-          <option value="time">최신순</option>
+    </div>
+    <div class="fg"><label class="fl">정렬</label>
+      <select class="fs" id="cmYtOrder">
+        <option value="relevance">관련도순</option>
+        <option value="time">최신순</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card a2" id="cmRedditPanel" style="display:none">
+    <div class="ct">02 &nbsp; 레딧 게시글 정보</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">
+      서버에 등록된 Reddit API 자격증명으로 댓글을 자동 수집합니다. 게시글 URL만 입력하면 됩니다.
+    </p>
+    <div class="r2">
+      <div class="fg"><label class="fl">게시글 URL</label><input class="fi" type="text" id="cmRedditUrl" placeholder="https://www.reddit.com/r/.../comments/..."></div>
+      <div class="fg"><label class="fl">최대 수집 개수</label>
+        <select class="fs" id="cmRedditMax">
+          <option value="20">20개</option>
+          <option value="50" selected>50개</option>
+          <option value="100">100개</option>
+          <option value="200">200개</option>
         </select>
       </div>
     </div>
@@ -1125,7 +1140,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="card a2" id="cmPastePanel" style="display:none">
     <div class="ct">02 &nbsp; 댓글 붙여넣기</div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">
-      네이버·인스타그램·틱톡·X 등은 공식 댓글 API를 공개하지 않아 브라우저에서 자동 수집이 불가능해요. 페이지에서 댓글을 직접 복사해 붙여넣으면 AI가 항목을 나누고 감성·키워드를 분석해줍니다.
+      네이버·인스타그램·틱톡 등은 공식 댓글 API를 공개하지 않아 자동 수집이 불가능해요. 페이지에서 댓글을 직접 복사해 붙여넣으면 AI가 항목을 나누고 감성·키워드를 분석해줍니다.
     </p>
     <div class="r2">
       <div class="fg"><label class="fl">플랫폼</label>
@@ -1133,7 +1148,6 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
           <option value="naver">네이버 (블로그/카페/뉴스)</option>
           <option value="instagram">인스타그램</option>
           <option value="tiktok">틱톡</option>
-          <option value="reddit">레딧</option>
           <option value="etc">기타</option>
         </select>
       </div>
@@ -1226,7 +1240,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="card a2">
     <div class="ct">02 &nbsp; 뉴스 소스</div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.7">
-      Google 뉴스 RSS를 <strong style="color:var(--accent)">rss2json</strong> 공개 프록시로 변환해 자동 수집합니다 (외부 무료 서비스 경유 · 요청량 제한 있음). 네이버·다음 뉴스는 공식 API가 브라우저 직접 호출을 막고 있어 검색 결과 바로가기만 제공해요.
+      서버가 Google 뉴스 RSS와 네이버 뉴스 검색 API를 함께 조회해 자동 수집합니다 (네이버는 서버에 API 키가 등록되어 있을 때만 포함됩니다). 다음 뉴스는 공식 검색 API가 없어 바로가기만 제공해요.
     </p>
     <div class="tlinks">
       <a class="tlbtn" onclick="openNewsSearch('naver')" href="#"><span class="tlic">🟢</span>네이버 뉴스 검색</a>
@@ -2631,42 +2645,24 @@ function selCmSrc(src, el){
   el.classList.add('sel');
   CM.source = src;
   document.getElementById('cmYtPanel').style.display = src==='youtube' ? '' : 'none';
+  document.getElementById('cmRedditPanel').style.display = src==='reddit' ? '' : 'none';
   document.getElementById('cmPastePanel').style.display = src==='paste' ? '' : 'none';
 }
 
-function extractYtId(input){
-  input = (input||'').trim();
-  const m = input.match(/(?:youtu\.be\/|[?&]v=|\/shorts\/|\/embed\/)([A-Za-z0-9_-]{11})/);
-  if(m) return m[1];
-  if(/^[A-Za-z0-9_-]{11}$/.test(input)) return input;
-  return null;
+// YouTube/Reddit collection now happens server-side (backend/comments.py) so API
+// keys stay off the client and platforms without CORS-friendly APIs become reachable too
+async function fetchYoutubeComments(video, max, order){
+  const res = await fetch(`/api/comments/youtube?video=${encodeURIComponent(video)}&max=${max}&order=${order}`);
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.detail || ('YouTube 댓글 수집 오류 '+res.status));
+  return data.items || [];
 }
 
-// googleapis.com allows cross-origin GET with an API key, so this works from the browser without a backend
-async function fetchYoutubeComments(videoId, apiKey, max, order){
-  const out = [];
-  let pageToken = '';
-  while(out.length < max){
-    const url = `https://www.googleapis.com/youtube/v3/commentThreads?part=snippet&videoId=${encodeURIComponent(videoId)}&maxResults=100&order=${order}&key=${encodeURIComponent(apiKey)}${pageToken?'&pageToken='+pageToken:''}`;
-    const res = await fetch(url);
-    if(!res.ok){
-      const err = await res.json().catch(()=>({}));
-      throw new Error(err.error?.message || ('YouTube API 오류 '+res.status));
-    }
-    const data = await res.json();
-    (data.items||[]).forEach(item=>{
-      const c = item.snippet.topLevelComment.snippet;
-      out.push({
-        author: c.authorDisplayName,
-        text: (c.textDisplay||'').replace(/<[^>]+>/g,''),
-        likes: c.likeCount,
-        date: (c.publishedAt||'').slice(0,10)
-      });
-    });
-    pageToken = data.nextPageToken;
-    if(!pageToken) break;
-  }
-  return out.slice(0, max);
+async function fetchRedditComments(post, max){
+  const res = await fetch(`/api/comments/reddit?post=${encodeURIComponent(post)}&max=${max}`);
+  const data = await res.json();
+  if(!res.ok) throw new Error(data.detail || ('레딧 댓글 수집 오류 '+res.status));
+  return data.items || [];
 }
 
 function buildCommentPrompt(comments, meta){
@@ -2687,8 +2683,9 @@ ${sample}
 
 async function runComments(){
   if(CM.source === 'youtube'){
-    if(!document.getElementById('cmYtKey').value.trim()){toast('YouTube API 키를 입력해주세요','e');return}
-    if(!extractYtId(document.getElementById('cmYtUrl').value)){toast('영상 URL 또는 ID를 확인해주세요','e');return}
+    if(!document.getElementById('cmYtUrl').value.trim()){toast('영상 URL 또는 ID를 입력해주세요','e');return}
+  } else if(CM.source === 'reddit'){
+    if(!document.getElementById('cmRedditUrl').value.trim()){toast('게시글 URL을 입력해주세요','e');return}
   } else {
     if(!document.getElementById('cmPasteText').value.trim()){toast('댓글을 붙여넣어주세요','e');return}
   }
@@ -2699,19 +2696,24 @@ async function runComments(){
   pg.classList.add('on'); pf.style.width='20%';
 
   try{
-    let comments = [], meta = '';
+    let comments = [], meta = '', source = '—';
     if(CM.source === 'youtube'){
-      const apiKey  = document.getElementById('cmYtKey').value.trim();
-      const videoId = extractYtId(document.getElementById('cmYtUrl').value);
-      const max     = parseInt(document.getElementById('cmYtMax').value);
-      const order   = document.getElementById('cmYtOrder').value;
-      comments = await fetchYoutubeComments(videoId, apiKey, max, order);
-      meta = 'YouTube 영상 '+videoId;
+      const video = document.getElementById('cmYtUrl').value.trim();
+      const max   = parseInt(document.getElementById('cmYtMax').value);
+      const order = document.getElementById('cmYtOrder').value;
+      comments = await fetchYoutubeComments(video, max, order);
+      meta = 'YouTube 영상'; source = video;
+    } else if(CM.source === 'reddit'){
+      const post = document.getElementById('cmRedditUrl').value.trim();
+      const max  = parseInt(document.getElementById('cmRedditMax').value);
+      comments = await fetchRedditComments(post, max);
+      meta = '레딧 게시글'; source = post;
     } else {
       const text     = document.getElementById('cmPasteText').value.trim();
       const platform = document.getElementById('cmPastePlatform').value;
       comments = text.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({author:'',text:t,likes:'',date:''}));
-      meta = {naver:'네이버',instagram:'인스타그램',tiktok:'틱톡',reddit:'레딧',etc:'기타 플랫폼'}[platform] || '기타 플랫폼';
+      meta = {naver:'네이버',instagram:'인스타그램',tiktok:'틱톡',etc:'기타 플랫폼'}[platform] || '기타 플랫폼';
+      source = document.getElementById('cmPasteUrl').value.trim()||'—';
     }
     if(!comments.length) throw new Error('수집된 댓글이 없습니다');
     CM.comments = comments;
@@ -2725,13 +2727,7 @@ async function runComments(){
     CM.lastAnalysis = result;
 
     renderCommentResults(comments, result, model);
-    addHist('comments', {
-      date: nowStr(),
-      platform: meta,
-      source: CM.source==='youtube' ? document.getElementById('cmYtUrl').value.trim() : (document.getElementById('cmPasteUrl').value.trim()||'—'),
-      total: comments.length,
-      model, comments, analysis: result
-    });
+    addHist('comments', { date: nowStr(), platform: meta, source, total: comments.length, model, comments, analysis: result });
     pf.style.width='100%';
     toast('댓글 수집 & 분석 완료! 💬','s');
   }catch(e){
@@ -2794,21 +2790,12 @@ function openNewsSearch(source){
   window.open(urls[source], '_blank');
 }
 
-// news RSS endpoints don't send CORS headers, so we go through rss2json (a public RSS→JSON bridge that does)
+// server-side fetch (backend/news.py) avoids the RSS/CORS problem entirely and merges in Naver News
 async function fetchNewsRSS(keyword, max){
-  const rssUrl = `https://news.google.com/rss/search?q=${encodeURIComponent(keyword)}&hl=ko&gl=KR&ceid=KR:ko`;
-  const apiUrl = `https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(rssUrl)}&count=${Math.min(max,100)}`;
-  const res = await fetch(apiUrl);
-  if(!res.ok) throw new Error('뉴스 수집 오류 '+res.status);
+  const res = await fetch(`/api/news?q=${encodeURIComponent(keyword)}&max=${max}`);
   const data = await res.json();
-  if(data.status !== 'ok') throw new Error(data.message || '뉴스 데이터를 불러오지 못했습니다');
-  return (data.items||[]).slice(0,max).map(it=>({
-    title: (it.title||'').replace(/<[^>]+>/g,''),
-    source: (it.title||'').match(/-\s*([^-]+)$/)?.[1]?.trim() || (it.author||'—'),
-    date: (it.pubDate||'').slice(0,10),
-    link: it.link,
-    desc: (it.description||'').replace(/<[^>]+>/g,'').slice(0,200)
-  }));
+  if(!res.ok) throw new Error(data.detail || ('뉴스 수집 오류 '+res.status));
+  return data.items || [];
 }
 
 function buildNewsPrompt(articles, keyword){
