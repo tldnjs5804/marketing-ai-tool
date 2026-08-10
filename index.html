@@ -223,7 +223,7 @@ tbody tr:last-child{border-bottom:none}
 .toast.i{background:var(--card);border:1px solid var(--border);color:var(--white)}
 @keyframes si{from{transform:translateX(110%);opacity:0}to{transform:translateX(0);opacity:1}}
 @keyframes fu{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
-.a1{animation-delay:.04s}.a2{animation-delay:.09s}.a3{animation-delay:.14s}.a4{animation-delay:.19s}.a5{animation-delay:.24s}.a6{animation-delay:.29s}
+.a1{animation-delay:.04s}.a2{animation-delay:.09s}.a3{animation-delay:.14s}.a4{animation-delay:.19s}.a5{animation-delay:.24s}.a6{animation-delay:.29s}.a7{animation-delay:.34s}
 
 .spin{display:inline-block;width:13px;height:13px;border:2px solid rgba(255,255,255,.2);border-top-color:#fff;border-radius:50%;animation:sp .7s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
@@ -373,18 +373,16 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="sb-logo">
     <div class="tag">✦ MARKETING OS</div>
     <h1>GOGUP<br>TOOL</h1>
-    <div class="ver">v3.0 — All-in-One Edition</div>
+    <div class="ver">v4.0 — All-in-One Edition</div>
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">도구</div>
     <button class="nb on" onclick="go('report',this)"><span class="ic">📊</span>리포트 자동화</button>
-    <button class="nb" onclick="go('monitor',this)"><span class="ic">🤖</span>트렌드 모니터링</button>
     <button class="nb" onclick="go('write',this)"><span class="ic">✍️</span>보고서 작성<span class="bdg">NEW</span></button>
     <button class="nb" onclick="go('budget',this)"><span class="ic">💰</span>예산 최적화<span class="bdg" style="background:rgba(255,209,102,.15);border-color:rgba(255,209,102,.3);color:var(--gold)">PRO</span></button>
     <button class="nb" onclick="go('viz',this)"><span class="ic">✨</span>데이터 시각화<span class="bdg" style="background:rgba(255,95,160,.15);border-color:rgba(255,95,160,.3);color:var(--accent3)">HOT</span></button>
     <button class="nb" onclick="go('comments',this)"><span class="ic">💬</span>댓글 수집기<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
-    <button class="nb" onclick="go('news',this)"><span class="ic">📰</span>뉴스 크롤러<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
-    <button class="nb" onclick="go('custom',this)"><span class="ic">🪄</span>맞춤 보고서 AI<span class="bdg" style="background:rgba(167,139,250,.15);border-color:rgba(167,139,250,.3);color:var(--purple)">NEW</span></button>
+    <button class="nb" onclick="go('news',this)"><span class="ic">📰</span>뉴스·트렌드<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
   </div>
   <div class="sb-memo">
     <div class="ml">✏ 메모장</div>
@@ -459,82 +457,11 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 </div>
 
-<!-- ▓▓▓▓▓ PAGE 2 : MONITOR ▓▓▓▓▓ -->
-<div class="page" id="page-monitor">
-  <div class="ph">
-    <div class="ph-t">
-      <div class="ey">✦ 02 — Trend Monitoring</div>
-      <h2>INTEL<br>RADAR</h2>
-      <p>AI가 키워드를 분석해 브리핑을 생성하고 Google Trends · 네이버 DataLab 링크를 자동으로 열어줍니다. 결과는 엑셀로 누적 저장됩니다.</p>
-    </div>
-    <div class="sbdg"><div class="sdot"></div>AI READY</div>
-  </div>
-
-  <div class="card a1">
-    <div class="ct">01 &nbsp; 키워드</div>
-    <div class="r2">
-      <div class="fg"><label class="fl">담당 브랜드</label><input class="fi" id="bkw" value="A뷰티" placeholder="예: 라네즈"></div>
-      <div class="fg"><label class="fl">경쟁사 (쉼표 구분)</label><input class="fi" id="ckw" value="B코스메틱, C케어" placeholder="예: B코스메틱, C케어"></div>
-    </div>
-    <div class="fg"><label class="fl">추가 분석 요청</label><textarea class="fta" id="xprompt" placeholder="SNS 반응, 프로모션 전략 등 원하는 포인트를 자유롭게 입력하세요."></textarea></div>
-  </div>
-
-  <div class="card a2">
-    <div class="ct">02 &nbsp; AI 엔진</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">API 키 없이 <strong style="color:var(--accent)">Claude (내장)</strong>를 바로 사용할 수 있어요. 다른 AI를 선택하면 해당 API 키를 입력해주세요.</p>
-    <div class="ai-g" id="maiSel">
-      <div class="aio sel" onclick="selAI('claude','maiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
-      <div class="aio" onclick="selAI('openai','maiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
-      <div class="aio" onclick="selAI('gemini','maiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
-    </div>
-    <div id="mApiSec" style="display:none;margin-top:13px">
-      <div class="fg"><label class="fl" id="mApiLbl">API Key</label><input class="fi" type="password" id="mApiKey" placeholder="sk-..."></div>
-    </div>
-  </div>
-
-  <div class="card a3">
-    <div class="ct">03 &nbsp; 트렌드 링크 바로가기</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:4px">키워드 입력 후 버튼을 클릭하면 해당 플랫폼에서 바로 확인할 수 있어요.</p>
-    <div class="tlinks">
-      <a class="tlbtn" onclick="openTrend('google')" href="#"><span class="tlic">📈</span>Google Trends</a>
-      <a class="tlbtn" onclick="openTrend('naver')" href="#"><span class="tlic">🟢</span>네이버 DataLab</a>
-      <a class="tlbtn" onclick="openTrend('naverNews')" href="#"><span class="tlic">📰</span>네이버 뉴스 검색</a>
-      <a class="tlbtn" onclick="openTrend('youtube')" href="#"><span class="tlic">▶️</span>YouTube 트렌드</a>
-      <a class="tlbtn" onclick="openTrend('instagram')" href="#"><span class="tlic">📸</span>인스타그램 해시태그</a>
-      <a class="tlbtn" onclick="openTrend('twitter')" href="#"><span class="tlic">𝕏</span>X(트위터) 검색</a>
-    </div>
-  </div>
-
-  <div class="card a4">
-    <div class="ct">04 &nbsp; AI 분석 실행</div>
-    <button class="btn bp bfl" onclick="runMonitor()" id="monBtn"><span>🔔</span> AI 즉시 분석 시작</button>
-    <div class="pg" id="mp"><div class="pgf" id="mpf"></div></div>
-    <div class="aib" id="monResult">
-      <div class="aib-h"><span>🤖</span> AI BRIEFING <span id="monModelLbl" style="margin-left:auto;color:var(--muted)"></span></div>
-      <div class="aib-c" id="monContent"></div>
-    </div>
-    <div id="monSaveArea" style="display:none;margin-top:12px">
-      <button class="btn bg bfl" onclick="saveMonitorHist()"><span>💾</span> 분석 결과 엑셀에 누적 저장</button>
-    </div>
-  </div>
-
-  <div class="card a5">
-    <div class="ct" style="justify-content:space-between">
-      <span>📁 모니터링 히스토리</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn bsm bg" onclick="dlAllHist('monitor')">📦 전체 다운로드</button>
-        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('monitor')">삭제</button>
-      </div>
-    </div>
-    <div id="monitorHist"></div>
-  </div>
-</div>
-
-<!-- ▓▓▓▓▓ PAGE 3 : WRITE ▓▓▓▓▓ -->
+<!-- ▓▓▓▓▓ PAGE 2 : WRITE ▓▓▓▓▓ -->
 <div class="page" id="page-write">
   <div class="ph">
     <div class="ph-t">
-      <div class="ey">✦ 03 — Report Writing</div>
+      <div class="ey">✦ 02 — Report Writing</div>
       <h2>REPORT<br>WRITER</h2>
       <p>분석 항목을 골라 입력만 하면 AI가 완성도 높은 보고서를 자동으로 작성합니다.</p>
     </div>
@@ -555,9 +482,25 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="fg"><label class="fl">핵심 배경 / 목적 (선택)</label><textarea class="fta" id="rBg" placeholder="예: 신제품 론칭 전 시장 현황 파악 및 경쟁사 대비 포지셔닝 전략 수립"></textarea></div>
   </div>
 
-  <!-- STEP 2: 분석 항목 선택 -->
-  <div class="card a2">
-    <div class="ct">02 &nbsp; 분석 항목 선택 <span style="color:var(--muted);font-size:9px;margin-left:4px">(원하는 항목만 골라서 체크)</span></div>
+  <!-- STEP 2: 예시 보고서로 형식 맞추기 (선택) -->
+  <div class="card a2" style="border-color:rgba(167,139,250,.18)">
+    <div class="ct" style="color:var(--purple)">02 &nbsp; 예시 보고서로 형식 맞추기 <span style="color:var(--muted);font-size:9px;margin-left:4px">(선택 — 비워두면 아래 분석 항목 방식으로 작성됩니다)</span></div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">
+      기존에 쓰던 보고서를 예시로 올리면 AI가 그 구조·형식을 그대로 따라 작성합니다. 아래 분석 항목 선택은 이때 참고용 내용 힌트로만 쓰입니다.
+    </p>
+    <div class="uz" id="rTplDZ" ondragover="rTplDov(event)" ondragleave="rTplDlv()" ondrop="rTplDdr(event)">
+      <input type="file" id="rTplFI" multiple accept=".txt,.docx,.pdf" onchange="rTplHandleFiles(this.files)">
+      <div class="uic">📂</div>
+      <h3>예시 보고서 파일을 드래그하거나 클릭해서 선택</h3>
+      <p>.txt · .docx · .pdf — 다중 선택 가능</p>
+    </div>
+    <div class="chips" id="rTplChips"></div>
+    <div class="fg" style="margin-top:14px"><label class="fl">또는 템플릿 텍스트 직접 붙여넣기</label><textarea class="fta" id="rTplText" style="min-height:120px" placeholder="기존에 쓰던 보고서 본문을 그대로 붙여넣어도 됩니다"></textarea></div>
+  </div>
+
+  <!-- STEP 3: 분석 항목 선택 -->
+  <div class="card a3">
+    <div class="ct">03 &nbsp; 분석 항목 선택 <span style="color:var(--muted);font-size:9px;margin-left:4px">(원하는 항목만 골라서 체크 · 예시 보고서를 올렸다면 내용 힌트로 사용됨)</span></div>
     <div class="anl-grid" id="anlGrid">
 
       <div class="anl-card" data-key="market" onclick="togAnl(this)">
@@ -628,9 +571,9 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="sel-tags" id="selTags"><span class="no-sel">항목을 선택하면 여기에 표시됩니다</span></div>
   </div>
 
-  <!-- STEP 3: 추가 데이터 입력 -->
-  <div class="card a3">
-    <div class="ct">03 &nbsp; 추가 데이터 · 맥락 입력 <span style="color:var(--muted);font-size:9px;margin-left:4px">(선택)</span></div>
+  <!-- STEP 4: 추가 데이터 입력 -->
+  <div class="card a4">
+    <div class="ct">04 &nbsp; 추가 데이터 · 맥락 입력 <span style="color:var(--muted);font-size:9px;margin-left:4px">(선택)</span></div>
     <div class="fg"><label class="fl">경쟁사 이름 (쉼표 구분)</label><input class="fi" id="rComp" placeholder="예: 이니스프리, 마몽드, 클리오"></div>
     <div class="fg"><label class="fl">보유 데이터 / 수치 입력</label><textarea class="fta" id="rData" style="min-height:100px" placeholder="예: 4월 광고비 1200만원, CTR 3.2%, CPC 850원, 전환율 2.1%&#10;인스타 좋아요 평균 340, 유튜브 조회수 12만&#10;주요 댓글: '향이 너무 좋아요', '지속력이 아쉬워요'"></textarea></div>
     <div class="fg"><label class="fl">보고서 톤 & 스타일</label>
@@ -650,9 +593,9 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     </div>
   </div>
 
-  <!-- STEP 4: AI 엔진 -->
-  <div class="card a4">
-    <div class="ct">04 &nbsp; AI 엔진 선택</div>
+  <!-- STEP 5: AI 엔진 -->
+  <div class="card a5">
+    <div class="ct">05 &nbsp; AI 엔진 선택</div>
     <div class="ai-g" id="waiSel">
       <div class="aio sel" onclick="selAI('claude','waiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','waiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
@@ -663,9 +606,9 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     </div>
   </div>
 
-  <!-- STEP 5: 생성 -->
-  <div class="card a5">
-    <div class="ct">05 &nbsp; 보고서 생성</div>
+  <!-- STEP 6: 생성 -->
+  <div class="card a6">
+    <div class="ct">06 &nbsp; 보고서 생성</div>
     <button class="btn bpur bfl" onclick="genReport_write()" id="writeBtn"><span>✍️</span> AI 보고서 자동 작성 시작</button>
     <div class="pg" id="wp"><div class="pgf" id="wpf"></div></div>
 
@@ -685,7 +628,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 
   <!-- History -->
-  <div class="card a6">
+  <div class="card a7">
     <div class="ct" style="justify-content:space-between">
       <span>📁 보고서 히스토리</span>
       <div style="display:flex;gap:8px">
@@ -701,7 +644,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 <div class="page" id="page-budget">
   <div class="ph">
     <div class="ph-t">
-      <div class="ey" style="color:var(--gold)">✦ 04 — Budget Optimizer</div>
+      <div class="ey" style="color:var(--gold)">✦ 03 — Budget Optimizer</div>
       <h2 style="background:linear-gradient(130deg,var(--white),var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">BUDGET<br>PLANNER</h2>
       <p>총 광고예산과 목표를 입력하면 AI가 채널별 최적 배분 전략과 ROI 예측을 즉시 제공합니다.</p>
     </div>
@@ -877,7 +820,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 <div class="page" id="page-viz">
   <div class="ph">
     <div class="ph-t">
-      <div class="ey" style="color:var(--accent3)">✦ 05 — Data Visualization</div>
+      <div class="ey" style="color:var(--accent3)">✦ 04 — Data Visualization</div>
       <h2 style="background:linear-gradient(130deg,var(--white),var(--accent3));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">DATA<br>CANVAS</h2>
       <p>엑셀·CSV·PDF·Word 파일을 올리면 AI가 데이터를 분석해 최적의 차트로 즉시 시각화합니다. PPT·PDF·이미지로 바로 내보내기까지.</p>
     </div>
@@ -1080,7 +1023,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 <div class="page" id="page-comments">
   <div class="ph">
     <div class="ph-t">
-      <div class="ey">✦ 06 — Comment Collector</div>
+      <div class="ey">✦ 05 — Comment Collector</div>
       <h2>COMMENT<br>RADAR</h2>
       <p>유튜브 댓글은 공식 API로 자동 수집하고, 공식 댓글 API가 없는 플랫폼(네이버·인스타그램·틱톡 등)은 댓글을 붙여넣으면 AI가 정리·감성분석해 드립니다.</p>
     </div>
@@ -1216,17 +1159,21 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 <div class="page" id="page-news">
   <div class="ph">
     <div class="ph-t">
-      <div class="ey">✦ 07 — News Crawler</div>
+      <div class="ey">✦ 06 — News &amp; Trend Monitoring</div>
       <h2>NEWS<br>SCANNER</h2>
-      <p>키워드로 최신 뉴스를 RSS 기반으로 수집하고, AI가 보도 흐름과 마케팅 시사점을 요약해 드립니다.</p>
+      <p>브랜드·경쟁사 뉴스를 실시간으로 수집해 AI가 보도 흐름과 마케팅 시사점을 브리핑하고, 트렌드·SNS 플랫폼은 바로가기로 이어서 확인할 수 있습니다.</p>
     </div>
     <div class="sbdg"><div class="sdot"></div>SCANNER READY</div>
   </div>
 
   <div class="card a1">
-    <div class="ct">01 &nbsp; 검색 키워드</div>
+    <div class="ct">01 &nbsp; 키워드</div>
     <div class="r2">
-      <div class="fg"><label class="fl">검색 키워드</label><input class="fi" id="nwKw" placeholder="예: 라네즈, 뷰티 트렌드"></div>
+      <div class="fg"><label class="fl">담당 브랜드</label><input class="fi" id="nwBrand" placeholder="예: 라네즈"></div>
+      <div class="fg"><label class="fl">경쟁사 (쉼표 구분, 선택)</label><input class="fi" id="nwComp" placeholder="예: 이니스프리, 마몽드"></div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">추가 분석 요청 (선택)</label><input class="fi" id="nwExtra" placeholder="예: 신제품 반응 위주로"></div>
       <div class="fg"><label class="fl">최대 수집 개수</label>
         <select class="fs" id="nwMax">
           <option value="10">10개</option>
@@ -1241,17 +1188,27 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="card a2">
     <div class="ct">02 &nbsp; 뉴스 소스</div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:12px;line-height:1.7">
-      서버가 Google 뉴스 RSS와 네이버 뉴스 검색 API를 함께 조회해 자동 수집합니다 (네이버는 서버에 API 키가 등록되어 있을 때만 포함됩니다). 다음 뉴스는 공식 검색 API가 없어 바로가기만 제공해요.
+      서버가 Google 뉴스 RSS와 네이버 뉴스 검색 API를 함께 조회해 담당 브랜드 뉴스를 자동 수집합니다 (네이버는 서버에 API 키가 등록되어 있을 때만 포함됩니다).
     </p>
-    <div class="tlinks">
-      <a class="tlbtn" onclick="openNewsSearch('naver')" href="#"><span class="tlic">🟢</span>네이버 뉴스 검색</a>
-      <a class="tlbtn" onclick="openNewsSearch('google')" href="#"><span class="tlic">📰</span>Google 뉴스 검색</a>
-      <a class="tlbtn" onclick="openNewsSearch('daum')" href="#"><span class="tlic">🔍</span>다음 뉴스 검색</a>
-    </div>
   </div>
 
   <div class="card a3">
-    <div class="ct">03 &nbsp; AI 분석 엔진</div>
+    <div class="ct">03 &nbsp; 트렌드 · SNS 바로가기</div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:4px">담당 브랜드 키워드로 각 플랫폼에서 바로 확인할 수 있어요.</p>
+    <div class="tlinks">
+      <a class="tlbtn" onclick="openLink('naverNews')" href="#"><span class="tlic">🟢</span>네이버 뉴스 검색</a>
+      <a class="tlbtn" onclick="openLink('google')" href="#"><span class="tlic">📰</span>Google 뉴스 검색</a>
+      <a class="tlbtn" onclick="openLink('daum')" href="#"><span class="tlic">🔍</span>다음 뉴스 검색</a>
+      <a class="tlbtn" onclick="openLink('googleTrends')" href="#"><span class="tlic">📈</span>Google Trends</a>
+      <a class="tlbtn" onclick="openLink('naverDatalab')" href="#"><span class="tlic">🟢</span>네이버 DataLab</a>
+      <a class="tlbtn" onclick="openLink('youtube')" href="#"><span class="tlic">▶️</span>YouTube 트렌드</a>
+      <a class="tlbtn" onclick="openLink('instagram')" href="#"><span class="tlic">📸</span>인스타그램 해시태그</a>
+      <a class="tlbtn" onclick="openLink('twitter')" href="#"><span class="tlic">𝕏</span>X(트위터) 검색</a>
+    </div>
+  </div>
+
+  <div class="card a4">
+    <div class="ct">04 &nbsp; AI 분석 엔진</div>
     <div class="ai-g" id="nwaiSel">
       <div class="aio sel" onclick="selAI('claude','nwaiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
       <div class="aio" onclick="selAI('openai','nwaiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
@@ -1262,17 +1219,17 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     </div>
   </div>
 
-  <div class="card a4">
-    <div class="ct">04 &nbsp; 뉴스 수집 & 분석 실행</div>
-    <button class="btn bp bfl" onclick="runNews()" id="nwBtn"><span>📰</span> 뉴스 수집 & AI 요약 시작</button>
+  <div class="card a5">
+    <div class="ct">05 &nbsp; 뉴스 수집 & 브리핑 실행</div>
+    <button class="btn bp bfl" onclick="runNews()" id="nwBtn"><span>📰</span> 뉴스 수집 & AI 브리핑 시작</button>
     <div class="pg" id="nwp"><div class="pgf" id="nwpf"></div></div>
   </div>
 
   <div id="nwStatsArea" style="display:none">
     <div class="card a2">
-      <div class="ct">🤖 AI 트렌드 요약</div>
+      <div class="ct">🤖 AI 브리핑</div>
       <div class="aib on">
-        <div class="aib-h"><span>🤖</span> AI SUMMARY <span id="nwModelLbl" style="margin-left:auto;color:var(--muted)"></span></div>
+        <div class="aib-h"><span>🤖</span> AI BRIEFING <span id="nwModelLbl" style="margin-left:auto;color:var(--muted)"></span></div>
         <div class="aib-c" id="nwAnalysisContent"></div>
       </div>
     </div>
@@ -1286,7 +1243,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     </div>
   </div>
 
-  <div class="card a5">
+  <div class="card a6">
     <div class="ct" style="justify-content:space-between">
       <span>📁 뉴스 수집 히스토리</span>
       <div style="display:flex;gap:8px">
@@ -1295,77 +1252,6 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       </div>
     </div>
     <div id="newsHist"></div>
-  </div>
-</div>
-
-<!-- ▓▓▓▓▓ PAGE 8 : CUSTOM REPORT AI ▓▓▓▓▓ -->
-<div class="page" id="page-custom">
-  <div class="ph">
-    <div class="ph-t">
-      <div class="ey" style="color:var(--purple)">✦ 08 — Custom Report AI</div>
-      <h2 style="background:linear-gradient(130deg,var(--white),var(--purple));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">TEMPLATE<br>MIMIC</h2>
-      <p>기존에 쓰던 보고서를 예시로 주면 AI가 그 구조·형식을 파악하고, 새 정보와 산출물을 그 틀에 맞춰 채워 넣습니다.</p>
-    </div>
-    <div class="sbdg" style="background:rgba(167,139,250,.07);border-color:rgba(167,139,250,.2);color:var(--purple)"><div class="sdot" style="background:var(--purple)"></div>TEMPLATE READY</div>
-  </div>
-
-  <div class="card a1">
-    <div class="ct" style="color:var(--purple)">01 &nbsp; 템플릿으로 쓸 예시 보고서</div>
-    <div class="uz" id="crDZ" ondragover="crDov(event)" ondragleave="crDlv()" ondrop="crDdr(event)">
-      <input type="file" id="crFI" multiple accept=".txt,.docx,.pdf" onchange="crHandleFiles(this.files)">
-      <div class="uic">📂</div>
-      <h3>예시 보고서 파일을 드래그하거나 클릭해서 선택</h3>
-      <p>.txt · .docx · .pdf — 다중 선택 가능</p>
-    </div>
-    <div class="chips" id="crChips"></div>
-    <div class="fg" style="margin-top:14px"><label class="fl">또는 템플릿 텍스트 직접 붙여넣기</label><textarea class="fta" id="crTemplateText" style="min-height:140px" placeholder="기존에 쓰던 보고서 본문을 그대로 붙여넣어도 됩니다"></textarea></div>
-  </div>
-
-  <div class="card a2">
-    <div class="ct" style="color:var(--purple)">02 &nbsp; 새 보고서에 채울 정보 · 산출물</div>
-    <textarea class="fta" id="crInputData" style="min-height:160px" placeholder="예: 5월 캠페인 결과 - 노출 120만, 클릭 3.2만, 전환 850건, 주요 채널은 인스타그램·유튜브..."></textarea>
-  </div>
-
-  <div class="card a3">
-    <div class="ct" style="color:var(--purple)">03 &nbsp; AI 엔진</div>
-    <div class="ai-g" id="craiSel">
-      <div class="aio sel" onclick="selAI('claude','craiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
-      <div class="aio" onclick="selAI('openai','craiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
-      <div class="aio" onclick="selAI('gemini','craiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
-    </div>
-    <div id="crApiSec" style="display:none;margin-top:13px">
-      <div class="fg"><label class="fl" id="crApiLbl">API Key</label><input class="fi" type="password" id="crApiKey" placeholder="sk-..."></div>
-    </div>
-  </div>
-
-  <div class="card a4">
-    <div class="ct" style="color:var(--purple)">04 &nbsp; 맞춤 보고서 생성</div>
-    <button class="btn bpur bfl" onclick="runCustomReport()" id="crBtn"><span>🪄</span> 맞춤 보고서 생성</button>
-    <div class="pg" id="crp"><div class="pgf" id="crpf" style="background:linear-gradient(90deg,var(--purple),#7C3AED)"></div></div>
-
-    <div class="rpt-out" id="crOut">
-      <div class="rpt-out-h">
-        <div class="rpt-out-title" style="color:var(--purple)"><span>📄</span> 생성된 보고서 <span id="crModelLbl" style="color:var(--muted)"></span></div>
-        <div class="rpt-actions">
-          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="crCopy()">📋 복사</button>
-          <button class="btn bsm bg" onclick="crDlExcel()">⬇️ 엑셀 저장</button>
-          <button class="btn bsm bpur" onclick="crDlTxt()">⬇️ TXT 저장</button>
-        </div>
-      </div>
-      <div class="rpt-content" id="crContent"></div>
-      <div class="copied" id="crCopiedMsg">복사됨 ✓</div>
-    </div>
-  </div>
-
-  <div class="card a5">
-    <div class="ct" style="color:var(--purple);justify-content:space-between">
-      <span>📁 맞춤 보고서 히스토리</span>
-      <div style="display:flex;gap:8px">
-        <button class="btn bsm bg" onclick="dlAllHist('customreport')">📦 전체 다운로드</button>
-        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('customreport')">삭제</button>
-      </div>
-    </div>
-    <div id="customreportHist"></div>
   </div>
 </div>
 
@@ -1381,9 +1267,8 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 const S = {
   files: [],
   merged: null,
-  ai: { maiSel:'claude', waiSel:'claude' },
+  ai: { waiSel:'claude' },
   selectedAnl: new Set(),
-  lastMonitorText: '',
   lastWriteText: ''
 };
 
@@ -1405,6 +1290,15 @@ function toast(msg, type='i', dur=4000) {
   setTimeout(()=>{d.style.opacity='0';d.style.transform='translateX(120%)';d.style.transition='.3s';setTimeout(()=>d.remove(),300);},dur);
 }
 
+// XLSX loads from a CDN; on a slow connection or blocked network it may not be ready yet
+function xlsxReady(){
+  if(typeof XLSX==='undefined'){
+    toast('엑셀 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해주세요','e');
+    return false;
+  }
+  return true;
+}
+
 // ─── MEMO ───
 document.addEventListener('DOMContentLoaded',()=>{
   const saved=sessionStorage.getItem('gg_memo');
@@ -1412,7 +1306,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('memo').addEventListener('input',function(){sessionStorage.setItem('gg_memo',this.value)});
   const today=new Date().toISOString().slice(0,10).replace(/-/g,'');
   document.getElementById('ofn').value='통합리포트_'+today;
-  renderHist('report'); renderHist('monitor'); renderHist('write');
+  renderHist('report'); renderHist('write');
 });
 
 // ─── FILE UPLOAD ───
@@ -1430,6 +1324,7 @@ function ddr(e){e.preventDefault();document.getElementById('dz').classList.remov
 // ─── REPORT GENERATE ───
 async function genReport(){
   if(!S.files.length){toast('파일을 먼저 업로드해주세요!','e');return}
+  if(!xlsxReady())return;
   const btn=document.getElementById('genBtn');
   btn.disabled=true;btn.innerHTML='<span class="spin"></span>&nbsp;처리 중...';
   const pg=document.getElementById('rp');const pf=document.getElementById('rpf');
@@ -1492,6 +1387,7 @@ function showStats(data){
 
 function dlReport(){
   if(!S.merged){toast('먼저 생성해주세요','e');return}
+  if(!xlsxReady())return;
   const ws=XLSX.utils.json_to_sheet(S.merged);
   const wb=XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb,ws,document.getElementById('shn').value||'통합데이터');
@@ -1515,85 +1411,6 @@ function selAI(model, gridId, el){
   }
 }
 
-// ─── TREND LINKS ───
-function openTrend(platform){
-  const kw=encodeURIComponent((document.getElementById('bkw').value||'마케팅').trim());
-  const urls={
-    google:`https://trends.google.com/trends/explore?q=${kw}&geo=KR`,
-    naver:`https://datalab.naver.com/keyword/trendSearch.naver`,
-    naverNews:`https://search.naver.com/search.naver?where=news&query=${kw}`,
-    youtube:`https://www.youtube.com/results?search_query=${kw}`,
-    instagram:`https://www.instagram.com/explore/tags/${kw}/`,
-    twitter:`https://twitter.com/search?q=${kw}&src=trend_click`
-  };
-  window.open(urls[platform],'_blank');
-}
-
-// ─── MONITOR RUN ───
-async function runMonitor(){
-  const brand=document.getElementById('bkw').value.trim();
-  if(!brand){toast('브랜드 키워드를 입력해주세요','e');return}
-  const btn=document.getElementById('monBtn');
-  btn.disabled=true;btn.innerHTML='<span class="spin"></span>&nbsp;AI 분석 중...';
-  const pg=document.getElementById('mp');const pf=document.getElementById('mpf');
-  pg.classList.add('on');pf.style.width='20%';
-  const comp=document.getElementById('ckw').value.trim();
-  const extra=document.getElementById('xprompt').value.trim();
-  const model=S.ai['maiSel'];
-  const apiKey=document.getElementById('mApiKey').value.trim();
-  const prompt=buildMonitorPrompt(brand,comp,extra);
-  const box=document.getElementById('monResult');const cont=document.getElementById('monContent');
-  box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
-  document.getElementById('monModelLbl').textContent=model.toUpperCase();
-  pf.style.width='60%';
-  try{
-    const text=await callAI(model,apiKey,prompt);
-    await typewrite(cont,text);
-    S.lastMonitorText=text;
-    document.getElementById('monSaveArea').style.display='block';
-    pf.style.width='100%';
-    toast('AI 분석 완료! 저장 버튼을 눌러 기록하세요.','s');
-  }catch(e){toast('오류: '+e.message,'e');cont.textContent='분석 오류: '+e.message}
-  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
-  btn.disabled=false;btn.innerHTML='<span>🔔</span> AI 즉시 분석 시작';
-}
-
-function buildMonitorPrompt(brand,comp,extra){
-  const today=new Date().toLocaleDateString('ko-KR');
-  return `당신은 최고의 마케팅 전략가입니다. ${today} 기준으로 아래 브랜드에 대한 마케팅 인텔리전스 브리핑을 작성해주세요.
-
-📌 담당 브랜드: ${brand}
-⚡ 경쟁사: ${comp||'없음'}
-${extra?'📝 추가 요청: '+extra:''}
-
-아래 형식으로 한국어 브리핑을 작성해주세요:
-
-📢 마케팅 인텔리전스 브리핑 — ${today}
-
-🔥 [${brand}] 브랜드 동향
-• SNS·검색 트렌드 분석
-• 소비자 반응 및 키워드
-
-⚡ [경쟁사 동향${comp?': '+comp:''}]
-• 주요 마케팅 활동 및 변화
-
-💡 인사이트 & 오늘의 액션 아이템
-• 즉시 실행 가능한 제안 3가지
-
-이모지를 활용해 읽기 쉽고 활기차게 작성해주세요.`;
-}
-
-function saveMonitorHist(){
-  if(!S.lastMonitorText){toast('분석 결과가 없습니다','e');return}
-  addHist('monitor',{
-    date:nowStr(),
-    brand:document.getElementById('bkw').value,
-    competitor:document.getElementById('ckw').value,
-    model:S.ai['maiSel'],
-    content:S.lastMonitorText
-  });
-  toast('히스토리에 저장되었습니다! 💾','s');
-}
 
 // ─── ANALYSIS TOGGLE ───
 function togAnl(el){
@@ -1616,9 +1433,53 @@ function renderSelTags(){
   c.innerHTML=[...S.selectedAnl].map(k=>`<div class="stag">${ANL_LABELS[k]}</div>`).join('');
 }
 
+// ─── OPTIONAL FORMAT TEMPLATE (mimic an example report instead of the section picklist) ───
+const RTPL = { files:[] };
+function rTplHandleFiles(fl){
+  Array.from(fl).forEach(f=>{ if(!RTPL.files.find(x=>x.name===f.name)) RTPL.files.push(f); });
+  renderRTplChips();
+}
+function renderRTplChips(){
+  document.getElementById('rTplChips').innerHTML = RTPL.files.map((f,i)=>
+    `<div class="chip">📄 ${f.name} <button onclick="rTplRemoveFile(${i})">✕</button></div>`
+  ).join('');
+}
+function rTplRemoveFile(i){ RTPL.files.splice(i,1); renderRTplChips(); }
+function rTplDov(e){ e.preventDefault(); document.getElementById('rTplDZ').classList.add('dov'); }
+function rTplDlv(){ document.getElementById('rTplDZ').classList.remove('dov'); }
+function rTplDdr(e){ e.preventDefault(); document.getElementById('rTplDZ').classList.remove('dov'); rTplHandleFiles(e.dataTransfer.files); }
+
+// reuses extractPDFText/extractDocxText already defined for the Viz page
+async function extractReportTemplateText(){
+  const parts = [];
+  const pasted = document.getElementById('rTplText').value.trim();
+  if(pasted) parts.push(pasted);
+  for(const f of RTPL.files){
+    const ext = f.name.split('.').pop().toLowerCase();
+    if(ext==='pdf') parts.push(await extractPDFText(f));
+    else if(ext==='docx') parts.push(await extractDocxText(f));
+    else parts.push(await f.text());
+  }
+  return parts.join('\n\n---\n\n');
+}
+
+function buildTemplateWritePrompt(templateText,{title,brand,period,author,bg,comp,data,sections}){
+  const sectionHint = sections.length ? sections.map(k=>ANL_LABELS[k]).join(', ') : '';
+  return `당신은 보고서 포맷을 정확히 재현하는 전문 마케팅 컨설턴트입니다. 아래는 참고할 기존 보고서 예시입니다. 이 예시의 구조·섹션 구성·어조·서식을 정확히 파악하세요.
+
+[예시 보고서]
+${templateText.slice(0,6000)}
+
+이제 아래 새로운 정보를 바탕으로, 위 예시와 동일한 구조·형식의 새로운 보고서를 작성해주세요. 예시의 실제 데이터가 아니라 형식만 참고하세요.
+
+보고서 제목: ${title}
+${brand?'브랜드/제품: '+brand+'\n':''}${period?'분석 기간: '+period+'\n':''}${author?'작성자: '+author+'\n':''}${bg?'배경/목적: '+bg+'\n':''}${comp?'경쟁사: '+comp+'\n':''}${data?'보유 데이터:\n'+data+'\n':''}${sectionHint?'중점적으로 다룰 내용: '+sectionHint+'\n':''}
+
+보고서 본문만 작성하고 다른 설명은 붙이지 마세요.`;
+}
+
 // ─── WRITE REPORT ───
 async function genReport_write(){
-  if(S.selectedAnl.size===0){toast('분석 항목을 최소 1개 이상 선택해주세요!','e');return}
   const title=document.getElementById('rTitle').value.trim()||'마케팅 분석 보고서';
   const brand=document.getElementById('rBrand').value.trim();
   const period=document.getElementById('rPeriod').value.trim();
@@ -1636,21 +1497,29 @@ async function genReport_write(){
   const pg=document.getElementById('wp');const pf=document.getElementById('wpf');
   pg.classList.add('on');pf.style.width='15%';
 
-  const prompt=buildWritePrompt({title,brand,period,author,bg,comp,data,tone,len,sections:[...S.selectedAnl]});
-  pf.style.width='50%';
-
   const box=document.getElementById('rptOut');const cont=document.getElementById('rptContent');
-  box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
-  document.getElementById('rptModelLbl').textContent='via '+model.toUpperCase();
 
   try{
+    const templateText = await extractReportTemplateText();
+    let prompt, usedTemplate = !!templateText.trim();
+    if(usedTemplate){
+      prompt = buildTemplateWritePrompt(templateText,{title,brand,period,author,bg,comp,data,sections:[...S.selectedAnl]});
+    } else {
+      if(S.selectedAnl.size===0) throw new Error('분석 항목을 최소 1개 이상 선택하거나, 예시 보고서를 올려주세요');
+      prompt = buildWritePrompt({title,brand,period,author,bg,comp,data,tone,len,sections:[...S.selectedAnl]});
+    }
+    pf.style.width='50%';
+
+    box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
+    document.getElementById('rptModelLbl').textContent='via '+model.toUpperCase();
+
     const text=await callAI(model,apiKey,prompt);
     await typewrite(cont,text);
     S.lastWriteText=text;
     pf.style.width='100%';
     addHist('write',{
       date:nowStr(), title, brand, period,
-      sections:[...S.selectedAnl].map(k=>ANL_LABELS[k]).join(' · '),
+      sections: usedTemplate ? '예시 보고서 형식 기반' : [...S.selectedAnl].map(k=>ANL_LABELS[k]).join(' · '),
       model, content:text
     });
     toast('보고서 작성 완료! 🎉','s');
@@ -1774,6 +1643,7 @@ function dlReportTxt(){
 // ─── DOWNLOAD REPORT EXCEL ───
 function dlReportExcel(){
   if(!S.lastWriteText){toast('보고서를 먼저 생성해주세요','e');return}
+  if(!xlsxReady())return;
   const title=document.getElementById('rTitle').value||'보고서';
   const wb=XLSX.utils.book_new();
   const lines=S.lastWriteText.split('\n').map(l=>({내용:l}));
@@ -1826,20 +1696,16 @@ function renderHist(key){
 
 function getHistCols(key){
   if(key==='report')return['DATE','FILE','ROWS','SOURCES'];
-  if(key==='monitor')return['DATE','BRAND','COMPETITOR','MODEL'];
   if(key==='write')return['DATE','TITLE','BRAND','SECTIONS','MODEL'];
   if(key==='comments')return['DATE','PLATFORM','TOTAL','MODEL'];
   if(key==='news')return['DATE','KEYWORD','COUNT','MODEL'];
-  if(key==='customreport')return['DATE','PREVIEW','MODEL'];
 }
 function getHistVal(key,item,col){
   const map={
     report:{DATE:'date',FILE:'fileName',ROWS:'rows',SOURCES:'sources'},
-    monitor:{DATE:'date',BRAND:'brand',COMPETITOR:'competitor',MODEL:'model'},
     write:{DATE:'date',TITLE:'title',BRAND:'brand',SECTIONS:'sections',MODEL:'model'},
     comments:{DATE:'date',PLATFORM:'platform',TOTAL:'total',MODEL:'model'},
-    news:{DATE:'date',KEYWORD:'keyword',COUNT:'count',MODEL:'model'},
-    customreport:{DATE:'date',PREVIEW:'preview',MODEL:'model'}
+    news:{DATE:'date',KEYWORD:'keyword',COUNT:'count',MODEL:'model'}
   };
   return item[map[key][col]]||'—';
 }
@@ -1850,6 +1716,7 @@ function safeSheetName(name){
 function dlHistItem(key,idx){
   const item=getHist(key)[idx];
   if(!item)return;
+  if(!xlsxReady())return;
   const wb=XLSX.utils.book_new();
   if(key==='report'&&item.data){
     const ws=XLSX.utils.json_to_sheet(item.data);
@@ -1873,6 +1740,7 @@ function dlHistItem(key,idx){
 function dlAllHist(key){
   const arr=getHist(key);
   if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  if(!xlsxReady())return;
   const wb=XLSX.utils.book_new();
   if(key==='report'){
     arr.forEach((item,i)=>{
@@ -1891,9 +1759,7 @@ function dlAllHist(key){
   } else {
     const rows=arr.map(item=>({
       날짜:item.date,
-      ...(key==='monitor'?{브랜드:item.brand,경쟁사:item.competitor,모델:item.model,내용:(item.content||'').slice(0,500)}:{}),
-      ...(key==='write'?{제목:item.title,브랜드:item.brand,분석항목:item.sections,모델:item.model,내용:(item.content||'').slice(0,500)}:{}),
-      ...(key==='customreport'?{미리보기:item.preview,모델:item.model,내용:(item.content||'').slice(0,500)}:{})
+      ...(key==='write'?{제목:item.title,브랜드:item.brand,분석항목:item.sections,모델:item.model,내용:(item.content||'').slice(0,500)}:{})
     }));
     const ws=XLSX.utils.json_to_sheet(rows);ws['!cols']=[{wch:20},{wch:20},{wch:30},{wch:15},{wch:80}];
     XLSX.utils.book_append_sheet(wb,ws,'전체기록');
@@ -2161,6 +2027,7 @@ function copyBudget(){
 
 function dlBudgetExcel(){
   if(!lastBudgetResult){toast('먼저 분석을 실행해주세요','e');return}
+  if(!xlsxReady())return;
   const d = lastBudgetResult.data;
   const wb = XLSX.utils.book_new();
 
@@ -2230,6 +2097,7 @@ function dlAllHist(key){
   if(key!=='budget'){_origDlAllHist(key);return}
   const arr = getHist(key);
   if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  if(!xlsxReady())return;
   const wb = XLSX.utils.book_new();
   arr.forEach((item,i)=>{
     const alloc = (item.data?.allocation||[]).map(a=>({채널:a.icon+' '+a.channel,배분금액:a.amount,배분비율:a.pct+'%',배분근거:a.reason}));
@@ -2312,7 +2180,7 @@ function vzHandleFiles(fl){
   renderVzChips();
   // Auto-detect and parse Excel/CSV immediately
   const excelFiles = VZ.files.filter(f => /\.(xlsx|xls|csv)$/i.test(f.name));
-  if(excelFiles.length > 0) parseExcelFile(excelFiles[0]);
+  if(excelFiles.length > 0) parseExcelFile(excelFiles[0]).catch(e=>toast('오류: '+e.message,'e'));
 }
 
 function removeVzFile(i){ VZ.files.splice(i,1); renderVzChips(); }
@@ -2327,6 +2195,7 @@ function renderVzChips(){
 
 // ── PARSE EXCEL/CSV ──
 async function parseExcelFile(file){
+  if(!xlsxReady())return;
   const data = await readXLSX(file);
   if(!data || !data.length) return;
   VZ.rawHeaders = Object.keys(data[0]);
@@ -2604,6 +2473,7 @@ async function vzExport(fmt){
 
   if(fmt==='excel'){
     if(!VZ.rawRows.length){ toast('Excel 원본 데이터가 없습니다','e'); return; }
+    if(!xlsxReady())return;
     const wb = XLSX.utils.book_new();
     const ws = XLSX.utils.json_to_sheet(VZ.rawRows);
     XLSX.utils.book_append_sheet(wb,ws,'원본 데이터');
@@ -2832,6 +2702,7 @@ function renderCommentResults(comments, result, model){
 
 function dlComments(){
   if(!CM.comments.length){toast('먼저 수집해주세요','e');return}
+  if(!xlsxReady())return;
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet(CM.comments.map(c=>({작성자:c.author,댓글:c.text,좋아요:c.likes,날짜:c.date})));
   XLSX.utils.book_append_sheet(wb,ws,'댓글');
@@ -2857,14 +2728,19 @@ document.addEventListener('DOMContentLoaded', ()=>{ renderHist('comments'); });
 // ═══════════════════════════════════════════════
 const NW = { articles:[], lastAnalysis:null };
 
-function openNewsSearch(source){
-  const kw = encodeURIComponent((document.getElementById('nwKw').value||'마케팅').trim());
+function openLink(platform){
+  const kw = encodeURIComponent((document.getElementById('nwBrand').value||'마케팅').trim());
   const urls = {
-    naver:  `https://search.naver.com/search.naver?where=news&query=${kw}`,
-    google: `https://news.google.com/search?q=${kw}&hl=ko&gl=KR&ceid=KR:ko`,
-    daum:   `https://search.daum.net/search?w=news&q=${kw}`
+    naverNews:    `https://search.naver.com/search.naver?where=news&query=${kw}`,
+    google:       `https://news.google.com/search?q=${kw}&hl=ko&gl=KR&ceid=KR:ko`,
+    daum:         `https://search.daum.net/search?w=news&q=${kw}`,
+    googleTrends: `https://trends.google.com/trends/explore?q=${kw}&geo=KR`,
+    naverDatalab: `https://datalab.naver.com/keyword/trendSearch.naver`,
+    youtube:      `https://www.youtube.com/results?search_query=${kw}`,
+    instagram:    `https://www.instagram.com/explore/tags/${kw}/`,
+    twitter:      `https://twitter.com/search?q=${kw}&src=trend_click`
   };
-  window.open(urls[source], '_blank');
+  window.open(urls[platform], '_blank');
 }
 
 // server-side fetch (backend/news.py) avoids the RSS/CORS problem entirely and merges in Naver News
@@ -2875,23 +2751,31 @@ async function fetchNewsRSS(keyword, max){
   return data.items || [];
 }
 
-function buildNewsPrompt(articles, keyword){
+function buildNewsPrompt(articles, brand, comp, extra){
   const sample = articles.slice(0,30).map((a,i)=>`${i+1}. [${a.date}] ${a.title} — ${a.desc}`).join('\n');
-  return `당신은 마케팅 트렌드 분석가입니다. "${keyword}" 키워드로 수집한 뉴스 ${articles.length}건입니다.
+  return `당신은 최고의 마케팅 전략가입니다. "${brand}" 브랜드에 대해 실제로 수집한 뉴스 ${articles.length}건을 바탕으로 마케팅 인텔리전스 브리핑을 작성해주세요.
 
+[수집된 뉴스]
 ${sample}
+
+담당 브랜드: ${brand}
+경쟁사: ${comp||'없음'}
+${extra?'추가 분석 요청: '+extra:''}
 
 아래 JSON 형식으로만 응답해주세요. 다른 텍스트 없이 JSON만:
 {
-  "trend": "전반적 보도 흐름 요약 (200자 이상)",
+  "trend": "수집된 뉴스에 기반한 보도 흐름 요약 (200자 이상)",
+  "competitor": "경쟁사 관련 시사점 (경쟁사가 없으면 빈 문자열)",
   "keywords": ["연관키워드1","연관키워드2","연관키워드3","연관키워드4"],
-  "insight": "마케팅 관점에서의 시사점 및 액션 제안 (200자 이상, 이모지 포함)"
+  "insight": "마케팅 관점에서의 시사점 및 즉시 실행 가능한 액션 제안 (200자 이상, 이모지 포함)"
 }`;
 }
 
 async function runNews(){
-  const kw = document.getElementById('nwKw').value.trim();
-  if(!kw){toast('키워드를 입력해주세요','e');return}
+  const brand = document.getElementById('nwBrand').value.trim();
+  if(!brand){toast('담당 브랜드를 입력해주세요','e');return}
+  const comp  = document.getElementById('nwComp').value.trim();
+  const extra = document.getElementById('nwExtra').value.trim();
 
   const btn = document.getElementById('nwBtn');
   btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;뉴스 수집 중...';
@@ -2900,27 +2784,27 @@ async function runNews(){
 
   try{
     const max = parseInt(document.getElementById('nwMax').value);
-    const articles = await fetchNewsRSS(kw, max);
+    const articles = await fetchNewsRSS(brand, max);
     if(!articles.length) throw new Error('수집된 뉴스가 없습니다');
     NW.articles = articles;
     pf.style.width='55%';
 
     const model  = S.ai['nwaiSel']||'claude';
     const apiKey = document.getElementById('nwApiKey').value.trim();
-    const raw = await callAI(model, apiKey, buildNewsPrompt(articles, kw));
+    const raw = await callAI(model, apiKey, buildNewsPrompt(articles, brand, comp, extra));
     pf.style.width='85%';
     const result = JSON.parse(raw.replace(/```json|```/g,'').trim());
     NW.lastAnalysis = result;
 
     renderNewsResults(articles, result, model);
-    addHist('news', { date: nowStr(), keyword: kw, count: articles.length, model, articles, analysis: result });
+    addHist('news', { date: nowStr(), keyword: brand, competitor: comp, count: articles.length, model, articles, analysis: result });
     pf.style.width='100%';
-    toast('뉴스 수집 & 분석 완료! 📰','s');
+    toast('뉴스 수집 & 브리핑 완료! 📰','s');
   }catch(e){
     toast('오류: '+e.message,'e'); console.error(e);
   }finally{
     setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
-    btn.disabled=false; btn.innerHTML='<span>📰</span> 뉴스 수집 & AI 요약 시작';
+    btn.disabled=false; btn.innerHTML='<span>📰</span> 뉴스 수집 & AI 브리핑 시작';
   }
 }
 
@@ -2930,18 +2814,20 @@ function renderNewsResults(articles, result, model){
   const kw = (result.keywords||[]).map(k=>`#${k}`).join('  ');
   const body = document.getElementById('nwAnalysisContent');
   body.innerHTML = '<span class="cur"></span>';
-  typewrite(body, (result.trend?'📊 '+result.trend+'\n\n':'')+(result.insight?'💡 '+result.insight:'')+(kw?'\n\n🔑 '+kw:''));
+  typewrite(body, (result.trend?'📊 '+result.trend+'\n\n':'')+(result.competitor?'⚡ '+result.competitor+'\n\n':'')+(result.insight?'💡 '+result.insight:'')+(kw?'\n\n🔑 '+kw:''));
   document.getElementById('nwTable').innerHTML = `<table><thead><tr><th>제목</th><th>날짜</th><th>언론사</th><th>링크</th></tr></thead><tbody>${articles.map(a=>`<tr><td style="white-space:normal;max-width:420px">${a.title}</td><td>${a.date||'—'}</td><td>${a.source||'—'}</td><td><a href="${a.link}" target="_blank" rel="noopener" style="color:var(--accent2)">열기 ↗</a></td></tr>`).join('')}</tbody></table>`;
 }
 
 function dlNews(){
   if(!NW.articles.length){toast('먼저 수집해주세요','e');return}
+  if(!xlsxReady())return;
   const wb = XLSX.utils.book_new();
   const ws = XLSX.utils.json_to_sheet(NW.articles.map(a=>({제목:a.title,날짜:a.date,언론사:a.source,링크:a.link,요약:a.desc})));
   XLSX.utils.book_append_sheet(wb,ws,'뉴스');
   if(NW.lastAnalysis){
     const ws2 = XLSX.utils.json_to_sheet([
       {항목:'트렌드',값:NW.lastAnalysis.trend},
+      {항목:'경쟁사',값:NW.lastAnalysis.competitor},
       {항목:'인사이트',값:NW.lastAnalysis.insight},
       {항목:'키워드',값:(NW.lastAnalysis.keywords||[]).join(', ')}
     ]);
@@ -2953,118 +2839,6 @@ function dlNews(){
 
 S.ai['nwaiSel'] = 'claude';
 document.addEventListener('DOMContentLoaded', ()=>{ renderHist('news'); });
-
-// ═══════════════════════════════════════════════
-//  CUSTOM REPORT AI (learns a template, fills it with new data)
-// ═══════════════════════════════════════════════
-const CR = { files:[], lastOutput:'' };
-
-function crHandleFiles(fl){
-  Array.from(fl).forEach(f=>{ if(!CR.files.find(x=>x.name===f.name)) CR.files.push(f); });
-  renderCrChips();
-}
-function renderCrChips(){
-  document.getElementById('crChips').innerHTML = CR.files.map((f,i)=>
-    `<div class="chip">📄 ${f.name} <button onclick="crRemoveFile(${i})">✕</button></div>`
-  ).join('');
-}
-function crRemoveFile(i){ CR.files.splice(i,1); renderCrChips(); }
-function crDov(e){ e.preventDefault(); document.getElementById('crDZ').classList.add('dov'); }
-function crDlv(){ document.getElementById('crDZ').classList.remove('dov'); }
-function crDdr(e){ e.preventDefault(); document.getElementById('crDZ').classList.remove('dov'); crHandleFiles(e.dataTransfer.files); }
-
-// reuses extractPDFText/extractDocxText already defined for the Viz page
-async function extractTemplateText(){
-  const parts = [];
-  const pasted = document.getElementById('crTemplateText').value.trim();
-  if(pasted) parts.push(pasted);
-  for(const f of CR.files){
-    const ext = f.name.split('.').pop().toLowerCase();
-    if(ext==='pdf') parts.push(await extractPDFText(f));
-    else if(ext==='docx') parts.push(await extractDocxText(f));
-    else parts.push(await f.text());
-  }
-  return parts.join('\n\n---\n\n');
-}
-
-function buildCustomReportPrompt(templateText, inputData){
-  return `당신은 보고서 포맷을 정확히 재현하는 전문 어시스턴트입니다. 아래는 참고할 기존 보고서 예시입니다. 이 예시의 구조·섹션 구성·어조·서식을 정확히 파악하세요.
-
-[예시 보고서]
-${templateText.slice(0,6000)}
-
-이제 아래 새로운 정보와 산출물을 바탕으로, 위 예시와 동일한 구조·형식의 새로운 보고서를 작성해주세요. 예시의 실제 데이터가 아니라 형식만 참고하고, 실제 내용은 아래 새 정보를 사용하세요.
-
-[새 정보 및 산출물]
-${inputData}
-
-보고서 본문만 작성하고 다른 설명은 붙이지 마세요.`;
-}
-
-async function runCustomReport(){
-  const inputData = document.getElementById('crInputData').value.trim();
-  if(!inputData){toast('새 보고서에 채울 정보를 입력해주세요','e');return}
-
-  const btn = document.getElementById('crBtn');
-  btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;생성 중...';
-  const pg = document.getElementById('crp'); const pf = document.getElementById('crpf');
-  pg.classList.add('on'); pf.style.width='20%';
-
-  try{
-    const templateText = await extractTemplateText();
-    if(!templateText.trim()) throw new Error('템플릿(예시 보고서)을 업로드하거나 붙여넣어주세요');
-    pf.style.width='45%';
-
-    const model  = S.ai['craiSel']||'claude';
-    const apiKey = document.getElementById('crApiKey').value.trim();
-    const raw = await callAI(model, apiKey, buildCustomReportPrompt(templateText, inputData));
-    pf.style.width='85%';
-    CR.lastOutput = raw;
-
-    const out = document.getElementById('crOut');
-    out.classList.add('on');
-    const content = document.getElementById('crContent');
-    content.innerHTML = '<span class="cur"></span>';
-    await typewrite(content, raw);
-    document.getElementById('crModelLbl').textContent = model.toUpperCase();
-
-    addHist('customreport', { date: nowStr(), model, preview: inputData.slice(0,60), content: raw });
-    pf.style.width='100%';
-    toast('맞춤 보고서 생성 완료! 🪄','s');
-  }catch(e){
-    toast('오류: '+e.message,'e'); console.error(e);
-  }finally{
-    setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
-    btn.disabled=false; btn.innerHTML='<span>🪄</span> 맞춤 보고서 생성';
-  }
-}
-
-function crCopy(){
-  navigator.clipboard.writeText(document.getElementById('crContent').textContent).then(()=>{
-    const m = document.getElementById('crCopiedMsg');
-    m.classList.add('show'); setTimeout(()=>m.classList.remove('show'),2000);
-  });
-}
-function crDlTxt(){
-  if(!CR.lastOutput){toast('먼저 생성해주세요','e');return}
-  const a=document.createElement('a');
-  a.href='data:text/plain;charset=utf-8,'+encodeURIComponent(CR.lastOutput);
-  a.download='맞춤보고서_'+nowStr(true)+'.txt'; a.click();
-  toast('TXT 다운로드!','s');
-}
-function crDlExcel(){
-  if(!CR.lastOutput){toast('먼저 생성해주세요','e');return}
-  const wb=XLSX.utils.book_new();
-  const lines=CR.lastOutput.split('\n').map(l=>({내용:l}));
-  const ws=XLSX.utils.json_to_sheet([{내용:'작성일시: '+nowStr()},{내용:''},...lines]);
-  ws['!cols']=[{wch:120}];
-  XLSX.utils.book_append_sheet(wb,ws,'보고서');
-  XLSX.writeFile(wb,'맞춤보고서_'+nowStr(true)+'.xlsx');
-  toast('엑셀 저장 완료!','s');
-}
-
-S.ai['craiSel'] = 'claude';
-document.addEventListener('DOMContentLoaded', ()=>{ renderHist('customreport'); });
 </script>
 </body>
 </html>
