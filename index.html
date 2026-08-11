@@ -14,6 +14,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   --bg:#07090F;--surface:#0C1020;--card:#101525;--border:#1A2540;
@@ -732,6 +735,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
         <div class="rpt-out-title"><span>📄</span> 완성된 보고서 <span id="rptModelLbl" style="color:var(--muted)"></span></div>
         <div class="rpt-actions">
           <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="copyReport()">📋 복사</button>
+          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="saveElementAsImage('rptOut','보고서')">🖼️ 이미지로 저장</button>
           <button class="btn bsm bg" onclick="dlReportExcel()">⬇️ 엑셀 저장</button>
           <button class="btn bsm bp" onclick="dlReportTxt()">⬇️ TXT 저장</button>
         </div>
@@ -900,6 +904,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
         <div class="br-title"><span>💰</span> 최적 예산 배분 결과 <span id="bModelLbl" style="color:var(--muted);margin-left:4px"></span></div>
         <div style="display:flex;gap:8px">
           <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="copyBudget()">📋 복사</button>
+          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="saveElementAsImage('budgetResult','예산최적화')">🖼️ 이미지로 저장</button>
           <button class="btn bsm bg" onclick="dlBudgetExcel()">⬇️ 엑셀 저장</button>
         </div>
       </div>
@@ -1243,8 +1248,11 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="stat"><div class="sl">중립</div><div class="sv cgo" id="cmNeu">—</div><div class="ss">neutral</div></div>
     </div>
 
-    <div class="card a2">
-      <div class="ct">🤖 AI 감성·키워드 분석</div>
+    <div class="card a2" id="cmInsightCard">
+      <div class="ct" style="justify-content:space-between">
+        <span>🤖 AI 감성·키워드 분석</span>
+        <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="saveElementAsImage('cmInsightCard','댓글분석')">🖼️ 이미지로 저장</button>
+      </div>
       <div class="aib on">
         <div class="aib-h"><span>🤖</span> AI INSIGHT <span id="cmModelLbl" style="margin-left:auto;color:var(--muted)"></span></div>
         <div class="aib-c" id="cmAnalysisContent"></div>
@@ -1356,8 +1364,11 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
 
   <div id="nwStatsArea" style="display:none">
-    <div class="card a2">
-      <div class="ct">🤖 AI 브리핑</div>
+    <div class="card a2" id="nwInsightCard">
+      <div class="ct" style="justify-content:space-between">
+        <span>🤖 AI 브리핑</span>
+        <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="saveElementAsImage('nwInsightCard','뉴스브리핑')">🖼️ 이미지로 저장</button>
+      </div>
       <div class="aib on">
         <div class="aib-h"><span>🤖</span> AI BRIEFING <span id="nwModelLbl" style="margin-left:auto;color:var(--muted)"></span></div>
         <div class="aib-c" id="nwAnalysisContent"></div>
@@ -1733,6 +1744,25 @@ function chartReady(){
   return true;
 }
 
+// html2canvas (github.com/niklasvh/html2canvas) rasterizes any DOM section into a PNG —
+// used to let marketers share an AI result panel (report, budget plan, insight box) as an
+// image without exporting a whole spreadsheet
+function saveElementAsImage(elId, filename){
+  if(typeof html2canvas === 'undefined'){
+    toast('이미지 저장 라이브러리를 불러오지 못했습니다. 인터넷 연결을 확인하고 새로고침해주세요','e');
+    return;
+  }
+  const el = document.getElementById(elId);
+  if(!el){ toast('저장할 내용이 없습니다','e'); return; }
+  html2canvas(el, { backgroundColor:'#0C1020', scale:2 }).then(canvas=>{
+    const link = document.createElement('a');
+    link.download = filename+'_'+nowStr(true)+'.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    toast('이미지 저장 완료! 🖼️','s');
+  }).catch(err=>{ toast('이미지 저장 실패: '+err.message,'e'); });
+}
+
 // ─── MEMO ───
 document.addEventListener('DOMContentLoaded',()=>{
   const saved=sessionStorage.getItem('gg_memo');
@@ -1846,8 +1876,38 @@ function selAI(model, gridId, el){
 }
 
 // ─── AI 미사용 폴백 공용: 텍스트에서 단순 키워드 빈도 추출 ───
+// Korean stopword list — expanded from the compact ad-hoc set to the kind of coverage
+// used in open Korean-NLP stopword datasets (e.g. stopwords-iso/stopwords-ko,
+// spikeekips/stopwords-ko): particles/josa, common verb & adjective endings, pronouns,
+// connectives and filler words that would otherwise dominate a naive frequency count.
+const KO_STOPWORDS = new Set([
+  // josa / particles
+  '이','가','은','는','을','를','의','에','에서','에게','에게서','한테','한테서','께','께서',
+  '로','으로','와','과','이랑','랑','도','만','조차','마저','까지','부터','보다','처럼','만큼',
+  '대로','같이','밖에','치고','치고는','치곤','마다','씩','서','께로',
+  // pronouns / demonstratives
+  '나','너','저','저희','우리','당신','그대','너희','자기','이거','저거','그거','이것','저것','그것',
+  '여기','저기','거기','이곳','저곳','그곳','이런','저런','그런','이렇게','저렇게','그렇게',
+  '무엇','무슨','어느','어떤','누구','언제','어디','왜','어떻게',
+  // connectives / adverbs
+  '그리고','그런데','그래서','하지만','그러나','또한','또','혹은','그러면','그러므로','따라서',
+  '즉','만약','만일','비록','아무리','아무튼','어쨌든','아무래도','일단','우선','결국','드디어',
+  '역시','과연','정말','진짜','너무','매우','아주','굉장히','엄청','거의','전혀','별로','약간',
+  '조금','좀','다시','또다시','벌써','이미','아직','지금','이제','방금','곧','바로','늘','항상',
+  '가끔','자주','때때로','종종',
+  // common noun-ish filler & formal report words
+  '경우','때문','정도','수있','부분','내용','문제','생각','사실','때문에','통해','대해','대한',
+  '위해','관련','이번','저번','다음','오늘','어제','내일','모두','전부','각각','서로','자체',
+  '자신','것','수','등','및','또는','즉시','한편',
+  // very common conjugation endings that survive the [가-힣]{2,} regex as noise
+  '합니다','했습니다','됩니다','됐습니다','습니다','입니다','였습니다','있습니다','없습니다',
+  '했어요','해요','했다','한다','했고','하고','하는','하지만','하니까','했는데','했더니',
+  '있어요','있는','있고','있으며','없어요','없는','같아요','같은','같습니다','되었','되어',
+  '이었','였다','이다','있다','없다','같다',
+]);
+
 function topKeywords(texts, topN=8){
-  const stop = new Set(['그리고','그런데','그래서','하지만','너무','정말','진짜','이거','저거','그거','에서','으로','에게','한테','까지','부터','만큼','처럼','거의','근데','이제','우리','제가','저는','있는','없는','같은','이번','그냥','이런','저런','합니다','했어요','있어요','없어요','같아요']);
+  const stop = KO_STOPWORDS;
   const freq = {};
   texts.forEach(t=>{
     (String(t||'').match(/[가-힣a-zA-Z0-9]{2,}/g)||[]).forEach(w=>{
@@ -1978,6 +2038,10 @@ async function genReport_write(){
   try{
     const templateText = await extractReportTemplateText();
     let text;
+    let usedTemplate = false; // hoisted out of the else-block below: it's read again after
+                               // the if/else when saving to history, so it must stay in scope
+                               // for the model==='none' branch too (that used to throw
+                               // "usedTemplate is not defined" and wipe out the report text)
     box.classList.add('on');cont.innerHTML='<span class="cur"></span>';
 
     if(model==='none'){
@@ -1986,7 +2050,8 @@ async function genReport_write(){
       document.getElementById('rptModelLbl').textContent='AI 미사용 · 템플릿';
       text = buildManualReportText({title,brand,period,author,bg,comp,data,sections:[...S.selectedAnl]});
     } else {
-      let prompt, usedTemplate = !!templateText.trim();
+      let prompt;
+      usedTemplate = !!templateText.trim();
       if(usedTemplate){
         prompt = buildTemplateWritePrompt(templateText,{title,brand,period,author,bg,comp,data,sections:[...S.selectedAnl]});
       } else {
@@ -2977,7 +3042,16 @@ async function runViz(){
 function regenViz(){ if(VZ.files.length) runViz(); }
 
 // ── RENDER CHARTS ──
+// chartjs-plugin-datalabels (github.com/chartjs/chartjs-plugin-datalabels) draws the
+// value directly on each bar/slice; register it once, guarded in case the CDN didn't load
+let _datalabelsRegistered = false;
+function ensureDataLabelsPlugin(){
+  if(_datalabelsRegistered) return;
+  if(typeof ChartDataLabels !== 'undefined'){ Chart.register(ChartDataLabels); _datalabelsRegistered = true; }
+}
+
 function renderCharts(result){
+  ensureDataLabelsPlugin();
   const area  = document.getElementById('vzCanvasArea');
   const grid  = document.getElementById('vzChartGrid');
   area.classList.add('on');
@@ -3043,7 +3117,19 @@ function renderCharts(result){
                 return ` ${ctx.dataset.label}: ${typeof v==='number'?v.toLocaleString():v}${unit}`;
               }
             }
-          }
+          },
+          datalabels: typeof ChartDataLabels !== 'undefined' ? {
+            display: ['bar','pie','doughnut','polarArea'].includes(ch.type) && (ch.labels||[]).length <= 14,
+            color: isCircular ? '#07090F' : '#E8EEFF',
+            anchor: ch.type==='bar' ? 'end' : 'center',
+            align: ch.type==='bar' ? 'top' : 'center',
+            font: { size:10, weight:'700', family:'Noto Sans KR' },
+            formatter: (value, dctx)=>{
+              const unit = ch.datasets?.[dctx.datasetIndex]?.unit||'';
+              const v = (value && typeof value==='object') ? value.y : value;
+              return (typeof v==='number' ? v.toLocaleString() : v)+unit;
+            }
+          } : false
         },
         scales: (isCircular||isRadar) ? (isRadar?{r:{ticks:{color:'#5A7099'},pointLabels:{color:'#E8EEFF'}}}:{}) : {
           x:{ ticks:{color:'#7A93C0',font:{size:10}}, grid:{color:'rgba(26,37,64,.6)'} },
@@ -4229,9 +4315,27 @@ function openCmdPalette(){
   setTimeout(()=>input.focus(), 10);
 }
 function closeCmdPalette(){ document.getElementById('cmdPalette').style.display='none'; }
+
+// Fuse.js (github.com/krisk/Fuse) powers typo-tolerant fuzzy search here; if the CDN
+// didn't load we fall back to plain substring matching so the palette still works.
+let cmdFuse = null;
+function getCmdFuse(){
+  if(typeof Fuse === 'undefined') return null;
+  if(!cmdFuse) cmdFuse = new Fuse(HOME_TOOLS, { keys:['name','desc','key'], threshold:0.4, ignoreLocation:true });
+  return cmdFuse;
+}
 function filterCmdPalette(){
-  const q = document.getElementById('cmdInput').value.trim().toLowerCase();
-  const matches = HOME_TOOLS.filter(t=> !q || t.name.toLowerCase().includes(q) || t.key.includes(q) || t.desc.toLowerCase().includes(q));
+  const qRaw = document.getElementById('cmdInput').value.trim();
+  const q = qRaw.toLowerCase();
+  let matches;
+  if(!q){
+    matches = HOME_TOOLS;
+  } else {
+    const fuse = getCmdFuse();
+    matches = fuse
+      ? fuse.search(qRaw).map(r=>r.item)
+      : HOME_TOOLS.filter(t=> t.name.toLowerCase().includes(q) || t.key.includes(q) || t.desc.toLowerCase().includes(q));
+  }
   cmdSelIdx = 0;
   document.getElementById('cmdResults').innerHTML = matches.length ? matches.map((t,i)=>`
     <div class="cmd-item${i===0?' sel':''}" onclick="goHome('${t.key}');closeCmdPalette()">
