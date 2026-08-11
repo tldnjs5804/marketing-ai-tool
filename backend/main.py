@@ -2,7 +2,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
 from backend import ai as ai_module
@@ -78,5 +78,9 @@ def api_ai_claude(body: ClaudeRequest):
     return {"text": text}
 
 
-# API 라우트 등록 뒤에 마운트해야 /api/* 가 정적 파일 서빙보다 먼저 매칭된다
-app.mount("/", StaticFiles(directory=str(BASE_DIR), html=True), name="static")
+# Only index.html is served — NOT a StaticFiles(directory=BASE_DIR) mount. That used to
+# expose every file in the project root over HTTP, including .env (API keys/secrets),
+# the backend/*.py source, and requirements.txt.
+@app.get("/")
+def serve_index():
+    return FileResponse(BASE_DIR / "index.html")
