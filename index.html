@@ -166,6 +166,19 @@ tbody tr:last-child{border-bottom:none}
 .swatch.sel{border-color:#fff;box-shadow:0 0 0 2px rgba(255,255,255,.15)}
 .swatch span{font-size:10px;font-weight:700;color:#fff;text-shadow:0 1px 3px rgba(0,0,0,.5)}
 
+/* ── COMMAND PALETTE ── */
+#cmdPalette{display:none;position:fixed;inset:0;background:rgba(7,9,15,.78);backdrop-filter:blur(4px);z-index:200;align-items:flex-start;justify-content:center;padding-top:min(120px,12vh)}
+.cmd-box{width:92%;max-width:480px;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 24px 70px rgba(0,0,0,.55);overflow:hidden;animation:fu .18s ease both}
+#cmdInput{width:100%;background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--white);font-family:var(--fb);font-size:14px;padding:16px 18px;outline:none}
+#cmdInput::placeholder{color:var(--muted)}
+#cmdResults{max-height:360px;overflow-y:auto;padding:8px}
+.cmd-item{display:flex;align-items:center;gap:12px;padding:11px 12px;border-radius:10px;cursor:pointer}
+.cmd-item.sel,.cmd-item:hover{background:rgba(78,143,255,.1)}
+.cmd-ic{font-size:20px;flex-shrink:0}
+.cmd-nm{font-size:13px;font-weight:700;color:var(--white)}
+.cmd-ds{font-size:10px;color:var(--muted);margin-top:2px}
+.kbd{display:inline-flex;align-items:center;gap:2px;padding:2px 6px;background:rgba(255,255,255,.06);border:1px solid var(--border);border-radius:5px;font-family:var(--fm);font-size:9px;color:var(--muted)}
+
 /* ── HOME DASHBOARD ── */
 .quick-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .qc{padding:16px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s}
@@ -409,6 +422,10 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="tag">✦ MARKETING OS</div>
     <h1>GOGUP<br>TOOL</h1>
     <div class="ver">v5.0 — All-in-One Edition</div>
+    <div style="margin-top:10px;display:flex;align-items:center;gap:6px;cursor:pointer" onclick="openCmdPalette()">
+      <span class="kbd">⌘</span><span class="kbd">K</span>
+      <span style="font-size:10px;color:var(--muted)">빠른 도구 검색</span>
+    </div>
   </div>
   <div class="nav-sec">
     <button class="nb on" onclick="go('home',this)"><span class="ic">🏠</span>홈</button>
@@ -455,6 +472,18 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="stats" id="homeStats"></div>
 
   <div class="card">
+    <div class="ct" style="justify-content:space-between">
+      <span>🏢 브랜드 프로필 <span class="hint" title="여기 한 번만 입력해두면 보고서 작성·뉴스·트렌드·콘텐츠 캘린더·카피 생성기의 브랜드명/경쟁사 칸이 비어있을 때 자동으로 채워집니다. 언제든 다시 저장해서 바꿀 수 있어요.">?</span></span>
+      <span id="bpSavedBadge" style="display:none;font-size:9px;font-family:var(--fm);color:var(--accent);letter-spacing:1px">✓ 저장됨 · 다른 도구에 자동 반영 중</span>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">브랜드명</label><input class="fi" id="bpBrand" placeholder="예: 라네즈"></div>
+      <div class="fg"><label class="fl">경쟁사 (쉼표 구분)</label><input class="fi" id="bpComp" placeholder="예: 이니스프리, 마몽드"></div>
+    </div>
+    <button class="btn bp" onclick="saveBrandProfile()">💾 프로필 저장 & 전체 도구에 자동 채우기</button>
+  </div>
+
+  <div class="card">
     <div class="ct">바로가기</div>
     <div class="quick-grid" id="homeQuick"></div>
   </div>
@@ -462,6 +491,18 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="card">
     <div class="ct">최근 활동</div>
     <div id="homeRecent"></div>
+  </div>
+
+  <div class="card">
+    <div class="ct">💾 데이터 백업 & 복원 <span class="hint" title="모든 기록은 이 브라우저에만 저장돼요. 다른 기기로 옮기거나 브라우저 데이터를 지우기 전에 백업해두면 안전합니다.">?</span></div>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">저장된 모든 히스토리·브랜드 프로필·메모를 파일 하나로 내보내고, 나중에 다시 불러올 수 있어요.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn bg" onclick="exportAllData()"><span>📤</span> 전체 데이터 내보내기</button>
+      <label class="btn" style="background:rgba(255,255,255,.06);color:var(--white);cursor:pointer">
+        <span>📥</span> 데이터 가져오기
+        <input type="file" accept=".json" style="display:none" onchange="importAllData(this.files[0]);this.value=''">
+      </label>
+    </div>
   </div>
 </div>
 
@@ -1634,6 +1675,14 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 </div>
 <div class="tc" id="tc"></div>
 
+<!-- ══ COMMAND PALETTE (Cmd/Ctrl+K) ══ -->
+<div id="cmdPalette" onclick="if(event.target===this)closeCmdPalette()">
+  <div class="cmd-box">
+    <input id="cmdInput" placeholder="도구 검색... (예: utm, 배너, 예산)" oninput="filterCmdPalette()" onkeydown="cmdPaletteKeydown(event)">
+    <div id="cmdResults"></div>
+  </div>
+</div>
+
 <!-- ================================================================
   JAVASCRIPT
 ================================================================ -->
@@ -1653,6 +1702,7 @@ function go(name, btn) {
   document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
   document.getElementById('page-'+name).classList.add('active');
   btn.classList.add('on');
+  applyBrandProfile(name);
 }
 
 // ─── TOAST ───
@@ -4059,6 +4109,146 @@ function dlBanner(){
   link.href = canvas.toDataURL('image/png');
   link.click();
   toast('배너 다운로드 완료! 🖼️','s');
+}
+
+// ═══════════════════════════════════════════════
+//  BRAND PROFILE — set once, autofill everywhere
+// ═══════════════════════════════════════════════
+function getBrandProfile(){
+  try{return JSON.parse(localStorage.getItem('gg_brand_profile')||'{}')}catch{return{}}
+}
+function setBrandProfile(p){ localStorage.setItem('gg_brand_profile', JSON.stringify(p)); }
+
+function saveBrandProfile(){
+  const p = {
+    brand: document.getElementById('bpBrand').value.trim(),
+    competitors: document.getElementById('bpComp').value.trim()
+  };
+  if(!p.brand && !p.competitors){ toast('브랜드명이나 경쟁사를 입력해주세요','e'); return; }
+  setBrandProfile(p);
+  document.getElementById('bpSavedBadge').style.display='inline';
+  toast('브랜드 프로필 저장 완료! 다른 도구에서 자동으로 채워집니다 ✨','s');
+}
+
+function loadBrandProfileUI(){
+  const p = getBrandProfile();
+  const bEl = document.getElementById('bpBrand'), cEl = document.getElementById('bpComp');
+  if(bEl) bEl.value = p.brand||'';
+  if(cEl) cEl.value = p.competitors||'';
+  const badge = document.getElementById('bpSavedBadge');
+  if(badge) badge.style.display = (p.brand||p.competitors) ? 'inline' : 'none';
+}
+
+// only fill fields that are currently EMPTY — never overwrites something the user already typed
+const BRAND_AUTOFILL_MAP = {
+  write:    { brand:'rBrand',    competitors:'rComp'  },
+  news:     { brand:'nwBrand',   competitors:'nwComp' },
+  calendar: { brand:'calBrand'                        },
+  caption:  { brand:'cpProduct'                       }
+};
+function applyBrandProfile(pageKey){
+  const map = BRAND_AUTOFILL_MAP[pageKey];
+  if(!map) return;
+  const p = getBrandProfile();
+  Object.entries(map).forEach(([field, elId])=>{
+    const el = document.getElementById(elId);
+    if(el && !el.value && p[field]) el.value = p[field];
+  });
+}
+document.addEventListener('DOMContentLoaded', loadBrandProfileUI);
+
+// ═══════════════════════════════════════════════
+//  FULL DATA BACKUP / RESTORE (everything lives in
+//  localStorage only — this is the one way to move it
+//  to another browser/device or protect against data loss)
+// ═══════════════════════════════════════════════
+const ALL_HIST_KEYS = ['report','write','budget','comments','news','utm','caption','calendar'];
+
+function exportAllData(){
+  const data = {
+    exportedAt: new Date().toISOString(),
+    app: 'GOGUP TOOL',
+    memo: sessionStorage.getItem('gg_memo')||'',
+    brandProfile: getBrandProfile(),
+    history: {}
+  };
+  ALL_HIST_KEYS.forEach(k=>{ data.history[k] = getHist(k); });
+  const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'gogup_backup_'+nowStr(true)+'.json';
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+  toast('전체 데이터 백업 완료! 📤','s');
+}
+
+function importAllData(file){
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e=>{
+    let data;
+    try{ data = JSON.parse(e.target.result); }
+    catch{ toast('올바른 백업 파일(.json)이 아닙니다','e'); return; }
+    if(!data || typeof data.history !== 'object'){ toast('올바른 백업 파일이 아닙니다','e'); return; }
+    if(!confirm('현재 저장된 기록에 백업 내용을 합칠까요? (동일 항목이 중복 추가될 수 있어요)')) return;
+
+    ALL_HIST_KEYS.forEach(k=>{
+      const incoming = Array.isArray(data.history[k]) ? data.history[k] : [];
+      if(!incoming.length) return;
+      const merged = [...incoming, ...getHist(k)].slice(0,50);
+      setHist(k, merged);
+    });
+    if(data.brandProfile) setBrandProfile(data.brandProfile);
+    if(data.memo){
+      sessionStorage.setItem('gg_memo', data.memo);
+      const m = document.getElementById('memo'); if(m) m.value = data.memo;
+    }
+    ALL_HIST_KEYS.forEach(k=>renderHist(k));
+    loadBrandProfileUI();
+    renderHomeDashboard();
+    toast('데이터 가져오기 완료! 📥','s');
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════
+//  CMD+K COMMAND PALETTE — quick tool search & jump
+// ═══════════════════════════════════════════════
+let cmdSelIdx = 0;
+document.addEventListener('keydown', e=>{
+  if((e.metaKey||e.ctrlKey) && e.key.toLowerCase()==='k'){ e.preventDefault(); openCmdPalette(); }
+  else if(e.key==='Escape'){ closeCmdPalette(); }
+});
+function openCmdPalette(){
+  const modal = document.getElementById('cmdPalette');
+  modal.style.display = 'flex';
+  const input = document.getElementById('cmdInput');
+  input.value = '';
+  cmdSelIdx = 0;
+  filterCmdPalette();
+  setTimeout(()=>input.focus(), 10);
+}
+function closeCmdPalette(){ document.getElementById('cmdPalette').style.display='none'; }
+function filterCmdPalette(){
+  const q = document.getElementById('cmdInput').value.trim().toLowerCase();
+  const matches = HOME_TOOLS.filter(t=> !q || t.name.toLowerCase().includes(q) || t.key.includes(q) || t.desc.toLowerCase().includes(q));
+  cmdSelIdx = 0;
+  document.getElementById('cmdResults').innerHTML = matches.length ? matches.map((t,i)=>`
+    <div class="cmd-item${i===0?' sel':''}" onclick="goHome('${t.key}');closeCmdPalette()">
+      <span class="cmd-ic">${t.ic}</span>
+      <div><div class="cmd-nm">${t.name}</div><div class="cmd-ds">${t.desc}</div></div>
+    </div>`).join('') : `<div style="padding:24px;text-align:center;color:var(--muted);font-size:12px">일치하는 도구가 없습니다</div>`;
+}
+function cmdPaletteKeydown(e){
+  const items = [...document.querySelectorAll('#cmdResults .cmd-item')];
+  if(!items.length) return;
+  if(e.key==='ArrowDown'){ e.preventDefault(); cmdSelIdx=(cmdSelIdx+1)%items.length; updateCmdSel(items); }
+  else if(e.key==='ArrowUp'){ e.preventDefault(); cmdSelIdx=(cmdSelIdx-1+items.length)%items.length; updateCmdSel(items); }
+  else if(e.key==='Enter'){ e.preventDefault(); items[cmdSelIdx].click(); }
+}
+function updateCmdSel(items){
+  items.forEach((it,i)=>it.classList.toggle('sel', i===cmdSelIdx));
+  items[cmdSelIdx].scrollIntoView({block:'nearest'});
 }
 </script>
 </body>
