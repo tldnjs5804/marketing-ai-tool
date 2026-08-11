@@ -155,6 +155,10 @@ tbody tr:last-child{border-bottom:none}
 .colchk{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--white);cursor:pointer;user-select:none}
 .colchk input{accent-color:var(--accent2);width:14px;height:14px;cursor:pointer}
 
+/* ── INLINE HELP HINT (native title tooltip — zero layout footprint, never clipped by .card{overflow:hidden}) ── */
+.hint{display:inline-flex;align-items:center;justify-content:center;width:14px;height:14px;border-radius:50%;background:rgba(255,255,255,.08);border:1px solid var(--border);color:var(--muted);font-size:9px;font-weight:700;cursor:help;margin-left:5px;flex-shrink:0;line-height:1;vertical-align:middle}
+.hint:hover{background:rgba(78,143,255,.18);color:var(--accent2);border-color:rgba(78,143,255,.35)}
+
 /* ── BANNER MAKER SWATCHES ── */
 .swatch-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
 .swatch{height:64px;border-radius:12px;cursor:pointer;border:2px solid transparent;display:flex;align-items:flex-end;padding:8px;transition:all .2s}
@@ -817,16 +821,16 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="ct" style="color:var(--gold)">04 &nbsp; 추가 조건 (선택)</div>
     <div class="r2">
       <div class="fg">
-        <label class="fl">특정 채널 최소 배분 비율 (%)</label>
+        <label class="fl">특정 채널 최소 배분 비율 (%)<span class="hint" title="계약이나 내부 방침상 꼭 일정 비율 이상 써야 하는 채널이 있다면 적어주세요. 없으면 비워도 됩니다.">?</span></label>
         <input class="fi" type="text" id="bMinAlloc" placeholder="예: 인스타그램 최소 30%">
       </div>
       <div class="fg">
-        <label class="fl">목표 ROAS</label>
+        <label class="fl">목표 ROAS<span class="hint" title="ROAS = 광고비 대비 매출(%). '광고비 1만원당 3만원 매출이 목표'라면 300을 입력하세요. 모르면 비워두면 업종 평균으로 추정합니다.">?</span></label>
         <input class="fi" type="number" id="bTargetROAS" placeholder="예: 300 (300%)" min="0">
       </div>
     </div>
     <div class="fg">
-      <label class="fl">특이사항 / 제약 조건</label>
+      <label class="fl">특이사항 / 제약 조건<span class="hint" title="특정 채널을 빼야 하거나, 계약상 지켜야 할 조건이 있으면 자유롭게 적어주세요. AI 엔진을 선택했을 때만 이 내용이 배분 전략에 반영됩니다.">?</span></label>
       <textarea class="fta" id="bConstraints" placeholder="예: 유튜브는 브랜드 이미지상 제외&#10;네이버 SA는 기존 대행사 계약으로 최소 20% 유지 필요"></textarea>
     </div>
   </div>
@@ -1015,13 +1019,13 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
         <input class="fi" type="text" id="vzChartTitle" placeholder="예: 매체별 광고 성과 비교 (2026년 5월)">
       </div>
       <div class="fg">
-        <label class="fl">X축 컬럼 (Excel/CSV)</label>
+        <label class="fl">X축 컬럼 (Excel/CSV)<span class="hint" title="차트 가로축에 라벨로 쓸 컬럼이에요. 보통 날짜, 매체명, 상품명처럼 '항목을 구분하는' 컬럼을 고르면 됩니다.">?</span></label>
         <select class="fs" id="vzXCol"><option value="">— 파일 업로드 후 자동 감지 —</option></select>
       </div>
     </div>
     <div class="r2">
       <div class="fg">
-        <label class="fl">Y축 컬럼 (수치) — 복수 선택 가능</label>
+        <label class="fl">Y축 컬럼 (수치) — 복수 선택 가능<span class="hint" title="실제로 차트에 그릴 숫자 컬럼이에요 (예: 클릭수, 매출액). Ctrl(맥은 Cmd)을 누른 채 클릭하면 여러 개를 한 번에 고를 수 있어요.">?</span></label>
         <select class="fs" id="vzYCol" multiple style="min-height:80px"><option value="">— 파일 업로드 후 자동 감지 —</option></select>
       </div>
       <div class="fg">
@@ -1256,7 +1260,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="fg"><label class="fl">경쟁사 (쉼표 구분, 선택)</label><input class="fi" id="nwComp" placeholder="예: 이니스프리, 마몽드"></div>
     </div>
     <div class="r2">
-      <div class="fg"><label class="fl">필수 포함 키워드 (쉼표 구분, 선택)</label><input class="fi" id="nwRequiredKw" placeholder="예: 신제품, 할인 (모두 포함된 기사만)"></div>
+      <div class="fg"><label class="fl">필수 포함 키워드 (쉼표 구분, 선택)<span class="hint" title="여기에 적은 단어가 전부 제목이나 요약에 들어간 기사만 남겨서 보여드려요. 여러 개 적으면 모두 포함된 기사만 걸러집니다 (AND 조건).">?</span></label><input class="fi" id="nwRequiredKw" placeholder="예: 신제품, 할인 (모두 포함된 기사만)"></div>
       <div class="fg"><label class="fl">최대 수집 개수</label>
         <select class="fs" id="nwMax">
           <option value="10">10개</option>
@@ -1353,13 +1357,13 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 
   <div class="card a1">
     <div class="ct">01 &nbsp; 기본 URL</div>
-    <div class="fg"><label class="fl">웹사이트 / 랜딩페이지 URL</label><input class="fi" id="utmUrl" placeholder="https://example.com/landing" oninput="renderUtmUrl()"></div>
+    <div class="fg"><label class="fl">웹사이트 / 랜딩페이지 URL<span class="hint" title="링크를 눌렀을 때 실제로 이동할 페이지 주소예요. https://까지 포함해서 입력해주세요.">?</span></label><input class="fi" id="utmUrl" placeholder="https://example.com/landing" oninput="renderUtmUrl()"></div>
   </div>
 
   <div class="card a2">
     <div class="ct">02 &nbsp; UTM 파라미터</div>
     <div class="fg">
-      <label class="fl">캠페인 소스 (utm_source)</label>
+      <label class="fl">캠페인 소스 (utm_source)<span class="hint" title="유입 출처예요. '어디서' 클릭했는지를 나타냅니다 (예: naver, google, instagram). 나중에 애널리틱스에서 채널별 성과를 나눠볼 때 기준이 돼요.">?</span></label>
       <input class="fi" id="utmSource" placeholder="예: naver, google, instagram" oninput="renderUtmUrl()">
       <div class="chips" style="margin-top:8px">
         <div class="chip" style="cursor:pointer" onclick="setUtmField('utmSource','naver')">naver</div>
@@ -1371,12 +1375,12 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       </div>
     </div>
     <div class="r2">
-      <div class="fg"><label class="fl">매체 (utm_medium)</label><input class="fi" id="utmMedium" placeholder="예: cpc, banner, social, email" oninput="renderUtmUrl()"></div>
-      <div class="fg"><label class="fl">캠페인명 (utm_campaign)</label><input class="fi" id="utmCampaign" placeholder="예: 2026_summer_sale" oninput="renderUtmUrl()"></div>
+      <div class="fg"><label class="fl">매체 (utm_medium)<span class="hint" title="어떤 '형태'로 유입됐는지예요 (예: cpc=유료광고, banner=배너, social=소셜, email=이메일). source가 '어디서'라면 medium은 '어떤 방식으로'예요.">?</span></label><input class="fi" id="utmMedium" placeholder="예: cpc, banner, social, email" oninput="renderUtmUrl()"></div>
+      <div class="fg"><label class="fl">캠페인명 (utm_campaign)<span class="hint" title="이번 캠페인을 구분하는 이름이에요. 나중에 리포트에서 '이 캠페인이 얼마나 효과 있었는지' 찾을 때 이 이름으로 검색하게 됩니다.">?</span></label><input class="fi" id="utmCampaign" placeholder="예: 2026_summer_sale" oninput="renderUtmUrl()"></div>
     </div>
     <div class="r2">
-      <div class="fg"><label class="fl">검색어 (utm_term) <span style="color:var(--muted)">선택</span></label><input class="fi" id="utmTerm" oninput="renderUtmUrl()"></div>
-      <div class="fg"><label class="fl">콘텐츠 구분 (utm_content) <span style="color:var(--muted)">선택</span></label><input class="fi" id="utmContent" oninput="renderUtmUrl()"></div>
+      <div class="fg"><label class="fl">검색어 (utm_term) <span style="color:var(--muted)">선택</span><span class="hint" title="검색광고에서 어떤 키워드로 유입됐는지 기록할 때 씁니다. 검색광고가 아니면 비워두셔도 됩니다.">?</span></label><input class="fi" id="utmTerm" oninput="renderUtmUrl()"></div>
+      <div class="fg"><label class="fl">콘텐츠 구분 (utm_content) <span style="color:var(--muted)">선택</span><span class="hint" title="같은 캠페인 안에서 광고 소재가 여러 개일 때 (예: A안/B안 배너) 어떤 소재를 눌렀는지 구분하고 싶을 때 씁니다.">?</span></label><input class="fi" id="utmContent" oninput="renderUtmUrl()"></div>
     </div>
   </div>
 
@@ -1518,7 +1522,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
         </select>
       </div>
     </div>
-    <div class="fg"><label class="fl">주당 게시 빈도</label>
+    <div class="fg"><label class="fl">주당 게시 빈도<span class="hint" title="한 주에 몇 번 올릴지 정하면, 위에서 고른 기간과 곱해서 전체 게시물 수가 자동으로 계산돼요 (예: 4주 × 주 3회 = 12건).">?</span></label>
       <select class="fs" id="calFreq">
         <option value="1">주 1회</option>
         <option value="2">주 2회</option>
