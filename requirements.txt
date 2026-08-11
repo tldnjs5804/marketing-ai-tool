@@ -4,6 +4,3 @@ python-dotenv
 feedparser
 requests
 praw
-pandas
-matplotlib
-pytrends

@@ -2,6 +2,7 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel
 
@@ -13,6 +14,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 load_dotenv(BASE_DIR / ".env")
 
 app = FastAPI(title="Marketing AI Tool API")
+# index.html alone is 200KB+ of mostly text (HTML/CSS/JS); gzip shrinks that dramatically
+# and also compresses the JSON API responses (news/comments payloads can be sizeable)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 
 @app.get("/api/news")

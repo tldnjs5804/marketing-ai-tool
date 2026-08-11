@@ -7,16 +7,19 @@
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%9A%80%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;500;700;900&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- defer keeps these from blocking the initial HTML parse/paint; the browser still runs them
+     in this same order, right before DOMContentLoaded, and the app's own inline script below
+     is deferred too so it always executes after every one of these has finished loading -->
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pptxgenjs/3.12.0/pptxgen.bundle.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/7.0.0/fuse.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-datalabels/2.2.0/chartjs-plugin-datalabels.min.js"></script>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <style>
 :root{
   --bg:#07090F;--surface:#0C1020;--card:#101525;--border:#1A2540;
@@ -792,7 +795,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="r2">
       <div class="fg">
         <label class="fl">업종 / 카테고리</label>
-        <select class="fs" id="bIndustry">
+        <select class="fs" id="bIndustry" onchange="renderIndustryBenchmark()">
           <option value="beauty">💄 뷰티·화장품</option>
           <option value="fashion">👗 패션·의류</option>
           <option value="food">🍔 식품·F&amp;B</option>
@@ -846,7 +849,8 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <!-- STEP 3: 채널 설정 -->
   <div class="card a3">
     <div class="ct" style="color:var(--gold)">03 &nbsp; 광고 채널 & 과거 성과 입력</div>
-    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">과거 데이터가 없으면 비워도 됩니다. AI가 업종·목표 기반으로 자동 추정합니다.</p>
+    <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">과거 데이터가 없으면 비워도 됩니다. 업종 평균 참고치로 자동 채워집니다 (AI 사용 시 더 정교하게 추정).</p>
+    <div id="industryBenchmarkBox" style="margin-bottom:16px"></div>
 
     <div style="display:grid;grid-template-columns:180px 1fr 1fr 1fr 36px;gap:10px;padding:0 16px;margin-bottom:6px">
       <div style="font-size:9px;font-family:var(--fm);color:var(--muted);letter-spacing:1px">채널</div>
@@ -1545,6 +1549,11 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="sbdg"><div class="sdot"></div>NO AI NEEDED</div>
   </div>
 
+  <div class="card">
+    <div class="ct">🎉 다가오는 마케팅 시즌 <span class="hint" title="캘린더를 생성하면 이 날짜들 근처의 게시물은 자동으로 시즌에 맞는 주제로 채워집니다.">?</span></div>
+    <div id="calUpcomingEvents" class="quick-grid"></div>
+  </div>
+
   <div class="card a1">
     <div class="ct">01 &nbsp; 기본 정보</div>
     <div class="r2">
@@ -1696,8 +1705,13 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 
 <!-- ================================================================
   JAVASCRIPT
+  Marked defer (not just "placed at the end of body") so it's guaranteed
+  to run AFTER all the deferred CDN libraries above have finished loading.
+  A plain non-deferred script here would actually run BEFORE them: a
+  regular script tag executes the instant the parser reaches it, while
+  defer explicitly waits for every deferred script above to finish first.
 ================================================================ -->
-<script>
+<script defer>
 // ─── STATE ───
 const S = {
   files: [],
@@ -2499,41 +2513,101 @@ ${chInfo || '(데이터 없음 — 업종·목표 기반 추정)'}
 }
 
 // ── AI 미사용 폴백: 규칙 기반 예산 배분 ──
+// 채널별 기본 벤치마크(원화 CPC / 전환율% / ROAS%) — 참고용 추정치입니다. 실제 캠페인
+// 성과는 매체 리포트를 따로 확인하시고, 이 수치는 "감을 잡는 용도"로만 사용해주세요.
+const CHANNEL_BASE_BENCHMARK = {
+  insta:   {cpc:650, cvr:1.8, roas:220},
+  youtube: {cpc:120, cvr:1.2, roas:180},
+  naver:   {cpc:850, cvr:3.2, roas:280},
+  kakao:   {cpc:400, cvr:1.5, roas:190},
+  meta:    {cpc:700, cvr:1.9, roas:230},
+  tiktok:  {cpc:350, cvr:1.3, roas:170},
+  google:  {cpc:900, cvr:2.8, roas:260}
+};
+// 업종별 보정 배수 — 채널 기본 벤치마크에 곱해서 업종 특성을 반영한다
+const INDUSTRY_BENCHMARK_MULTIPLIER = {
+  beauty:    {cpc:1.0, cvr:1.1, roas:1.1},
+  fashion:   {cpc:0.9, cvr:1.0, roas:1.0},
+  food:      {cpc:0.8, cvr:1.2, roas:1.0},
+  ecommerce: {cpc:1.0, cvr:1.0, roas:1.0},
+  app:       {cpc:0.7, cvr:0.8, roas:0.9},
+  finance:   {cpc:1.8, cvr:0.7, roas:0.9},
+  health:    {cpc:1.3, cvr:0.9, roas:0.95},
+  edu:       {cpc:1.2, cvr:0.8, roas:0.9},
+  b2b:       {cpc:1.6, cvr:0.6, roas:0.85},
+  other:     {cpc:1.0, cvr:1.0, roas:1.0}
+};
+function getBenchmark(channelId, industryKey){
+  const base = CHANNEL_BASE_BENCHMARK[channelId] || CHANNEL_BASE_BENCHMARK.google;
+  const mult = INDUSTRY_BENCHMARK_MULTIPLIER[industryKey] || INDUSTRY_BENCHMARK_MULTIPLIER.other;
+  return {
+    cpc: Math.round(base.cpc*mult.cpc),
+    cvr: Math.round(base.cvr*mult.cvr*10)/10,
+    roas: Math.round(base.roas*mult.roas)
+  };
+}
+
+function renderIndustryBenchmark(){
+  const box = document.getElementById('industryBenchmarkBox');
+  if(!box) return;
+  const industryKey = document.getElementById('bIndustry').value;
+  const rows = DEFAULT_CHANNELS.map(c=>({ ...c, ...getBenchmark(c.id, industryKey) }));
+  box.innerHTML = `
+    <div class="fl" style="margin-bottom:6px">📊 업종 벤치마크 참고치 <span class="hint" title="실제 캠페인 데이터가 없을 때 예산 최적화가 기본값 대신 참고하는 업종·채널별 평균 추정치예요. 정확한 값이 아니라 감을 잡는 용도입니다.">?</span></div>
+    <div class="tw"><table><thead><tr><th>채널</th><th>참고 CPC</th><th>참고 전환율</th><th>참고 ROAS</th></tr></thead>
+    <tbody>${rows.map(r=>`<tr><td>${r.ic} ${r.name}</td><td>₩${r.cpc.toLocaleString()}</td><td>${r.cvr}%</td><td>${r.roas}%</td></tr>`).join('')}</tbody></table></div>`;
+}
+document.addEventListener('DOMContentLoaded', renderIndustryBenchmark);
+
 function computeBudgetFallback(){
   const total  = parseInt(document.getElementById('bTotalBudget').value)||0;
   const targetROASInput = parseFloat(document.getElementById('bTargetROAS').value)||0;
+  const industryKey = document.getElementById('bIndustry').value;
   const goalEl = document.querySelector('.goal-card.on');
   const goal   = goalEl ? goalEl.querySelector('.gc-nm').textContent : '브랜드 인지도';
   const constraints = document.getElementById('bConstraints').value.trim();
 
-  const weights = bChannels.map(c=>{
-    const roas = parseFloat(c.roas)||0;
-    return roas>0 ? roas : 100;
+  // 채널별로 사용자가 입력한 실측치가 있으면 그걸 쓰고, 없으면 업종 벤치마크로 채운다
+  const enriched = bChannels.map(c=>{
+    const bm = getBenchmark(c.id, industryKey);
+    const hasReal = !!(parseFloat(c.cpc) || parseFloat(c.cvr) || parseFloat(c.roas));
+    return {
+      ...c,
+      cpc:  parseFloat(c.cpc)  || bm.cpc,
+      cvr:  parseFloat(c.cvr)  || bm.cvr,
+      roas: parseFloat(c.roas) || bm.roas,
+      usedBenchmark: !hasReal
+    };
   });
-  const sumW = weights.reduce((a,b)=>a+b,0) || bChannels.length;
 
-  const allocation = bChannels.map((c,i)=>{
-    const pct = Math.round(weights[i]/sumW*1000)/10;
+  const sumRoas = enriched.reduce((a,c)=>a+c.roas,0) || enriched.length;
+  const allocation = enriched.map(c=>{
+    const pct = Math.round(c.roas/sumRoas*1000)/10;
     const amount = Math.round(total*pct/100);
     return {
       channel: c.name, icon: c.ic, amount, pct,
-      reason: c.roas ? `과거 ROAS ${c.roas}% 기준 비례 배분 (AI 미사용)` : '히스토리 데이터 없음 — 균등 배분 (AI 미사용)'
+      reason: c.usedBenchmark
+        ? `업종 벤치마크 참고치(ROAS 약 ${c.roas}%) 기준 배분 (AI 미사용)`
+        : `입력하신 ROAS ${c.roas}% 기준 비례 배분 (AI 미사용)`
     };
   });
   const pctSum = allocation.reduce((a,b)=>a+b.pct,0);
   if(allocation.length) allocation[allocation.length-1].pct = Math.round((allocation[allocation.length-1].pct + (100-pctSum))*10)/10;
 
-  const nums = key => bChannels.map(c=>parseFloat(c[key])).filter(n=>n>0);
-  const avg  = (arr,d) => arr.length ? arr.reduce((a,b)=>a+b,0)/arr.length : d;
-  const avgCpc = avg(nums('cpc'), 800);
-  const avgCvr = avg(nums('cvr'), 2);
-  const avgRoas = Math.round(avg(nums('roas'), targetROASInput||200));
-  const estClicks = Math.round(total/avgCpc);
-  const estConv = Math.round(estClicks*avgCvr/100);
+  // 배분 금액 비중으로 가중평균한 예상 클릭·전환·ROAS
+  let estClicks=0, estConv=0, roasWeightedSum=0;
+  enriched.forEach((c,i)=>{
+    const amt = allocation[i].amount;
+    const clicks = c.cpc>0 ? amt/c.cpc : 0;
+    estClicks += clicks;
+    estConv += clicks*c.cvr/100;
+    roasWeightedSum += c.roas*(total ? amt/total : 0);
+  });
+  const avgRoas = Math.round(targetROASInput || roasWeightedSum || 200);
 
-  const strategy_comment = `📐 AI 없이 입력하신 채널별 과거 ROAS를 기준으로 한 규칙 기반(비례 배분) 계산 결과입니다.\n\n`+
+  const strategy_comment = `📐 AI 없이, 채널별로 입력하신 실측치(있으면) 또는 업종 벤치마크 참고치(없으면)를 기준으로 한 규칙 기반 배분 결과입니다.\n\n`+
     `🎯 캠페인 목표: ${goal}\n`+
-    `📊 ROAS 데이터가 있는 채널은 그 비율대로, 없는 채널은 균등하게 배분했습니다.\n`+
+    `📊 실측 데이터가 있는 채널은 그 값을, 없는 채널은 업종 평균 참고치를 사용했습니다 (벤치마크는 추정치라 실제와 다를 수 있어요).\n`+
     (constraints ? `⚠️ 입력하신 제약 조건("${constraints}")은 자동 반영되지 않았으니 배분 후 직접 조정해주세요.\n` : '')+
     `💡 채널별 운영 팁, 우선순위 등 정밀한 전략 해설이 필요하면 AI 엔진(Claude/GPT/Gemini)을 선택해 다시 실행해보세요.`;
 
@@ -2541,9 +2615,9 @@ function computeBudgetFallback(){
     allocation,
     roi_prediction: {
       expected_roas: avgRoas+'%',
-      estimated_reach: Math.round(estClicks*1.2/1).toLocaleString()+'명 (추정)',
-      estimated_clicks: estClicks.toLocaleString(),
-      estimated_conversions: estConv.toLocaleString()
+      estimated_reach: Math.round(estClicks*1.2).toLocaleString()+'명 (추정)',
+      estimated_clicks: Math.round(estClicks).toLocaleString(),
+      estimated_conversions: Math.round(estConv).toLocaleString()
     },
     strategy_comment
   };
@@ -3922,6 +3996,65 @@ const CALENDAR_INDUSTRY_LABELS = {
   beauty:'뷰티·화장품', fashion:'패션·의류', food:'식품·F&B', ecommerce:'이커머스',
   app:'앱·게임', finance:'금융·핀테크', health:'헬스·의료', edu:'교육', b2b:'B2B·SaaS', other:'우리 브랜드'
 };
+// 한국 커머스·마케팅 주요 시즌 캘린더 — 양력 고정일 기준. 음력 명절(설날·추석)은 해마다
+// 날짜가 달라 정확한 연도별 매핑 없이는 자동 매칭이 틀릴 수 있어 일부러 뺐다; 그 두 시즌은
+// 마케터가 직접 캘린더에 반영하는 걸 권장한다.
+const KR_MARKETING_CALENDAR = [
+  {month:1,  day:1,  name:'신정·새해',        tip:'한 해 목표·다짐 콘텐츠, 새해 인사'},
+  {month:2,  day:14, name:'발렌타인데이',      tip:'커플·선물 프로모션'},
+  {month:3,  day:3,  name:'삼겹살데이',        tip:'식품·외식 브랜드 프로모션'},
+  {month:3,  day:14, name:'화이트데이',        tip:'답례 선물 프로모션'},
+  {month:4,  day:5,  name:'식목일',            tip:'친환경·에코 캠페인'},
+  {month:5,  day:1,  name:'근로자의 날',       tip:'직장인 타겟 콘텐츠'},
+  {month:5,  day:5,  name:'어린이날',          tip:'가족·키즈 프로모션'},
+  {month:5,  day:8,  name:'어버이날',          tip:'효도·선물 프로모션'},
+  {month:5,  day:15, name:'스승의날',          tip:'감사 콘텐츠, 교육 브랜드 프로모션'},
+  {month:5,  day:20, name:'부부의날',          tip:'커플 타겟 콘텐츠'},
+  {month:6,  day:1,  name:'여름 시즌 오픈',    tip:'여름 신제품·자외선차단 프로모션 시작'},
+  {month:7,  day:1,  name:'여름 휴가 시즌',    tip:'여행·아웃도어·쿨링 아이템 프로모션'},
+  {month:8,  day:15, name:'광복절',            tip:'국내 브랜드 마케팅'},
+  {month:9,  day:1,  name:'가을 시즌 전환',    tip:'신학기·가을 신상 프로모션'},
+  {month:10, day:9,  name:'한글날',            tip:'한글 관련 캠페인'},
+  {month:10, day:31, name:'할로윈',            tip:'코스튬·파티 프로모션'},
+  {month:11, day:11, name:'빼빼로데이',        tip:'과자·선물 프로모션 최대 성수기'},
+  {month:11, day:29, name:'블랙프라이데이 시즌', tip:'연말 최대 할인 시즌 (11월 마지막 주 전후)'},
+  {month:12, day:25, name:'크리스마스',        tip:'연말 선물·시즌 프로모션'},
+  {month:12, day:31, name:'연말 결산',         tip:'한 해 회고·감사 콘텐츠, 신년 예고'}
+];
+
+function findNearbyMarketingEvent(date, windowDays=2){
+  for(const ev of KR_MARKETING_CALENDAR){
+    const evDate = new Date(date.getFullYear(), ev.month-1, ev.day);
+    if(Math.abs((date-evDate)/86400000) <= windowDays) return ev;
+  }
+  return null;
+}
+
+function nextOccurrence(ev, from){
+  let d = new Date(from.getFullYear(), ev.month-1, ev.day);
+  if(d < from) d = new Date(from.getFullYear()+1, ev.month-1, ev.day);
+  return d;
+}
+
+function renderUpcomingMarketingEvents(){
+  const el = document.getElementById('calUpcomingEvents');
+  if(!el) return;
+  const today = new Date(); today.setHours(0,0,0,0);
+  const upcoming = KR_MARKETING_CALENDAR
+    .map(ev=>({ev, date: nextOccurrence(ev, today)}))
+    .sort((a,b)=>a.date-b.date)
+    .slice(0,4);
+  el.innerHTML = upcoming.map(({ev,date})=>{
+    const dDay = Math.round((date-today)/86400000);
+    return `<div class="qc" style="cursor:default">
+      <div class="qc-ic">🎉</div>
+      <div class="qc-nm">${ev.name} <span style="color:var(--accent);font-family:var(--fm);font-size:9px">D-${dDay}</span></div>
+      <div class="qc-ds">${date.getMonth()+1}/${date.getDate()} · ${ev.tip}</div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', renderUpcomingMarketingEvents);
+
 const CALENDAR_TYPES = [
   {label:'📦 제품소개', templates:[
     '${brand} 베스트셀러 제품 소개 & 핵심 특징 3가지',
@@ -3979,14 +4112,22 @@ function generateCalendar(){
   const weekdayNames = ['일','월','화','수','목','금','토'];
   const rows = offsets.map((off,i)=>{
     const d = new Date(start); d.setDate(d.getDate()+off);
-    const type = CALENDAR_TYPES[i % CALENDAR_TYPES.length];
-    const template = type.templates[Math.floor(i/CALENDAR_TYPES.length) % type.templates.length];
-    const topic = template.replaceAll('${brand}',brand).replaceAll('${industry}',industryLabel);
+    const seasonalEvent = findNearbyMarketingEvent(d);
+    let typeLabel, topic;
+    if(seasonalEvent){
+      typeLabel = '🎉 시즌 이벤트';
+      topic = `${seasonalEvent.name} 맞춤 콘텐츠 — ${seasonalEvent.tip}`;
+    } else {
+      const type = CALENDAR_TYPES[i % CALENDAR_TYPES.length];
+      const template = type.templates[Math.floor(i/CALENDAR_TYPES.length) % type.templates.length];
+      typeLabel = type.label;
+      topic = template.replaceAll('${brand}',brand).replaceAll('${industry}',industryLabel);
+    }
     return {
       date: d.toISOString().slice(0,10),
       weekday: weekdayNames[d.getDay()],
       platform: platforms[i % platforms.length],
-      type: type.label,
+      type: typeLabel,
       topic,
       status: '예정'
     };
