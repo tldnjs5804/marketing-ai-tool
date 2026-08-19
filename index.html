@@ -327,6 +327,25 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 .goal-card.on{border-color:var(--gold);background:rgba(255,209,102,.1)}
 .goal-card .gc-ic{font-size:22px;margin-bottom:6px}
 .goal-card .gc-nm{font-size:11px;font-weight:700;color:var(--white)}
+
+/* ── STRATEGY PLANNER ── */
+.strat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.strat-card{padding:16px 10px;border:1px solid var(--border);border-radius:12px;cursor:pointer;transition:all .2s;background:rgba(255,255,255,.02);text-align:center}
+.strat-card:hover{border-color:rgba(78,143,255,.4);background:rgba(78,143,255,.05)}
+.strat-card.on{border-color:var(--accent2);background:rgba(78,143,255,.1)}
+.strat-card .sc-ic{font-size:24px;margin-bottom:7px}
+.strat-card .sc-nm{font-size:11px;font-weight:700;color:var(--white);line-height:1.4}
+.phase-card{background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:14px;padding:20px;margin-bottom:14px;animation:fu .4s ease both}
+.phase-num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;border-radius:50%;background:var(--accent2);color:#07090F;font-family:var(--fm);font-weight:700;font-size:12px;margin-right:9px;flex-shrink:0}
+.phase-head{display:flex;align-items:center;margin-bottom:10px}
+.phase-name{font-size:14px;font-weight:700;color:var(--white)}
+.phase-goal{font-size:11px;color:var(--accent2);margin-bottom:12px;padding-left:35px}
+.phase-activities{list-style:none;padding-left:35px;margin-bottom:14px}
+.phase-activities li{font-size:12px;color:var(--white);padding:4px 0 4px 15px;position:relative;line-height:1.6}
+.phase-activities li::before{content:'—';position:absolute;left:0;color:var(--muted)}
+.phase-tools{display:flex;gap:8px;flex-wrap:wrap;padding-left:35px}
+.phase-tool-chip{display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(78,143,255,.08);border:1px solid rgba(78,143,255,.25);border-radius:99px;font-size:11px;color:var(--accent2);cursor:pointer;transition:all .15s}
+.phase-tool-chip:hover{background:rgba(78,143,255,.18);transform:translateY(-1px)}
 /* result bars */
 .budget-result{display:none;margin-top:16px}
 .budget-result.on{display:block}
@@ -364,6 +383,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   .tlinks{grid-template-columns:1fr 1fr}
   .ch-row{grid-template-columns:1fr 1fr;grid-template-rows:auto auto auto}
   .goal-grid{grid-template-columns:1fr 1fr}
+  .strat-grid{grid-template-columns:1fr 1fr}
   .roi-grid{grid-template-columns:1fr 1fr}
   .vz-type-grid{grid-template-columns:1fr 1fr!important}
   .vz-chart-grid{grid-template-columns:1fr!important}
@@ -456,6 +476,9 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   </div>
   <div class="nav-sec">
     <button class="nb on" onclick="go('home',this)"><span class="ic">🏠</span>홈</button>
+  </div>
+  <div class="nav-sec">
+    <button class="nb" onclick="go('strategy',this)"><span class="ic">🧭</span>전략 플래너<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">AI 리포트 · 분석</div>
@@ -1797,6 +1820,111 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       <div class="fl" style="margin:14px 0 8px">플랫폼별 글자수 제한 참고</div>
       <div class="tw"><table><thead><tr><th>플랫폼</th><th>제한</th><th>상태</th></tr></thead><tbody id="cntPlatformTable"></tbody></table></div>
     </div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 13 : STRATEGY PLANNER ▓▓▓▓▓ -->
+<div class="page" id="page-strategy">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey">✦ 11 — Strategy Planner</div>
+      <h2>STRATEGY<br>PLANNER</h2>
+      <p>마케팅 전략을 고르면 단계별 실행 플랜과, 각 단계에서 바로 써먹을 수 있는 도구까지 한 번에 추천해드립니다. 이 사이트의 모든 도구를 하나로 잇는 허브예요.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div>PLANNER READY</div>
+  </div>
+
+  <div class="card a1">
+    <div class="ct">01 &nbsp; 전략 선택</div>
+    <div class="strat-grid" id="stratGrid">
+      <div class="strat-card on" data-strat="launch" onclick="selectStrategy('launch',this)"><div class="sc-ic">🚀</div><div class="sc-nm">신제품 출시</div></div>
+      <div class="strat-card" data-strat="awareness" onclick="selectStrategy('awareness',this)"><div class="sc-ic">📢</div><div class="sc-nm">브랜드 인지도 확대</div></div>
+      <div class="strat-card" data-strat="conversion" onclick="selectStrategy('conversion',this)"><div class="sc-ic">💰</div><div class="sc-nm">매출·전환 극대화</div></div>
+      <div class="strat-card" data-strat="retention" onclick="selectStrategy('retention',this)"><div class="sc-ic">🔄</div><div class="sc-nm">리텐션·재구매</div></div>
+      <div class="strat-card" data-strat="viral" onclick="selectStrategy('viral',this)"><div class="sc-ic">🔥</div><div class="sc-nm">바이럴·입소문</div></div>
+      <div class="strat-card" data-strat="seasonal" onclick="selectStrategy('seasonal',this)"><div class="sc-ic">🎉</div><div class="sc-nm">시즌 프로모션</div></div>
+      <div class="strat-card" data-strat="competitive" onclick="selectStrategy('competitive',this)"><div class="sc-ic">🆚</div><div class="sc-nm">경쟁사 대응</div></div>
+      <div class="strat-card" data-strat="b2b" onclick="selectStrategy('b2b',this)"><div class="sc-ic">🏢</div><div class="sc-nm">B2B 리드 확보</div></div>
+    </div>
+  </div>
+
+  <div class="card a2">
+    <div class="ct">02 &nbsp; 기본 정보</div>
+    <div class="r2">
+      <div class="fg"><label class="fl">브랜드명</label><input class="fi" id="stratBrand" placeholder="예: 라네즈"></div>
+      <div class="fg"><label class="fl">업종</label>
+        <select class="fs" id="stratIndustry">
+          <option value="beauty">💄 뷰티·화장품</option>
+          <option value="fashion">👗 패션·의류</option>
+          <option value="food">🍔 식품·F&amp;B</option>
+          <option value="ecommerce">🛒 이커머스</option>
+          <option value="app">📱 앱·게임</option>
+          <option value="finance">💳 금융·핀테크</option>
+          <option value="health">🏥 헬스·의료</option>
+          <option value="edu">📚 교육</option>
+          <option value="b2b">🏢 B2B·SaaS</option>
+          <option value="other">🔧 기타</option>
+        </select>
+      </div>
+    </div>
+    <div class="r2">
+      <div class="fg"><label class="fl">예산 규모</label>
+        <select class="fs" id="stratBudgetSize">
+          <option value="소규모 (월 500만원 이하)">소규모 (월 500만원 이하)</option>
+          <option value="중규모 (월 500만원~3천만원)" selected>중규모 (월 500만원~3천만원)</option>
+          <option value="대규모 (월 3천만원 이상)">대규모 (월 3천만원 이상)</option>
+        </select>
+      </div>
+      <div class="fg"><label class="fl">캠페인 기간</label>
+        <select class="fs" id="stratPeriod">
+          <option value="1개월">1개월</option>
+          <option value="3개월" selected>3개월</option>
+          <option value="6개월">6개월</option>
+          <option value="1년">1년</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="card a3">
+    <div class="ct">03 &nbsp; AI 엔진 & 생성</div>
+    <div class="ai-g" id="stratAiSel">
+      <div class="aio sel" onclick="selAI('claude','stratAiSel',this)"><div class="abg">내장·무료</div><div class="aic">🔮</div><div class="anm">Claude Sonnet</div><div class="asb">Anthropic · 바로 사용</div></div>
+      <div class="aio" onclick="selAI('openai','stratAiSel',this)"><div class="aic">🧠</div><div class="anm">GPT-4o</div><div class="asb">OpenAI · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('gemini','stratAiSel',this)"><div class="aic">♊</div><div class="anm">Gemini 1.5 Pro</div><div class="asb">Google · API 키 필요</div></div>
+      <div class="aio" onclick="selAI('none','stratAiSel',this)"><div class="aic">🚫</div><div class="anm">AI 사용 안함</div><div class="asb">표준 플레이북 그대로</div></div>
+    </div>
+    <div id="stratApiSec" style="display:none;margin-top:13px">
+      <div class="fg"><label class="fl" id="stratApiLbl">API Key</label><input class="fi" type="password" id="stratApiKey" placeholder="sk-..."></div>
+    </div>
+    <hr class="dv">
+    <button class="btn bfl bp" onclick="runStrategy()" id="stratBtn"><span>🧭</span> 전략 플랜 생성</button>
+    <div class="pg" id="stratPg"><div class="pgf" id="stratPgf"></div></div>
+  </div>
+
+  <div id="stratResultArea" style="display:none">
+    <div class="card a4">
+      <div class="ct" style="justify-content:space-between">
+        <span>🧭 전략 요약 <span id="stratModelLbl" style="color:var(--muted);font-weight:400;margin-left:4px"></span></span>
+        <div style="display:flex;gap:8px">
+          <button class="btn bsm" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="saveElementAsImage('stratResultArea','전략플랜')">🖼️ 이미지로 저장</button>
+          <button class="btn bsm bg" onclick="dlStrategyExcel()">⬇️ 엑셀 저장</button>
+        </div>
+      </div>
+      <div class="aib on"><div class="aib-c" id="stratSummary"></div></div>
+    </div>
+    <div id="stratPhases"></div>
+  </div>
+
+  <div class="card a5">
+    <div class="ct" style="justify-content:space-between">
+      <span>📁 전략 히스토리</span>
+      <div style="display:flex;gap:8px">
+        <button class="btn bsm bg" onclick="dlAllHist('strategy')">📦 전체 다운로드</button>
+        <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="clearHist('strategy')">삭제</button>
+      </div>
+    </div>
+    <div id="strategyHist"></div>
   </div>
 </div>
 
@@ -4065,6 +4193,7 @@ document.addEventListener('DOMContentLoaded', ()=>{ renderHist('caption'); });
 //  HOME DASHBOARD
 // ═══════════════════════════════════════════════
 const HOME_TOOLS = [
+  {key:'strategy',ic:'🧭',name:'전략 플래너',desc:'전략 선택 → 단계별 플랜 + 도구 추천'},
   {key:'report',ic:'📊',name:'리포트 자동화',desc:'매체별 데이터 병합·정제'},
   {key:'write',ic:'✍️',name:'보고서 작성',desc:'AI 마케팅 보고서 자동 작성'},
   {key:'budget',ic:'💰',name:'예산 최적화',desc:'채널별 예산 배분 전략'},
@@ -4498,7 +4627,8 @@ const BRAND_AUTOFILL_MAP = {
   write:    { brand:'rBrand',    competitors:'rComp'  },
   news:     { brand:'nwBrand',   competitors:'nwComp' },
   calendar: { brand:'calBrand'                        },
-  caption:  { brand:'cpProduct'                       }
+  caption:  { brand:'cpProduct'                       },
+  strategy: { brand:'stratBrand'                      }
 };
 function applyBrandProfile(pageKey){
   const map = BRAND_AUTOFILL_MAP[pageKey];
@@ -4839,6 +4969,278 @@ function renderPlatformLimitTable(count){
   }).join('');
 }
 document.addEventListener('DOMContentLoaded', ()=>renderPlatformLimitTable(0));
+
+// ═══════════════════════════════════════════════
+//  STRATEGY PLANNER — ties every other tool together. Tool recommendations
+//  are always deterministic (defined here, never AI-generated) so the AI
+//  can only elaborate the activity text, never invent a tool that doesn't
+//  exist on the site.
+// ═══════════════════════════════════════════════
+const STRATEGY_LABELS = {
+  launch:'🚀 신제품 출시', awareness:'📢 브랜드 인지도 확대', conversion:'💰 매출·전환 극대화',
+  retention:'🔄 리텐션·재구매', viral:'🔥 바이럴·입소문', seasonal:'🎉 시즌 프로모션',
+  competitive:'🆚 경쟁사 대응', b2b:'🏢 B2B 리드 확보'
+};
+const STRATEGY_PLAYBOOKS = {
+  launch: [
+    {name:'1단계 · 사전 준비', goal:'런칭 메시지·소재·예산을 준비합니다',
+      activities:['핵심 메시지·USP(차별점) 정리','런칭 보고서·기획안 작성','SNS 카피·프로모션 배너 제작','채널별 광고 예산 배분'],
+      tools:['write','caption','banner','budget']},
+    {name:'2단계 · 런칭', goal:'최대한 많은 사람에게 알리고 초기 반응을 확보합니다',
+      activities:['공식 런칭 콘텐츠 게시 일정 수립','추적 링크로 채널별 유입 측정','런칭 관련 미디어·SNS 반응 모니터링'],
+      tools:['calendar','utm','news']},
+    {name:'3단계 · 확산', goal:'입소문을 확산시키고 후기를 쌓습니다',
+      activities:['고객 후기·댓글 반응 수집 및 분석','추가 콘텐츠·2차 프로모션 기획'],
+      tools:['comments','caption']},
+    {name:'4단계 · 측정 & 정리', goal:'성과를 정리하고 다음 액션을 도출합니다',
+      activities:['전체 성과 통합 리포트 작성','채널별 데이터 시각화로 인사이트 도출'],
+      tools:['report','viz','write']}
+  ],
+  awareness: [
+    {name:'1단계 · 브랜드 스토리 정립', goal:'우리 브랜드를 어떻게 알릴지 메시지를 정합니다',
+      activities:['브랜드 포지셔닝·핵심 메시지 정리 보고서 작성'], tools:['write']},
+    {name:'2단계 · 콘텐츠 노출 확대', goal:'꾸준한 콘텐츠로 눈에 띄는 빈도를 늘립니다',
+      activities:['한 달치 콘텐츠 캘린더 수립','SNS 카피·해시태그·배너 제작'], tools:['calendar','caption','banner']},
+    {name:'3단계 · 미디어·트렌드 노출', goal:'뉴스·검색에서도 노출되도록 관리합니다',
+      activities:['브랜드 언급 뉴스 모니터링','캠페인 추적 링크 세팅'], tools:['news','utm']},
+    {name:'4단계 · 인지도 측정', goal:'실제로 인지도가 올라갔는지 확인합니다',
+      activities:['댓글·반응 감성 분석','데이터 시각화로 트렌드 확인','종합 리포트 작성'], tools:['comments','viz','report']}
+  ],
+  conversion: [
+    {name:'1단계 · 타겟·예산 설계', goal:'전환이 잘 나오는 채널에 예산을 집중합니다',
+      activities:['채널별 예산 최적화 배분','목표 ROAS 설정'], tools:['budget']},
+    {name:'2단계 · 전환 유도 콘텐츠', goal:'구매·신청으로 바로 이어지는 소재를 만듭니다',
+      activities:['할인·프로모션 카피 및 배너 제작','전환 추적용 UTM 링크 생성'], tools:['caption','banner','utm']},
+    {name:'3단계 · 프로모션 운영', goal:'정해진 일정대로 프로모션을 집행합니다',
+      activities:['프로모션 콘텐츠 캘린더 운영','예산 재배분 점검'], tools:['calendar','budget']},
+    {name:'4단계 · 성과 분석', goal:'무엇이 전환을 만들었는지 파악합니다',
+      activities:['채널별 성과 데이터 시각화','통합 성과 리포트 작성'], tools:['viz','report']}
+  ],
+  retention: [
+    {name:'1단계 · 고객 이해', goal:'기존 고객이 무엇을 원하는지 파악합니다',
+      activities:['기존 고객 댓글·리뷰 감성 분석'], tools:['comments']},
+    {name:'2단계 · 리텐션 콘텐츠 기획', goal:'다시 찾아올 이유를 만듭니다',
+      activities:['재구매 유도 콘텐츠 캘린더 수립','고객 대상 카피 제작'], tools:['calendar','caption']},
+    {name:'3단계 · 재구매 프로모션', goal:'구체적인 혜택으로 재구매를 유도합니다',
+      activities:['재구매 쿠폰·혜택 배너 제작','추적 링크로 참여 측정'], tools:['banner','utm']},
+    {name:'4단계 · 효과 측정', goal:'리텐션이 실제로 개선됐는지 확인합니다',
+      activities:['재구매율 데이터 시각화','성과 리포트 정리'], tools:['viz','report']}
+  ],
+  viral: [
+    {name:'1단계 · 챌린지/이벤트 기획', goal:'사람들이 자발적으로 퍼뜨릴 만한 아이디어를 만듭니다',
+      activities:['챌린지·이벤트 기획 보고서 작성','참여 유도 카피 제작'], tools:['write','caption']},
+    {name:'2단계 · 콘텐츠 배포', goal:'여러 채널에 동시에 확산시킵니다',
+      activities:['배포 콘텐츠 캘린더 수립','바이럴용 이미지 배너 제작'], tools:['calendar','banner']},
+    {name:'3단계 · 확산 모니터링', goal:'실시간으로 반응을 추적합니다',
+      activities:['관련 뉴스·언급 모니터링','댓글 반응 실시간 분석'], tools:['news','comments']},
+    {name:'4단계 · 성과 분석', goal:'얼마나 퍼졌는지 정량적으로 확인합니다',
+      activities:['확산 데이터 시각화 및 인사이트 도출'], tools:['viz']}
+  ],
+  seasonal: [
+    {name:'1단계 · 시즌 확인', goal:'다가오는 시즌·기념일을 미리 파악합니다',
+      activities:['콘텐츠 캘린더에서 다가오는 마케팅 시즌 확인'], tools:['calendar']},
+    {name:'2단계 · 프로모션 소재 제작', goal:'시즌에 맞는 소재를 준비합니다',
+      activities:['시즌 프로모션 배너 제작','시즌 카피·해시태그 생성'], tools:['banner','caption']},
+    {name:'3단계 · 예산·링크 세팅', goal:'집행 준비를 마칩니다',
+      activities:['시즌 캠페인 예산 배분','추적 링크 생성'], tools:['budget','utm']},
+    {name:'4단계 · 성과 리포트', goal:'다음 시즌을 위해 결과를 기록합니다',
+      activities:['시즌 캠페인 통합 리포트','데이터 시각화'], tools:['report','viz']}
+  ],
+  competitive: [
+    {name:'1단계 · 경쟁사 모니터링', goal:'경쟁사가 무엇을 하는지 파악합니다',
+      activities:['경쟁사 뉴스·언급 모니터링'], tools:['news']},
+    {name:'2단계 · 차별화 메시지', goal:'우리만의 강점을 정리합니다',
+      activities:['경쟁사 비교·차별화 포인트 보고서 작성'], tools:['write']},
+    {name:'3단계 · 대응 캠페인', goal:'실제 대응 캠페인을 집행합니다',
+      activities:['차별화 카피·배너 제작','대응 캠페인 예산 배분'], tools:['caption','banner','budget']},
+    {name:'4단계 · 반응 추적', goal:'대응이 효과적이었는지 확인합니다',
+      activities:['고객 반응 댓글 분석','성과 데이터 시각화'], tools:['comments','viz']}
+  ],
+  b2b: [
+    {name:'1단계 · 타겟 정의', goal:'어떤 기업·담당자를 타겟할지 정합니다',
+      activities:['타겟 산업·페르소나 정리 보고서 작성'], tools:['write']},
+    {name:'2단계 · 콘텐츠 마케팅', goal:'신뢰를 쌓는 콘텐츠를 꾸준히 발행합니다',
+      activities:['업계 인사이트 콘텐츠 캘린더 수립','전문성 있는 카피 제작'], tools:['calendar','caption']},
+    {name:'3단계 · 리드 캡처', goal:'관심 있는 기업의 유입을 추적합니다',
+      activities:['랜딩페이지·자료 다운로드용 추적 링크 생성'], tools:['utm']},
+    {name:'4단계 · 리드 분석', goal:'어떤 콘텐츠가 리드를 만들었는지 파악합니다',
+      activities:['유입 데이터 시각화','리드 현황 통합 리포트'], tools:['viz','report']}
+  ]
+};
+
+function selectStrategy(key, el){
+  document.querySelectorAll('#stratGrid .strat-card').forEach(c=>c.classList.remove('on'));
+  el.classList.add('on');
+  STRAT.selected = key;
+}
+const STRAT = { selected:'launch' };
+S.ai['stratAiSel'] = 'claude';
+
+function buildStrategyPrompt(strategyKey, brand, industryLabel, budgetSize, period, phases){
+  const skeleton = phases.map(p=>`- ${p.name}: ${p.goal}`).join('\n');
+  return `당신은 15년차 마케팅 전략가입니다. "${STRATEGY_LABELS[strategyKey]}" 전략의 단계별 실행 계획을 아래 조건에 맞게 구체화해주세요.
+
+브랜드: ${brand}
+업종: ${industryLabel}
+예산 규모: ${budgetSize}
+캠페인 기간: ${period}
+
+아래는 기본 뼈대입니다. 단계 수와 순서는 그대로 유지하고, 각 단계의 목표와 핵심 활동만 이 브랜드·업종에 맞게 구체화해주세요:
+${skeleton}
+
+아래 JSON 형식으로만 응답해주세요. 다른 텍스트 없이 JSON만:
+{
+  "summary": "전체 전략 요약 및 성공 포인트 (200자 이상, 이모지 포함)",
+  "phases": [
+    {"goal": "구체화된 목표 한 줄", "activities": ["구체화된 활동1","활동2","활동3"]},
+    ...
+  ]
+}
+phases 배열은 반드시 ${phases.length}개 항목으로, 위 뼈대와 같은 순서여야 합니다.`;
+}
+
+function computeStrategyFallback(strategyKey, brand, industryLabel){
+  const phases = STRATEGY_PLAYBOOKS[strategyKey];
+  const summary = `📐 AI 없이 표준 플레이북을 그대로 사용한 "${STRATEGY_LABELS[strategyKey]}" 전략입니다.\n\n`+
+    `${brand}(${industryLabel}) 기준으로 총 ${phases.length}단계로 구성했습니다. 각 단계의 활동을 순서대로 진행하고, 추천된 도구를 바로 눌러 실행해보세요.\n\n`+
+    `💡 브랜드·업종에 맞게 더 구체적인 활동 제안이 필요하면 AI 엔진을 선택해 다시 실행해보세요.`;
+  return { summary, phases: phases.map(p=>({goal:p.goal, activities:p.activities})) };
+}
+
+async function runStrategy(){
+  const strategyKey = STRAT.selected;
+  const brand = document.getElementById('stratBrand').value.trim() || '우리 브랜드';
+  const industrySel = document.getElementById('stratIndustry');
+  const industryLabel = industrySel.options[industrySel.selectedIndex].text;
+  const budgetSize = document.getElementById('stratBudgetSize').value;
+  const period = document.getElementById('stratPeriod').value;
+  const model = S.ai['stratAiSel']||'claude';
+  const apiKey = document.getElementById('stratApiKey').value.trim();
+
+  const btn = document.getElementById('stratBtn');
+  btn.disabled=true; btn.innerHTML='<span class="spin"></span>&nbsp;플랜 생성 중...';
+  const pg = document.getElementById('stratPg'); const pf = document.getElementById('stratPgf');
+  pg.classList.add('on'); pf.style.width='25%';
+
+  try{
+    const skeleton = STRATEGY_PLAYBOOKS[strategyKey];
+    let result;
+    if(model==='none'){
+      pf.style.width='70%';
+      result = computeStrategyFallback(strategyKey, brand, industryLabel);
+    } else {
+      const prompt = buildStrategyPrompt(strategyKey, brand, industryLabel, budgetSize, period, skeleton);
+      const raw = await callAI(model, apiKey, prompt);
+      pf.style.width='80%';
+      const parsed = JSON.parse(raw.replace(/```json|```/g,'').trim());
+      // tools always come from our own skeleton — never trust AI-invented tool keys
+      const phases = skeleton.map((p,i)=>({
+        goal: parsed.phases?.[i]?.goal || p.goal,
+        activities: (parsed.phases?.[i]?.activities?.length ? parsed.phases[i].activities : p.activities)
+      }));
+      result = { summary: parsed.summary || '', phases };
+    }
+    pf.style.width='100%';
+    document.getElementById('stratModelLbl').textContent = model==='none' ? 'AI 미사용 · 표준 플레이북' : 'via '+model.toUpperCase();
+    renderStrategyResult(strategyKey, result, skeleton);
+    addHist('strategy', { date: nowStr(), strategy: STRATEGY_LABELS[strategyKey], brand, industry: industryLabel, budgetSize, period, model, summary: result.summary, phases: skeleton.map((p,i)=>({name:p.name, goal:result.phases[i].goal, activities:result.phases[i].activities, tools:p.tools})) });
+    toast('전략 플랜 생성 완료! 🧭','s');
+  }catch(e){ toast('오류: '+e.message,'e'); console.error(e); }
+  setTimeout(()=>{pg.classList.remove('on');pf.style.width='0%'},500);
+  btn.disabled=false; btn.innerHTML='<span>🧭</span> 전략 플랜 생성';
+}
+
+function renderStrategyResult(strategyKey, result, skeleton){
+  const area = document.getElementById('stratResultArea');
+  area.style.display = 'block';
+  document.getElementById('stratSummary').textContent = result.summary || '';
+
+  const toolMeta = Object.fromEntries(HOME_TOOLS.map(t=>[t.key,t]));
+  document.getElementById('stratPhases').innerHTML = skeleton.map((p,i)=>{
+    const phase = result.phases[i];
+    const toolsHtml = p.tools.map(k=>{
+      const t = toolMeta[k];
+      if(!t) return '';
+      return `<div class="phase-tool-chip" onclick="goHome('${k}')"><span>${t.ic}</span>${t.name} →</div>`;
+    }).join('');
+    const activitiesHtml = phase.activities.map(a=>`<li>${a}</li>`).join('');
+    return `
+      <div class="phase-card" style="animation-delay:${i*0.08}s">
+        <div class="phase-head"><span class="phase-num">${i+1}</span><span class="phase-name">${p.name.replace(/^\d단계 · /,'')}</span></div>
+        <div class="phase-goal">🎯 ${phase.goal}</div>
+        <ul class="phase-activities">${activitiesHtml}</ul>
+        <div class="phase-tools">${toolsHtml}</div>
+      </div>`;
+  }).join('');
+
+  area.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function dlStrategyExcel(){
+  const arr = getHist('strategy');
+  if(!arr.length){ toast('먼저 전략 플랜을 생성해주세요','e'); return; }
+  if(!xlsxReady())return;
+  const item = arr[0];
+  const rows = item.phases.flatMap(p=>
+    p.activities.map((a,i)=>({단계:i===0?p.name:'', 목표:i===0?p.goal:'', 활동:a, 추천도구:i===0?p.tools.join(', '):''}))
+  );
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:18},{wch:30},{wch:40},{wch:24}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'전략플랜');
+  XLSX.writeFile(wb,'전략플랜_'+(item.brand||'플랜')+'_'+nowStr(true)+'.xlsx');
+  toast('엑셀 저장 완료!','s');
+}
+
+// extend history helpers for strategy (assignment, not `function` redeclaration —
+// see the note above the budget extension for why that matters)
+const _origGetHistCols5 = getHistCols;
+getHistCols = function(key){
+  if(key==='strategy') return ['DATE','STRATEGY','BRAND','PERIOD','MODEL'];
+  return _origGetHistCols5(key);
+};
+const _origGetHistVal5 = getHistVal;
+getHistVal = function(key,item,col){
+  if(key==='strategy'){
+    const map={DATE:'date',STRATEGY:'strategy',BRAND:'brand',PERIOD:'period',MODEL:'model'};
+    return item[map[col]]||'—';
+  }
+  return _origGetHistVal5(key,item,col);
+};
+const _origDlHistItem5 = dlHistItem;
+dlHistItem = function(key,idx){
+  if(key!=='strategy'){_origDlHistItem5(key,idx);return}
+  const item = getHist(key)[idx];
+  if(!item)return;
+  if(!xlsxReady())return;
+  const rows = item.phases.flatMap(p=>
+    p.activities.map((a,i)=>({단계:i===0?p.name:'', 목표:i===0?p.goal:'', 활동:a, 추천도구:i===0?p.tools.join(', '):''}))
+  );
+  const ws = XLSX.utils.json_to_sheet(rows);
+  ws['!cols']=[{wch:18},{wch:30},{wch:40},{wch:24}];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,ws,'전략플랜');
+  XLSX.writeFile(wb,'전략플랜_'+(item.brand||'플랜')+'_'+nowStr(true)+'.xlsx');
+  toast('다운로드 완료!','s');
+};
+const _origDlAllHist5 = dlAllHist;
+dlAllHist = function(key){
+  if(key!=='strategy'){_origDlAllHist5(key);return}
+  const arr = getHist(key);
+  if(!arr.length){toast('저장된 기록이 없습니다','e');return}
+  if(!xlsxReady())return;
+  const wb = XLSX.utils.book_new();
+  arr.forEach((item,i)=>{
+    const rows = item.phases.flatMap(p=>
+      p.activities.map((a,j)=>({단계:j===0?p.name:'', 목표:j===0?p.goal:'', 활동:a, 추천도구:j===0?p.tools.join(', '):''}))
+    );
+    const ws = XLSX.utils.json_to_sheet(rows);
+    XLSX.utils.book_append_sheet(wb,ws,safeSheetName((i+1)+'_'+item.brand));
+  });
+  XLSX.writeFile(wb,'GOGUP_전략플랜_히스토리_'+nowStr(true)+'.xlsx');
+  toast('전체 히스토리 다운로드!','s');
+};
+document.addEventListener('DOMContentLoaded', ()=>{ renderHist('strategy'); });
 </script>
 </body>
 </html>
