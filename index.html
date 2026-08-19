@@ -565,12 +565,20 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
   <div class="card">
     <div class="ct">💾 데이터 백업 & 복원 <span class="hint" data-tip="모든 기록은 이 브라우저에만 저장돼요. 다른 기기로 옮기거나 브라우저 데이터를 지우기 전에 백업해두면 안전합니다.">?</span></div>
     <p style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.7">저장된 모든 히스토리·브랜드 프로필·메모를 파일 하나로 내보내고, 나중에 다시 불러올 수 있어요.</p>
-    <div style="display:flex;gap:10px;flex-wrap:wrap">
-      <button class="btn bg" onclick="exportAllData()"><span>📤</span> 전체 데이터 내보내기</button>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:18px">
+      <button class="btn bg" onclick="exportAllData()"><span>📤</span> 파일로 내보내기</button>
       <label class="btn" style="background:rgba(255,255,255,.06);color:var(--white);cursor:pointer">
-        <span>📥</span> 데이터 가져오기
+        <span>📥</span> 파일에서 가져오기
         <input type="file" accept=".json" style="display:none" onchange="importAllData(this.files[0]);this.value=''">
       </label>
+    </div>
+    <hr class="dv">
+    <div class="ct" style="margin-top:14px">☁️ 클라우드 동기화 <span class="hint" data-tip="Supabase에 연결되어 있으면 다른 기기·다른 브라우저에서도 같은 데이터를 불러올 수 있어요. 서버에 SUPABASE_URL/SUPABASE_SERVICE_KEY/SYNC_TOKEN이 설정되어 있어야 동작합니다.">?</span></div>
+    <p style="font-size:10px;color:var(--muted);margin-bottom:10px" id="cloudSyncStatus">아직 동기화한 적 없음</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn bpur" onclick="cloudBackup()"><span>☁️</span> 클라우드에 저장</button>
+      <button class="btn" style="background:rgba(255,255,255,.06);color:var(--white)" onclick="cloudRestore()"><span>☁️</span> 클라우드에서 불러오기</button>
+      <button class="btn bsm" style="background:rgba(255,77,109,.1);color:var(--danger);border:1px solid rgba(255,77,109,.22)" onclick="resetSyncToken()">토큰 재설정</button>
     </div>
   </div>
 </div>
@@ -4706,9 +4714,9 @@ document.addEventListener('DOMContentLoaded', loadBrandProfileUI);
 //  localStorage only — this is the one way to move it
 //  to another browser/device or protect against data loss)
 // ═══════════════════════════════════════════════
-const ALL_HIST_KEYS = ['report','write','budget','comments','news','utm','caption','calendar'];
+const ALL_HIST_KEYS = ['report','write','budget','comments','news','utm','caption','calendar','strategy'];
 
-function exportAllData(){
+function buildBackupPayload(){
   const data = {
     exportedAt: new Date().toISOString(),
     app: 'GOGUP TOOL',
@@ -4717,6 +4725,28 @@ function exportAllData(){
     history: {}
   };
   ALL_HIST_KEYS.forEach(k=>{ data.history[k] = getHist(k); });
+  return data;
+}
+
+function applyBackupPayload(data){
+  ALL_HIST_KEYS.forEach(k=>{
+    const incoming = Array.isArray(data.history?.[k]) ? data.history[k] : [];
+    if(!incoming.length) return;
+    const merged = [...incoming, ...getHist(k)].slice(0,50);
+    setHist(k, merged);
+  });
+  if(data.brandProfile) setBrandProfile(data.brandProfile);
+  if(data.memo){
+    sessionStorage.setItem('gg_memo', data.memo);
+    const m = document.getElementById('memo'); if(m) m.value = data.memo;
+  }
+  ALL_HIST_KEYS.forEach(k=>renderHist(k));
+  loadBrandProfileUI();
+  renderHomeDashboard();
+}
+
+function exportAllData(){
+  const data = buildBackupPayload();
   const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -4736,24 +4766,66 @@ function importAllData(file){
     if(!data || typeof data.history !== 'object'){ toast('올바른 백업 파일이 아닙니다','e'); return; }
     const ok = await confirmDialog('데이터 가져오기', '현재 저장된 기록에 백업 내용을 합칠까요? 동일 항목이 중복 추가될 수 있어요.');
     if(!ok) return;
-
-    ALL_HIST_KEYS.forEach(k=>{
-      const incoming = Array.isArray(data.history[k]) ? data.history[k] : [];
-      if(!incoming.length) return;
-      const merged = [...incoming, ...getHist(k)].slice(0,50);
-      setHist(k, merged);
-    });
-    if(data.brandProfile) setBrandProfile(data.brandProfile);
-    if(data.memo){
-      sessionStorage.setItem('gg_memo', data.memo);
-      const m = document.getElementById('memo'); if(m) m.value = data.memo;
-    }
-    ALL_HIST_KEYS.forEach(k=>renderHist(k));
-    loadBrandProfileUI();
-    renderHomeDashboard();
+    applyBackupPayload(data);
     toast('데이터 가져오기 완료! 📥','s');
   };
   reader.readAsText(file);
+}
+
+// ═══════════════════════════════════════════════
+//  CLOUD SYNC (Supabase, via our own backend) — /api/backup requires a
+//  shared secret (X-Sync-Token) instead of a full login system, since this
+//  is built for single-user use. The token is entered once and cached in
+//  localStorage; it never leaves the browser except as that one header.
+// ═══════════════════════════════════════════════
+function getSyncToken(){ return localStorage.getItem('gg_sync_token')||''; }
+function setSyncToken(t){ localStorage.setItem('gg_sync_token', t); }
+function resetSyncToken(){ localStorage.removeItem('gg_sync_token'); toast('동기화 토큰을 지웠습니다. 다음 동기화 시 다시 입력해주세요','i'); }
+
+function promptSyncToken(){
+  let token = getSyncToken();
+  if(token) return token;
+  token = prompt('클라우드 동기화 토큰을 입력해주세요 (Render 환경변수 SYNC_TOKEN과 동일한 값)');
+  if(token) setSyncToken(token.trim());
+  return token ? token.trim() : '';
+}
+
+async function cloudBackup(){
+  const token = promptSyncToken();
+  if(!token){ toast('동기화 토큰이 필요합니다','e'); return; }
+  try{
+    const res = await fetch('/api/backup', {
+      method:'POST',
+      headers:{'Content-Type':'application/json','X-Sync-Token':token},
+      body: JSON.stringify({data: buildBackupPayload()})
+    });
+    const d = await res.json();
+    if(!res.ok){
+      if(res.status===401) setSyncToken(''); // wrong token — don't keep reusing it silently
+      throw new Error(d.detail||('오류 '+res.status));
+    }
+    document.getElementById('cloudSyncStatus').textContent = '마지막 저장: '+nowStr();
+    toast('클라우드에 백업 완료! ☁️','s');
+  }catch(e){ toast('클라우드 백업 실패: '+e.message,'e'); }
+}
+
+async function cloudRestore(){
+  const token = promptSyncToken();
+  if(!token){ toast('동기화 토큰이 필요합니다','e'); return; }
+  try{
+    const res = await fetch('/api/backup', { headers:{'X-Sync-Token':token} });
+    const d = await res.json();
+    if(!res.ok){
+      if(res.status===401) setSyncToken('');
+      throw new Error(d.detail||('오류 '+res.status));
+    }
+    const savedAt = d.updated_at ? new Date(d.updated_at).toLocaleString('ko-KR') : '알 수 없음';
+    const ok = await confirmDialog('클라우드에서 불러오기', `${savedAt}에 저장된 백업을 현재 데이터에 합칠까요? 동일 항목이 중복 추가될 수 있어요.`);
+    if(!ok) return;
+    applyBackupPayload(d.data);
+    document.getElementById('cloudSyncStatus').textContent = '마지막 불러오기: '+nowStr()+' (저장 시점: '+savedAt+')';
+    toast('클라우드에서 불러오기 완료! ☁️','s');
+  }catch(e){ toast('클라우드 불러오기 실패: '+e.message,'e'); }
 }
 
 // ═══════════════════════════════════════════════
