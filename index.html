@@ -346,6 +346,20 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
 .phase-tools{display:flex;gap:8px;flex-wrap:wrap;padding-left:35px}
 .phase-tool-chip{display:flex;align-items:center;gap:5px;padding:6px 12px;background:rgba(78,143,255,.08);border:1px solid rgba(78,143,255,.25);border-radius:99px;font-size:11px;color:var(--accent2);cursor:pointer;transition:all .15s}
 .phase-tool-chip:hover{background:rgba(78,143,255,.18);transform:translateY(-1px)}
+
+/* ── DATA LIBRARY ── */
+.src-cat{margin-bottom:22px}
+.src-cat-title{font-size:11px;font-weight:700;color:var(--accent2);letter-spacing:1px;margin-bottom:10px;text-transform:uppercase;font-family:var(--fm)}
+.src-item{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 14px;background:rgba(255,255,255,.02);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;cursor:pointer;transition:all .15s}
+.src-item:hover{border-color:rgba(78,143,255,.35);background:rgba(78,143,255,.05)}
+.src-name{font-size:12px;font-weight:700;color:var(--white)}
+.src-desc{font-size:10px;color:var(--muted);margin-top:2px}
+.src-arrow{color:var(--accent2);font-size:14px;flex-shrink:0}
+.word-cat{margin-bottom:20px}
+.word-cat-title{font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:10px}
+.word-chips{display:flex;flex-wrap:wrap;gap:7px}
+.word-chip{padding:7px 13px;background:rgba(167,139,250,.08);border:1px solid rgba(167,139,250,.25);border-radius:99px;font-size:11px;color:var(--purple);cursor:pointer;transition:all .15s}
+.word-chip:hover{background:rgba(167,139,250,.18);transform:translateY(-1px)}
 /* result bars */
 .budget-result{display:none;margin-top:16px}
 .budget-result.on{display:block}
@@ -491,6 +505,7 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
     <div class="nav-lbl">리서치 · 수집</div>
     <button class="nb" onclick="go('comments',this)"><span class="ic">💬</span>댓글 수집기</button>
     <button class="nb" onclick="go('news',this)"><span class="ic">📰</span>뉴스·트렌드</button>
+    <button class="nb" onclick="go('datalib',this)"><span class="ic">📚</span>데이터 라이브러리<span class="bdg" style="background:rgba(57,255,176,.15);border-color:rgba(57,255,176,.3);color:var(--accent)">NEW</span></button>
   </div>
   <div class="nav-sec">
     <div class="nav-lbl">실무 유틸리티</div>
@@ -1925,6 +1940,51 @@ hr.dv{border:none;border-top:1px solid var(--border);margin:18px 0}
       </div>
     </div>
     <div id="strategyHist"></div>
+  </div>
+</div>
+
+<!-- ▓▓▓▓▓ PAGE 14 : DATA LIBRARY ▓▓▓▓▓ -->
+<div class="page" id="page-datalib">
+  <div class="ph">
+    <div class="ph-t">
+      <div class="ey" style="color:var(--accent)">✦ 12 — Data Library</div>
+      <h2 style="background:linear-gradient(130deg,var(--white),var(--accent));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">DATA<br>LIBRARY</h2>
+      <p>마케팅에 바로 쓸 수 있는 공신력 있는 데이터 소스와, 자주 찾는 참고 자료를 한곳에 모았습니다. 실시간 통계가 아닌 참고용 가이드는 명확히 표시했습니다.</p>
+    </div>
+    <div class="sbdg"><div class="sdot"></div>LIBRARY</div>
+  </div>
+
+  <div class="card">
+    <div class="tabs-bar">
+      <button class="tab-btn on" onclick="switchTab('lib','sources',this)">🔗 오픈 데이터 소스</button>
+      <button class="tab-btn" onclick="switchTab('lib','timing',this)">⏰ 최적 게시 시간</button>
+      <button class="tab-btn" onclick="switchTab('lib','demo',this)">👥 플랫폼별 이용자 특성</button>
+      <button class="tab-btn" onclick="switchTab('lib','words',this)">✨ 카피 파워워드 사전</button>
+    </div>
+
+    <!-- TAB: 오픈 데이터 소스 -->
+    <div class="tab-panel on" id="tabpanel-lib-sources">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.7">실제 통계·트렌드 원본 데이터가 필요할 때 참고할 수 있는 공공·민간 소스입니다. 클릭하면 새 탭에서 열립니다.</p>
+      <div id="dataSourcesList"></div>
+    </div>
+
+    <!-- TAB: 최적 게시 시간 -->
+    <div class="tab-panel" id="tabpanel-lib-timing">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.7">📐 업계에서 일반적으로 통용되는 참고 가이드라인입니다. 실제 최적 시간은 브랜드·타겟에 따라 다르니 각 플랫폼의 자체 인사이트(팔로워 활동 시간 등)로 검증해보세요.</p>
+      <div class="tw"><table><thead><tr><th>플랫폼</th><th>추천 시간대</th><th>이유</th></tr></thead><tbody id="timingTable"></tbody></table></div>
+    </div>
+
+    <!-- TAB: 플랫폼별 이용자 특성 -->
+    <div class="tab-panel" id="tabpanel-lib-demo">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.7">📐 방향성 참고용 가이드입니다. 정확한 수치가 필요하면 '오픈 데이터 소스' 탭의 방송통신위원회·나스미디어 자료를 확인해주세요.</p>
+      <div class="tw"><table><thead><tr><th>플랫폼</th><th>주 이용 연령대</th><th>특징</th></tr></thead><tbody id="demoTable"></tbody></table></div>
+    </div>
+
+    <!-- TAB: 카피 파워워드 사전 -->
+    <div class="tab-panel" id="tabpanel-lib-words">
+      <p style="font-size:11px;color:var(--muted);margin-bottom:16px;line-height:1.7">카피 작성할 때 바로 꺼내 쓰는 단어 모음입니다. 단어를 클릭하면 복사됩니다.</p>
+      <div id="powerWordsList"></div>
+    </div>
   </div>
 </div>
 
@@ -5241,6 +5301,103 @@ dlAllHist = function(key){
   toast('전체 히스토리 다운로드!','s');
 };
 document.addEventListener('DOMContentLoaded', ()=>{ renderHist('strategy'); });
+
+// ═══════════════════════════════════════════════
+//  DATA LIBRARY — curated open data sources + reference guides.
+//  Timing/demographic tables are directional industry guidance, not
+//  measured statistics — labeled as such in the UI, with the source
+//  directory as the place to go for actual verified numbers.
+// ═══════════════════════════════════════════════
+const DATA_SOURCES = [
+  { category:'📊 공공 통계', items:[
+    {name:'국가통계포털 (KOSIS)', desc:'인구·소비·산업 등 국가 공식 통계 전체', url:'https://kosis.kr'},
+    {name:'통계청', desc:'온라인쇼핑동향, 소비자물가 등 정기 발표 통계', url:'https://kostat.go.kr'},
+    {name:'방송통신위원회 방송매체 이용행태조사', desc:'연령대별 미디어·플랫폼 이용 행태 연간 조사', url:'https://www.kcc.go.kr'},
+    {name:'한국인터넷진흥원(KISA)', desc:'인터넷 이용실태, 정보보호 실태조사', url:'https://www.kisa.or.kr'}
+  ]},
+  { category:'🔍 트렌드 · 검색', items:[
+    {name:'네이버 데이터랩', desc:'검색어 트렌드, 쇼핑인사이트, 지역통계', url:'https://datalab.naver.com'},
+    {name:'구글 트렌드', desc:'키워드 관심도 추이, 지역별·기간별 비교', url:'https://trends.google.com'},
+    {name:'메타 광고 라이브러리', desc:'경쟁사가 집행 중인 페이스북·인스타 광고 소재 전체 공개', url:'https://www.facebook.com/ads/library'}
+  ]},
+  { category:'📈 민간 리서치 · 리포트', items:[
+    {name:'오픈서베이', desc:'업종별 소비자 트렌드 리포트 무료 배포', url:'https://blog.opensurvey.co.kr'},
+    {name:'대학내일20대연구소', desc:'MZ세대 소비·라이프스타일 트렌드 연구', url:'https://www.20slab.org'},
+    {name:'한국갤럽', desc:'여론·소비자 조사 리포트', url:'https://www.gallup.co.kr'},
+    {name:'나스미디어', desc:'인터넷 이용자 조사(NPR), 디지털 광고 트렌드', url:'https://www.nasmedia.co.kr'}
+  ]},
+  { category:'📣 광고 · 미디어 업계', items:[
+    {name:'제일기획', desc:'국내 광고 시장 결산 및 업종별 분석', url:'https://www.cheil.com'},
+    {name:'DMC미디어 리포트', desc:'디지털 마케팅 트렌드 리포트', url:'https://www.dmcreport.co.kr'},
+    {name:'카카오 비즈니스', desc:'카카오 광고 스터디·업종별 활용 사례', url:'https://business.kakao.com'}
+  ]}
+];
+
+const BEST_POSTING_TIMES = [
+  {platform:'📸 인스타그램', best:'평일 오전 11시~오후 1시, 저녁 7~9시', note:'점심시간·퇴근 후 체류시간이 높은 편'},
+  {platform:'▶️ 유튜브', best:'평일 오후 2~4시, 주말 오전 9~11시', note:'저녁·주말 시청 비중이 높아 그 직전 업로드가 유리'},
+  {platform:'🎵 틱톡', best:'평일 저녁 7~11시', note:'저녁~심야 체류시간이 특히 긴 편'},
+  {platform:'🟢 네이버 블로그', best:'평일 오전 8~10시, 저녁 8~10시', note:'출근길·잠들기 전 검색 유입이 몰리는 시간대'},
+  {platform:'🟡 카카오톡 채널', best:'평일 오전 10~11시, 오후 2~4시', note:'업무 중 알림 확인이 잦은 시간대'},
+  {platform:'𝕏 X(트위터)', best:'평일 오전 9시, 정오, 오후 5~6시', note:'출퇴근·점심시간 체크 빈도가 높은 편'}
+];
+
+const PLATFORM_DEMOGRAPHICS = [
+  {platform:'📸 인스타그램', ages:'10대 후반 ~ 30대 중심', note:'비주얼 콘텐츠, 쇼핑 연동 강세'},
+  {platform:'🎵 틱톡', ages:'10대 ~ 20대 중심', note:'숏폼 콘텐츠, 트렌드 발신지 역할'},
+  {platform:'▶️ 유튜브', ages:'전 연령대 (10대·40대 이상 이용시간 특히 높음)', note:'검색 플랫폼화, 롱폼+쇼츠 병행'},
+  {platform:'🟢 네이버 (블로그·카페)', ages:'30대 ~ 50대 중심', note:'정보 검색·리뷰 신뢰도가 높은 채널'},
+  {platform:'🔵 페이스북', ages:'30대 이상 중심으로 이동', note:'그룹·커뮤니티 기능 활용도 높음'},
+  {platform:'🟡 카카오톡', ages:'전 연령대 (국내 메신저 최다 이용)', note:'채널·알림톡 등 CRM 채널로 활용'}
+];
+
+const POWER_WORDS = {
+  '⏰ 긴급성 · 한정': ['한정수량','마감임박','오늘까지','선착순','품절임박','지금 아니면','타임세일','재입고 없음'],
+  '🎁 혜택 · 이득': ['무료배송','최대 50% 할인','1+1','사은품 증정','적립금 지급','무이자 할부','환불보장'],
+  '🤝 신뢰 · 권위': ['1위','누적 판매 10만개','전문가 추천','후기 평점 4.9','공식 인증','특허받은','수상작'],
+  '💛 감성 · 공감': ['당신을 위한','드디어','기다리셨죠','작은 사치','나를 위한 선물','힐링되는'],
+  '🔥 트렌드 · 화제성': ['요즘 대세','SNS 화제','품절대란','완판','다들 아는','핫한'],
+  '❓ 호기심 유발': ['이유는?','비밀','아무도 몰랐던','충격','반전','~하는 법']
+};
+
+function renderDataSources(){
+  document.getElementById('dataSourcesList').innerHTML = DATA_SOURCES.map(cat=>`
+    <div class="src-cat">
+      <div class="src-cat-title">${cat.category}</div>
+      ${cat.items.map(s=>`
+        <div class="src-item" onclick="window.open('${s.url}','_blank','noopener')">
+          <div><div class="src-name">${s.name}</div><div class="src-desc">${s.desc}</div></div>
+          <span class="src-arrow">열기 ↗</span>
+        </div>`).join('')}
+    </div>`).join('');
+}
+
+function renderTimingTable(){
+  document.getElementById('timingTable').innerHTML = BEST_POSTING_TIMES.map(t=>
+    `<tr><td>${t.platform}</td><td>${t.best}</td><td style="white-space:normal;max-width:320px;color:var(--muted)">${t.note}</td></tr>`
+  ).join('');
+}
+
+function renderDemoTable(){
+  document.getElementById('demoTable').innerHTML = PLATFORM_DEMOGRAPHICS.map(d=>
+    `<tr><td>${d.platform}</td><td>${d.ages}</td><td style="white-space:normal;max-width:320px;color:var(--muted)">${d.note}</td></tr>`
+  ).join('');
+}
+
+function renderPowerWords(){
+  document.getElementById('powerWordsList').innerHTML = Object.entries(POWER_WORDS).map(([cat,words])=>`
+    <div class="word-cat">
+      <div class="word-cat-title">${cat}</div>
+      <div class="word-chips">${words.map(w=>`<span class="word-chip" onclick="copyText('${w}')">${w}</span>`).join('')}</div>
+    </div>`).join('');
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  renderDataSources();
+  renderTimingTable();
+  renderDemoTable();
+  renderPowerWords();
+});
 </script>
 </body>
 </html>
