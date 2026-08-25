@@ -3749,6 +3749,67 @@ function computeCommentsFallback(comments){
   return { positive:pos, negative:neg, neutral:neu, keywords, summary };
 }
 
+// 레딧 등에서 페이지를 그대로 복사-붙여넣기 했을 때: 작성자 줄 / 날짜 줄 / 댓글 본문 / "좋아요..답글 달기..공유" 액션바 줄이
+// 뒤섞여 들어온다. 이 패턴을 인식해서 author/date/text/likes로 분리한다. 광고 블록·삭제된 댓글·배지("상위 1% 댓글 작성자")·
+// "답글 N개 더 보기"·사이드바("커뮤니티 정보 섹션" 이후)는 걸러낸다.
+function parseRedditPasteText(raw){
+  let lines = raw.split('\n').map(l=>l.trim());
+  const sbIdx = lines.findIndex(l=>l.includes('커뮤니티 정보 섹션'));
+  if(sbIdx>=0) lines = lines.slice(0, sbIdx);
+  lines = lines.filter(Boolean);
+
+  const AUTHOR_RE = /^\[([^\]]+)\]\(https?:\/\/www\.reddit\.com\/user\/[^)]+\)$/;
+  const DELETED_RE = /^\[(삭제됨|removed|deleted)\]$/i;
+  const DATE_RE = /^•/;
+  const AD_MARK_RE = /^•\[광고\]/;
+  const MORE_REPLIES_RE = /^답글\s*\d+개\s*더\s*보기$/;
+  const BADGE_RE = /^상위\s*\d+%\s*댓글\s*작성자$/;
+  const FOOTER_RE = /답글\s*달기/;
+
+  const comments = [];
+  let i = 0;
+  while(i < lines.length){
+    const authorMatch = lines[i].match(AUTHOR_RE);
+    const isDeleted = DELETED_RE.test(lines[i]);
+    if(!authorMatch && !isDeleted){ i++; continue; }
+
+    const author = authorMatch ? authorMatch[1].replace(/^u\//,'') : '[삭제됨]';
+    i++;
+
+    if(i < lines.length && AD_MARK_RE.test(lines[i])){
+      i++;
+      while(i < lines.length && !AUTHOR_RE.test(lines[i]) && !DELETED_RE.test(lines[i])) i++;
+      continue;
+    }
+
+    let date = '';
+    if(i < lines.length && DATE_RE.test(lines[i])){
+      const m = lines[i].match(/^•\[([^\]]+)\]/);
+      date = m ? m[1] : lines[i].replace(/^•/,'');
+      i++;
+    }
+    if(i < lines.length && BADGE_RE.test(lines[i])) i++;
+
+    const bodyLines = [];
+    while(i < lines.length && !FOOTER_RE.test(lines[i]) && !AUTHOR_RE.test(lines[i]) && !DELETED_RE.test(lines[i]) && !MORE_REPLIES_RE.test(lines[i])){
+      bodyLines.push(lines[i]);
+      i++;
+    }
+
+    let likes = '';
+    if(i < lines.length && FOOTER_RE.test(lines[i])){
+      const lm = lines[i].match(/좋아요(\d+)/);
+      if(lm) likes = lm[1];
+      i++;
+    }
+    while(i < lines.length && MORE_REPLIES_RE.test(lines[i])) i++;
+
+    const text = bodyLines.join(' ').trim();
+    if(text) comments.push({author, text, likes, date});
+  }
+  return comments;
+}
+
 async function runComments(){
   if(CM.source === 'youtube'){
     if(!document.getElementById('cmYtUrl').value.trim()){toast('영상 URL 또는 ID를 입력해주세요','e');return}
@@ -3781,7 +3842,13 @@ async function runComments(){
     } else {
       const text     = document.getElementById('cmPasteText').value.trim();
       const platform = document.getElementById('cmPastePlatform').value;
-      comments = text.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({author:'',text:t,likes:'',date:''}));
+      const looksLikeReddit = /reddit\.com\/user\//.test(text) && /답글\s*달기/.test(text);
+      if(looksLikeReddit){
+        comments = parseRedditPasteText(text);
+        if(!comments.length) comments = text.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({author:'',text:t,likes:'',date:''}));
+      } else {
+        comments = text.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({author:'',text:t,likes:'',date:''}));
+      }
       meta = {naver:'네이버',instagram:'인스타그램',tiktok:'틱톡',etc:'기타 플랫폼'}[platform] || '기타 플랫폼';
       source = document.getElementById('cmPasteUrl').value.trim()||'—';
       CM.meta = {title:'', link: source!=='—'?source:'', views:null};
