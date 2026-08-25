@@ -3752,60 +3752,65 @@ function computeCommentsFallback(comments){
 // 레딧 등에서 페이지를 그대로 복사-붙여넣기 했을 때: 작성자 줄 / 날짜 줄 / 댓글 본문 / "좋아요..답글 달기..공유" 액션바 줄이
 // 뒤섞여 들어온다. 이 패턴을 인식해서 author/date/text/likes로 분리한다. 광고 블록·삭제된 댓글·배지("상위 1% 댓글 작성자")·
 // "답글 N개 더 보기"·사이드바("커뮤니티 정보 섹션" 이후)는 걸러낸다.
+// 실제 브라우저에서 Ctrl+C로 복사하면 링크 URL 없이 순수 텍스트만 오므로, 마크다운 링크([텍스트](url)) 형태로
+// 붙여넣어진 경우도 텍스트만 남기고 평문화한 뒤 "N개월 전" 같은 상대 시간 표기(항상 눈에 보이는 실제 텍스트)를
+// 기준점으로 삼아 그 직전 줄을 작성자로 판단한다 — URL 유무와 무관하게 동작한다.
 function parseRedditPasteText(raw){
-  let lines = raw.split('\n').map(l=>l.trim());
+  let text = raw.replace(/\[([^\]]*)\]\(https?:\/\/[^)]*\)/g, '$1');
+  let lines = text.split('\n').map(l=>l.trim());
   const sbIdx = lines.findIndex(l=>l.includes('커뮤니티 정보 섹션'));
   if(sbIdx>=0) lines = lines.slice(0, sbIdx);
-  lines = lines.filter(Boolean);
+  lines = lines.filter(Boolean).map(l=>l.replace(/^[•·]\s*/, ''));
 
-  const AUTHOR_RE = /^\[([^\]]+)\]\(https?:\/\/www\.reddit\.com\/user\/[^)]+\)$/;
-  const DELETED_RE = /^\[(삭제됨|removed|deleted)\]$/i;
-  const DATE_RE = /^•/;
-  const AD_MARK_RE = /^•\[광고\]/;
+  const TIME_RE = /^(\d+\s*(초|분|시간|일|주|개월|년)|방금|어제|그제)\s*전/;
+  const AD_LINE_RE = /(^|•)광고$/;
   const MORE_REPLIES_RE = /^답글\s*\d+개\s*더\s*보기$/;
   const BADGE_RE = /^상위\s*\d+%\s*댓글\s*작성자$/;
   const FOOTER_RE = /답글\s*달기/;
 
   const comments = [];
   let i = 0;
+  let pendingAuthor = '';
   while(i < lines.length){
-    const authorMatch = lines[i].match(AUTHOR_RE);
-    const isDeleted = DELETED_RE.test(lines[i]);
-    if(!authorMatch && !isDeleted){ i++; continue; }
+    const line = lines[i];
 
-    const author = authorMatch ? authorMatch[1].replace(/^u\//,'') : '[삭제됨]';
-    i++;
-
-    if(i < lines.length && AD_MARK_RE.test(lines[i])){
+    // 스폰서/광고 블록은 시간 표기(N전) 줄이 없어서 자연히 댓글로 잡히지 않는다.
+    // 광고 표시 줄 자체는 다음 실제 작성자 줄이 아니므로 작성자 후보로 남기지 않는다.
+    if(AD_LINE_RE.test(line)){
+      pendingAuthor = '';
       i++;
-      while(i < lines.length && !AUTHOR_RE.test(lines[i]) && !DELETED_RE.test(lines[i])) i++;
       continue;
     }
 
-    let date = '';
-    if(i < lines.length && DATE_RE.test(lines[i])){
-      const m = lines[i].match(/^•\[([^\]]+)\]/);
-      date = m ? m[1] : lines[i].replace(/^•/,'');
+    if(TIME_RE.test(line)){
+      const author = pendingAuthor;
+      const date = line;
       i++;
-    }
-    if(i < lines.length && BADGE_RE.test(lines[i])) i++;
+      if(i < lines.length && BADGE_RE.test(lines[i])) i++;
 
-    const bodyLines = [];
-    while(i < lines.length && !FOOTER_RE.test(lines[i]) && !AUTHOR_RE.test(lines[i]) && !DELETED_RE.test(lines[i]) && !MORE_REPLIES_RE.test(lines[i])){
-      bodyLines.push(lines[i]);
-      i++;
+      const bodyLines = [];
+      while(i < lines.length && !FOOTER_RE.test(lines[i]) && !TIME_RE.test(lines[i]) && !MORE_REPLIES_RE.test(lines[i]) && !AD_LINE_RE.test(lines[i])){
+        bodyLines.push(lines[i]);
+        i++;
+      }
+
+      let likes = '';
+      if(i < lines.length && FOOTER_RE.test(lines[i])){
+        const lm = lines[i].match(/좋아요\s*(\d+)/);
+        if(lm) likes = lm[1];
+        i++;
+      }
+      while(i < lines.length && MORE_REPLIES_RE.test(lines[i])) i++;
+
+      const commentText = bodyLines.join(' ').trim();
+      if(commentText && author) comments.push({author, text: commentText, likes, date});
+      pendingAuthor = '';
+      continue;
     }
 
-    let likes = '';
-    if(i < lines.length && FOOTER_RE.test(lines[i])){
-      const lm = lines[i].match(/좋아요(\d+)/);
-      if(lm) likes = lm[1];
-      i++;
-    }
-    while(i < lines.length && MORE_REPLIES_RE.test(lines[i])) i++;
-
-    const text = bodyLines.join(' ').trim();
-    if(text) comments.push({author, text, likes, date});
+    // 시간 표기가 아닌 줄은 다음 시간 줄의 작성자 후보로 기억해둔다 (작성자명은 보통 시간 표기 바로 앞 줄)
+    pendingAuthor = line.replace(/^u\//,'');
+    i++;
   }
   return comments;
 }
@@ -3842,7 +3847,7 @@ async function runComments(){
     } else {
       const text     = document.getElementById('cmPasteText').value.trim();
       const platform = document.getElementById('cmPastePlatform').value;
-      const looksLikeReddit = /reddit\.com\/user\//.test(text) && /답글\s*달기/.test(text);
+      const looksLikeReddit = /답글\s*달기/.test(text) && /공유/.test(text);
       if(looksLikeReddit){
         comments = parseRedditPasteText(text);
         if(!comments.length) comments = text.split('\n').map(l=>l.trim()).filter(Boolean).map(t=>({author:'',text:t,likes:'',date:''}));
